@@ -1,0 +1,225 @@
+@import url(./fonts.css);
+
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
+  font-family: "IranSans-Regular";
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #07a4ff;
+}
+
+.form {
+  width: 90%;
+  max-width: 400px;
+  min-height: 480px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.form-content {
+  width: 100%;
+  padding: 24px;
+  padding-top: 36px;
+}
+
+.welcome {
+  font-family: "IranSans-Bold";
+  font-size: 21px;
+  text-align: center;
+}
+
+.go-register-text {
+  font-size: 12px;
+  margin-top: 3px;
+  color: gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.go-register-text a {
+  text-decoration: none;
+  color: rgb(0, 109, 233);
+}
+
+/* Login methods */
+.login-methods {
+  margin: 32px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap; /* به طور خودکار در دستگاه‌های کوچکتر به خط بعد میره */
+}
+
+.login-methods div {
+  padding: 8px 48px;
+  border: 1px solid rgba(128, 128, 128, 0.479);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  user-select: none;
+  font-size: 14px;
+  min-width: 250px;
+  text-align: center;
+  transition: all 0.3s ease;
+  margin-bottom: 12px; /* فاصله پایین برای جلوگیری از فشردگی */
+}
+
+.login-methods div:hover {
+  background-color: #f4f4f4;
+  transform: scale(1.05);
+}
+
+.login-logo {
+  width: 24px;
+  height: auto;
+}
+
+.login-methods div a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+}
+
+/* یا */
+.or {
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  font-family: "IranSans-Bold";
+}
+
+.inputs-container {
+  width: 100%;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.captcha-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.captcha {
+  max-width: 100%;
+}
+
+
+.inputs-container input {
+  width: 100%;
+  height: 40px;
+  font-family: "IranSans-Regular";
+  outline: none;
+  border-radius: 4px;
+  padding: 0 12px;
+  border: 1px solid rgba(128, 128, 128, 0.233);
+}
+
+.make-ltr {
+  direction: ltr !important;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-size: 14px;
+  margin: 0 auto;
+  gap: 4px;
+  user-select: none;
+}
+
+.form-footer {
+  width: 100%;
+  margin: 24px auto;
+}
+
+.login-button {
+  width: 100%;
+  height: 45px;
+  background: rgb(2, 155, 202);
+  color: white;
+  font-family: "IranSans-Regular";
+  border: 1px solid rgb(0, 133, 173);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 250ms ease;
+}
+
+.login-button:hover {
+  background: rgba(2, 172, 202, 0.829);
+}
+
+@media (max-width: 768px) {
+  .form {
+    width: 90%;
+    padding: 16px;
+  }
+
+  .login-methods div {
+    padding: 8px 24px; /* کمتر شدن padding در موبایل */
+    min-width: 200px;
+  }
+
+  .welcome {
+    font-size: 18px;
+  }
+
+  .inputs-container {
+    width: 100%;
+  }
+
+  .login-button {
+    height: 40px; /* کاهش ارتفاع دکمه در موبایل */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    background: #0077cc; /* تغییر رنگ پس‌زمینه در موبایل */
+  }
+
+  .form {
+    width: 95%;
+  }
+
+  .login-methods div {
+    width: 100%; /* دکمه‌ها به صورت تمام عرض در موبایل */
+    padding: 8px;
+  }
+
+  .login-button {
+    height: 38px; /* کمتر کردن ارتفاع دکمه */
+  }
+}
