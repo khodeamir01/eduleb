@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایجاد دوره جدید</title>
+    <link rel="stylesheet" href="/css/create-course.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="form-card">
+        <div class="form-header">
+            <h1>🚀 ایجاد دوره آموزشی جدید</h1>
+            <p>اطلاعات دوره خود را با دقت وارد کنید</p>
+        </div>
+
+        <% if (locals.messages && messages.error) { %>
+            <div class="alert error">
+                <%= messages.error %>
+            </div>
+        <% } %>
+
+        <% if (locals.messages && messages.success) { %>
+            <div class="alert success">
+                <%= messages.success %>
+            </div>
+        <% } %>
+
+        <form action="/course/create" method="POST" enctype="multipart/form-data" class="course-form">
+            
+            <!-- نام دوره -->
+            <div class="form-group">
+                <label for="name">نام دوره</label>
+                <input type="text" id="name" name="name" placeholder="مثلاً: آموزش جامع React" required>
+            </div>
+
+            <!-- توضیحات -->
+            <div class="form-group">
+                <label for="description">توضیحات دوره</label>
+                <textarea id="description" name="description" rows="4" placeholder="درباره این دوره چه می‌گویید؟" required></textarea>
+            </div>
+
+            <div class="row">
+                <!-- قیمت -->
+                <div class="form-group">
+                    <label for="price">قیمت (تومان)</label>
+                    <input type="number" id="price" name="price" placeholder="0" >
+                </div>
+
+                <!-- تخفیف -->
+                <div class="form-group">
+                    <label for="discount">تخفیف (تومان)</label>
+                    <input type="number" id="discount" name="discount" placeholder="0">
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- دسته‌بندی -->
+                <!-- دسته‌بندی (حالا به صورت لیست کشویی) -->
+                <div class="form-group">
+    <label for="categoryID">انتخاب دسته‌بندی</label>
+    <select id="categoryID" name="categoryID" required>
+        <option value="" disabled selected>یک دسته را انتخاب کنید...</option>
+        
+        <% if (locals.categories && categories.length > 0) { %>
+            <% categories.forEach(function(category) { %>
+                <option value="<%= category._id %>">
+                    <%= category.title %>
+                </option>
+            <% }); %>
+        <% } else { %>
+            <option value="" disabled>هیچ دسته‌بندی یافت نشد</option>
+        <% } %>
+        
+    </select>
+                </div>
+
+
+                <!-- وضعیت -->
+                <div class="form-group">
+                    <label for="status">وضعیت</label>
+                    <select id="status" name="status">
+                        <option value="recording">در حال انتشار</option>
+                        <option value="published">منتشر شده</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- لینک دوره -->
+            <div class="form-group">
+                <label for="href">href</label>
+                <input type="text" id="href" name="href" placeholder="react, nodejs, express, ...">
+            </div>
+
+            <!-- پشتیبانی -->
+            <div class="form-group">
+                <label for="support">نوع پشتیبانی</label>
+                <input type="text" id="support" name="support" placeholder="مثلاً: تلگرام، ایمیل یا غیره">
+            </div>
+
+            <!-- آپلود تصویر -->
+            <div class="form-group">
+                <label for="cover">تصویر کاور دوره</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="cover" name="cover" accept="image/*" required>
+                    <div class="file-custom">انتخاب فایل تصویر</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">ثبت و ایجاد دوره</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

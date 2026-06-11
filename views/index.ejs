@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<html dir="rtl" lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Eduleb - Education HTML Template">
+<meta name="keywords" content="agency, business, corporate, creative, html5, modern, multipurpose, One Page, parallax, startup">
+<title>Eduleb - آموزش برای همه</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/font-awesome.min.css">
+<link rel="stylesheet" href="/fonts/themify-icons.css">
+<link rel="stylesheet" href="/owlcarousel/css/owl.carousel.css">
+<link rel="stylesheet" href="/owlcarousel/css/owl.theme.css">
+<link rel="stylesheet" href="/css/jquery-simple-mobilemenu.css">
+<link rel="stylesheet" href="/css/magnific-popup.css">
+<link rel="stylesheet" href="/css/animate.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body data-spy="scroll" data-offset="80">
+    
+<div class="preloaders"><span class="loader"></span></div>
+<div id="navigation" class="navbar-light bg-faded site-navigation"><div class="container-fluid"><div class="row">
+<div class="col-20 align-self-center"><div class="site-logo"><a href="index.html"><img src="/img/logo.png" alt=""></a></div></div>
+<div class="col-60 d-flex"><nav id="main-menu"><ul>
+
+<li><a href="/">صفحه اصلی</a></li>
+
+
+<li><a href="about.ejs">درباره</a></li>
+<li class="menu-item-has-children">
+<a href="course.ejs">دوره</a><ul>
+<li><a href="/course/getAll"> همه دوره ها</a></li>
+<li><a href="course_details.ejs">جزئیات دوره</a></li>
+</ul>
+</li>
+<li class="menu-item-has-children">
+<a href="#">صفحات</a><ul>
+<li><a href="instructor.html">مربی</a></li>
+<li><a href="ins_details.html">مشخصات مربی</a></li>
+<li><a href="pricing.html">طرح قیمت گذاری</a></li>
+<li><a href="faq.html">صفحه فک</a></li>
+<li><a href="404.html">404</a></li>
+</ul>
+</li>
+<li class="menu-item-has-children">
+<a href="blog.html">وبلاگ</a><ul>
+<li><a href="blog.html">وبلاگ</a></li>
+<li><a href="blog_single.html">جزئیات وبلاگ</a></li>
+</ul>
+</li>
+<li><a href="contact.html">مخاطب</a></li>
+</ul></nav></div>
+
+<%if (user) { %>
+    <p>خوش آمدید <%= user.name %></p>
+    <% } else { %>
+        <div class="col-20 d-none d-xl-block text-end align-self-center">
+<a href="/auth/login" class="header-btn">ورود</a><a href="/auth/register" class="btn_one">ثبت نام</a>
+        </div>
+        <% } %>
+<ul class="mobile_menu">
+<li>
+<a href="index.html">صفحه اصلی</a><ul class="sub-menu">
+<li><a href="index.html">صفحه اصلی 01</a></li>
+<li><a href="index2.html">صفحه اصلی 02</a></li>
+</ul>
+</li>
+<li><a href="about.html">در باره</a></li>
+<li>
+<a href="#">دوره</a><ul class="sub-menu">
+<li><a href="course.html">دوره</a></li>
+<li><a href="course_details.html">جزئیات دوره</a></li>
+</ul>
+</li>
+<li>
+<a href="#">صفحات</a><ul class="sub-menu">
+<li><a href="instructor.html">مربی</a></li>
+<li><a href="ins_details.html">مشخصات مربی</a></li>
+<li><a href="pricing.html">طرح قیمت گذاری</a></li>
+<li><a href="faq.html">صفحه فک</a></li>
+<li><a href="404.html">404</a></li>
+</ul>
+</li>
+<li>
+<a href="blog.html">وبلاگ</a><ul class="sub-menu">
+<li><a href="blog.html">وبلاگ</a></li>
+<li><a href="blog_single.html">جزئیات وبلاگ</a></li>
+</ul>
+</li>
+<li><a href="contact.html">مخاطب</a></li>
+</ul>
+</div></div></div>
+<section class="home_bg hb_height" style="background-image: url(/img/bg/home-bg.jpg); background-size:cover; background-position: center center;"><div class="container"><div class="row">
+<div class="col-lg-6 col-sm-12 col-xs-12">
+<div class="hero-text ht_top">
+<h1>
+<span>مطالعه هوشمند</span>جایی که دانش با وب ملاقات می کند</h1>
+<p>لورم ایوم متن ساختگی با تولید آسان نامفهوم از صنعت چاپ با استفاده از طراحان گرافیک است. چاپگرها و</p>
+</div>
+<div class="home_sb"><form action="/search" method="GET" class="search-form" onsubmit="if(this.q.value==''){alert('لطفاً عبارت مورد نظر را وارد کنید'); return false}">
+    <input type="text" name="q" class="form-control" placeholder="جستجوی دوره یا دسته‌بندی..." style="height: 55px; border-radius: 10px 0 0 10px;">
+</form></div>
+</div>
+<div class="col-lg-6 col-sm-12 col-xs-12"><div class="hero-text-img">
+<img src="/img/home-img2.png" class="img-fluid" alt=""><div class="home_ps">
+<span class="ti-user"></span><h2>4500+</h2>
+<p>دانش آموز فعال</p>
+</div>
+</div></div>
+</div></div></section><section class="count_area counter_feature"><div class="container"><div class="row">
+<div class="col-lg-3 col-sm-6 col-xs-12"><div class="single-counter">
+<span class="ti-folder sc_one"></span><h2 class="counter-num">134</h2>
+<p>دوره آنلاین ما</p>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12"><div class="single-counter">
+<span class="ti-medall-alt sc_two"></span><h2 class="counter-num">299</h2>
+<p>برنامه ها</p>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12"><div class="single-counter">
+<span class="ti-id-badge sc_three"></span><h2 class="counter-num">684</h2>
+<p>دانشجویان ماهر</p>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12"><div class="single-counter">
+<span class="ti-user sc_four"></span><h2 class="counter-num">941</h2>
+<p>ثبت نام کرده ها</p>
+</div></div>
+</div></div></section><section class="top_cat__area section-padding" style="background-image: url(/img/bg/shape-1.png); background-size:cover; background-position: center center;"><div class="container">
+<div class="section-title text-center">
+<h2>سفر خود را با ما آغاز کنید</h2>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+</div>
+<div class="row">
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s" data-wow-offset="0"><div class="single_tp">
+<span class="sc_one">01</span><h3>کارشناس<br>معلم</h3>
+<p>لورم ایوم متن ساختگی با تولید راحت نامفهوم از صنعت چاپ با استفاده از</p>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0"><div class="single_tp">
+<span class="sc_two">02</span><h3>کیفیت<br>تحصیلات</h3>
+<p>لورم ایوم متن ساختگی با تولید راحت نامفهوم از صنعت چاپ با استفاده از</p>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.4s" data-wow-offset="0"><div class="single_tp">
+<span class="sc_three">03</span><h3>از راه دور<br>یادگیری</h3>
+<p>لورم ایوم متن ساختگی با تولید راحت نامفهوم از صنعت چاپ با استفاده از</p>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.4s" data-wow-offset="0"><div class="single_tp">
+<span class="sc_four">04</span><h3>طول عمر<br>حمایت کردن</h3>
+<p>لورم ایوم متن ساختگی با تولید راحت نامفهوم از صنعت چاپ با استفاده از</p>
+</div></div>
+</div>
+</div></section><section class="ab_area section-padding"><div class="container"><div class="row">
+<div class="col-lg-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s" data-wow-offset="0"><div class="ab_img"><img src="/img/about1.png" class="img-fluid" alt="image"></div></div>
+<div class="col-lg-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="ab_content">
+<h2>ما دوره آنلاین را در جهان جهانی ارائه می دهیم</h2>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+<ul>
+<li>
+<span class="ti-check"></span>دسترسی پیدا کنید<b>12000+</b>از دوره های برتر ما</li>
+<li>
+<span class="ti-check"></span>موضوع پرطرفدار برای یادگیری اکنون در دوره های آنلاین ما برای دانش آموزان</li>
+<li>
+<span class="ti-check"></span>مربی مناسب خود را پیدا کنید</li>
+</ul>
+<a class="btn_one" href="course.html">مشاهده همه دوره ها<i class="ti-arrow-top-left"></i></a>
+</div></div>
+</div></div></section><section class="top_cat__area section-padding" style="background-image: url(/img/bg/section-2.jpg); background-size:cover; background-position: center center;"><div class="container">
+<div class="section-title text-center">
+<h2>بر اساس دسته بندی های محبوب پیدا کنید</h2>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+</div>
+<div class="row"><div class="col-lg-12 col-sm-12 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="cat_list"><ul>
+<li><a href="#"><img src="/img/e1.png" alt="category-image">بازاریابی دیجیتال</a></li>
+<li><a href="#"><img src="/img/e2.png" alt="category-image">طراحی UI/UX</a></li>
+<li><a href="#"><img src="/img/e3.png" alt="category-image">طراحی بصری سه بعدی</a></li>
+<li><a href="#"><img src="/img/e4.png" alt="category-image">بازاریابی محتوا</a></li>
+<li><a href="#"><img src="/img/e5.png" alt="category-image">عکاسی</a></li>
+<li><a href="#"><img src="/img/e6.png" alt="category-image">عکس سبک زندگی</a></li>
+<li><a href="#"><img src="/img/e7.png" alt="category-image">طراحی هنری</a></li>
+<li><a href="#"><img src="/img/e8.png" alt="category-image">امور مالی و بانکی</a></li>
+<li><a href="#"><img src="/img/e9.png" alt="category-image">طراحی گرافیک</a></li>
+<li><a href="#"><img src="/img/e2.png" alt="category-image">طراحی داخلی</a></li>
+<li><a href="#"><img src="/img/e3.png" alt="category-image">طراحی بصری سه بعدی</a></li>
+<li><a href="#"><img src="/img/e7.png" alt="category-image">طراحی هنری</a></li>
+</ul></div></div></div><section class="home_course section-padding">
+    <div class="container">
+        <!-- بخش عنوان و دکمه مشاهده همه -->
+        <div class="row">
+            <div class="col-lg-8 col-sm-6 col-xs-12">
+                <div class="section-title">
+                    <h2>با بیش از <b><%= locals.totalCourses || '0' %>+</b><br>دوره و آموزش</h2>
+                </div>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-xs-12">
+                <div class="cour_btn">
+                    <a href="/courses" class="btn_one">مشاهده تمام دوره ها<i class="ti-arrow-top-left"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- بخش لیست دوره‌ها -->
+        <div class="row">
+            <% if (locals.courses && courses.length > 0) { %>
+
+                <% courses.forEach(function(course) { %>
+                    <div class="col-lg-4 col-sm-6 col-xs-12">
+                        <div class="single_course">
+                            <div class="single_c_img">
+                                <!-- نمایش تصویر کاور -->
+                                <img src="<%= course.cover ? 'img/cover/' + course.cover : 'img/course/1.png' %>" class="img-fluid" alt="<%= course.name %>">
+                                
+                                <!-- نمایش دسته‌بندی (با استفاده از populate) -->
+                                <span><%= course.categoryID ? course.categoryID.title : 'بدون دسته' %></span>
+                            </div>
+
+                            <!-- ستاره‌ها (می‌توانی از rating دیتابیس استفاده کنی یا ثابت بگذاری) -->
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+
+                            <h4><a href="/course/<%= course.href %>"><%= course.name %></a></h4>
+
+                            <!-- تعداد دوره و زمان (اگر در دیتابیس داری جایگزین کن، در غیر این صورت متن ثابت) -->
+                            <p><span class="ti-book"></span><%= course.lessonsCount || '12' %> جلسه</p>
+                            <p><span class="ti-alarm-clock"></span><%= course.duration || '2 ساعت و 32 دقیقه' %></p>
+
+                            <!-- نمایش قیمت -->
+                            <div class="price">
+                                <% if (course.price === 0) { %>
+                                    هزینه دوره - رایگان
+                                <% } else { %>
+                                    هزینه دوره - <%= course.price.toLocaleString() %> تومان
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <!-- اگر دوره‌ای وجود نداشت -->
+                <div class="col-12 text-center">
+                    <p>در حال حاضر دوره‌ای برای نمایش وجود ندارد.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+<div class="partner-logo section-padding"><div class="container"><div class="row part_bg">
+<div class="col-lg-4 col-sm-4 col-xs-12"><div class="partner_title"><h3><span>860+ </span>شرکت در سراسر جهان به ما اعتماد کردند</h3></div></div>
+<div class="col-lg-8 col-sm-8 col-xs-12 text-center"><div class="partner">
+<a href="#"><img src="/img/clients/1.png" alt="image"></a><a href="#"><img src="/img/clients/2.png" alt="image"></a><a href="#"><img src="/img/clients/3.png" alt="image"></a><a href="#"><img src="/img/clients/4.png" alt="image"></a><a href="#"><img src="/img/clients/5.png" alt="image"></a><a href="#"><img src="/img/clients/2.png" alt="image"></a><a href="#"><img src="/img/clients/1.png" alt="image"></a><a href="#"><img src="/img/clients/3.png" alt="image"></a><a href="#"><img src="/img/clients/4.png" alt="image"></a>
+</div></div>
+</div></div></div>
+<section class="vid_area section-padding"><div class="container"><div class="row"><div class="col-lg-12 vp_top wow fadeInUDown" data-wow-duration="1s" data-wow-delay="0.2s" data-wow-offset="0"><div class="video-area" style="background-image: url(/img/bg/video.jpg); background-size:cover; background-position: center center;"><a href="https://www.youtube.com/watch?v=RXv_uIN6e-Y" class="magnific_popup video-button"><i class="fa fa-play"></i></a></div></div></div></div></section><section class="team_area section-padding"><div class="container">
+<div class="section-title text-center">
+<h2>با مربیان ما آشنا شوید</h2>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+</div>
+<div class="row">
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="our-team">
+<div class="team-content">
+<a href="#"><img src="/img/team/team1.jpg" alt=""></a><ul class="social-links">
+<li><a href="#" class="ti-twitter"></a></li>
+<li><a href="#" class="ti-linkedin"></a></li>
+<li><a href="#" class="ti-facebook"></a></li>
+</ul>
+</div>
+<div class="team-prof">
+<h3>بیلکیس وابی</h3>
+<span>طراح وب</span>
+</div>
+<div class="sth_det2">
+<span class="ti-file"><u>04 دوره</u></span><span class="ti-user"><u>27 دانشجو</u></span>
+</div>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="our-team">
+<div class="team-content">
+<a href="#"><img src="/img/team/team2.jpg" alt=""></a><ul class="social-links">
+<li><a href="#" class="ti-twitter"></a></li>
+<li><a href="#" class="ti-linkedin"></a></li>
+<li><a href="#" class="ti-facebook"></a></li>
+</ul>
+</div>
+<div class="team-prof">
+<h3>خلق وسیم</h3>
+<span>شرکت انواتو</span>
+</div>
+<div class="sth_det2">
+<span class="ti-file"><u>06 دوره</u></span><span class="ti-user"><u>41 دانش آموز</u></span>
+</div>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="our-team">
+<div class="team-content">
+<a href="#"><img src="/img/team/team3.jpg" alt=""></a><ul class="social-links">
+<li><a href="#" class="ti-twitter"></a></li>
+<li><a href="#" class="ti-linkedin"></a></li>
+<li><a href="#" class="ti-facebook"></a></li>
+</ul>
+</div>
+<div class="team-prof">
+<h3>شیین تیم</h3>
+<span>Codecanyou</span>
+</div>
+<div class="sth_det2">
+<span class="ti-file"><u>13 دوره</u></span><span class="ti-user"><u>31 دانش آموز</u></span>
+</div>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="our-team">
+<div class="team-content">
+<a href="#"><img src="/img/team/team4.jpg" alt=""></a><ul class="social-links">
+<li><a href="#" class="ti-twitter"></a></li>
+<li><a href="#" class="ti-linkedin"></a></li>
+<li><a href="#" class="ti-facebook"></a></li>
+</ul>
+</div>
+<div class="team-prof">
+<h3>شريف شريفه</h3>
+<span>چوتور Tsc</span>
+</div>
+<div class="sth_det2">
+<span class="ti-file"><u>07 دوره</u></span><span class="ti-user"><u>24 دانشجو</u></span>
+</div>
+</div></div>
+</div>
+</div></section><section class="ab_area section-padding"><div class="container"><div class="row">
+<div class="col-lg-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="ab_content">
+<h2>چرا ما را برای دوره های آموزشی آنلاین خود انتخاب کنید؟</h2>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+<ul>
+<li>
+<span class="ti-check"></span>دسترسی پیدا کنید<b>12000+</b>از دوره های برتر ما</li>
+<li>
+<span class="ti-check"></span>موضوع پرطرفدار برای یادگیری اکنون در دوره های آنلاین ما برای دانش آموزان</li>
+<li>
+<span class="ti-check"></span>مربی مناسب خود را پیدا کنید</li>
+</ul>
+<a class="btn_one" href="course.html">مشاهده همه دوره ها<i class="ti-arrow-top-left"></i></a>
+</div></div>
+<div class="col-lg-6 col-sm-12 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.2s" data-wow-offset="0"><div class="ab_img">
+<img src="/img/about3.png" class="img-fluid" alt="image"><div class="home_ps2">
+<span class="ti-book"></span><h2>3300+</h2>
+<p>دوره آنلاین</p>
+</div>
+</div></div>
+</div></div></section><section class="testi_area section-padding"><div class="container">
+<div class="section-title"><h2>آنچه دانش آموزان می گویند برای انجام<br>دوره آنلاین آنها</h2></div>
+<div class="row">
+<div class="col-lg-6 col-sm-12 col-xs-12"><div class="ab_img"><img src="/img/review.png" class="img-fluid" alt="image"></div></div>
+<div class="col-lg-6 col-sm-12 col-xs-12"><div id="testimonial-slider" class="owl-carousel">
+<div class="testimonial">
+<img src="/img/quote.png" alt=""><div class="testimonial_content">
+<i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد</p>
+</div>
+<div class="testi_pic_title">
+<img src="/img/testimonial/1.png" alt=""><h4>عجمین عادل</h4>
+<p>شرکت گروتن</p>
+</div>
+</div>
+<div class="testimonial">
+<img src="/img/quote.png" alt=""><div class="testimonial_content">
+<i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد</p>
+</div>
+<div class="testi_pic_title">
+<img src="/img/testimonial/2.png" alt=""><h4>شاروخ خان</h4>
+<p>Red Chili Inc</p>
+</div>
+</div>
+<div class="testimonial">
+<img src="/img/quote.png" alt=""><div class="testimonial_content">
+<i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد</p>
+</div>
+<div class="testi_pic_title">
+<img src="/img/testimonial/3.png" alt=""><h4>آنوشکا شارما</h4>
+<p>شرکت نایکا</p>
+</div>
+</div>
+<div class="testimonial">
+<img src="/img/quote.png" alt=""><div class="testimonial_content">
+<i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد</p>
+</div>
+<div class="testi_pic_title">
+<img src="/img/testimonial/4.png" alt=""><h4>عجمین عادل</h4>
+<p>شرکت گروتن</p>
+</div>
+</div>
+<div class="testimonial">
+<img src="/img/quote.png" alt=""><div class="testimonial_content">
+<i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><i class="ti-star"></i><p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد. کتابهای زیادی در شصت و سه درصد گذشته، حال و آینده شناخت فراوان جامعه و متخصصان را می طلبد</p>
+</div>
+<div class="testi_pic_title">
+<img src="/img/testimonial/5.png" alt=""><h4>عجمین عادل</h4>
+<p>شرکت گروتن</p>
+</div>
+</div>
+</div></div>
+</div>
+</div></section><section id="blog" class="blog_area section-padding"><div class="container">
+<div class="section-title text-center">
+<h2>آخرین وبلاگ و اخبار</h2>
+<p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
+</div>
+<div class="row">
+<div class="col-lg-4 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="single_blog">
+<img src="/img/blog/1.jpg" class="img-fluid" alt="image"><div class="content_box">
+<span>10 مه 2024 |<a href="blog.html">تحصیلات</a></span><h2><a href="blog.html">نقاشی و مجسمه سازی حرفه ای موبایل</a></h2>
+<a class="btn_one" href="blog.html">ادامه مطلب<i class="ti-arrow-top-left"></i></a>
+</div>
+</div></div>
+<div class="col-lg-4 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="single_blog">
+<img src="/img/blog/2.jpg" class="img-fluid" alt="image"><div class="content_box">
+<span>16 مه 2024 |<a href="blog.html">تحصیلات</a></span><h2><a href="blog.html">قالب گیری سرامیک حرفه ای برای مبتدیان</a></h2>
+<a class="btn_one" href="blog.html">ادامه مطلب<i class="ti-arrow-top-left"></i></a>
+</div>
+</div></div>
+<div class="col-lg-4 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0"><div class="single_blog">
+<img src="/img/blog/3.jpg" class="img-fluid" alt="image"><div class="content_box">
+<span>18 مه 2024 |<a href="blog.html">برنامه نویسی</a></span><h2><a href="blog.html">آموزش درباره ایجاد رهبران برای فردا است</a></h2>
+<a class="btn_one" href="blog.html">ادامه مطلب<i class="ti-arrow-top-left"></i></a>
+</div>
+</div></div>
+</div>
+</div></section><div class="footer section-padding"><div class="container"><div class="row">
+<div class="col-lg-3 col-sm-6 col-xs-12"><div class="single_footer">
+<a href="index.html"><img src="/img/logo.png" alt=""></a><p>لورم ایوم متن ساختگی با تولید آسان نامفهوم از صنعت چاپ با استفاده از طراحان گرافیک است. چاپگرها و</p>
+<div class="social_profile"><ul>
+<li><a href="#" class="f_facebook"><i class="ti-facebook" title="Facebook"></i></a></li>
+<li><a href="#" class="f_twitter"><i class="ti-twitter" title="Twitter"></i></a></li>
+<li><a href="instagram.com/khodeamir_.1" class="f_instagram"><i class="ti-instagram" title="Instagram"></i></a></li>
+<li><a href="#" class="f_linkedin"><i class="ti-linkedin" title="LinkedIn"></i></a></li>
+</ul></div>
+</div></div>
+<div class="col-lg-2 col-sm-6 col-xs-12"><div class="single_footer">
+<h4>درباره ادولب</h4>
+<ul>
+<li><a href="#">درباره ما</a></li>
+<li><a href="#">ثبت نام مدرس</a></li>
+<li><a href="#">معلم شدن</a></li>
+<li><a href="#">همه مربیان</a></li>
+<li><a href="#">سوال پرسیده شده</a></li>
+<li><a href="#">با ما تماس بگیرید</a></li>
+</ul>
+</div></div>
+<div class="col-lg-2 col-sm-6 col-xs-12"><div class="single_footer">
+<h4>دوره محبوب</h4>
+<ul>
+<li><a href="#">توسعه</a></li>
+<li><a href="#">هنر و طراحی</a></li>
+<li><a href="#">طراحی بصری</a></li>
+<li><a href="#">طراحی گرافیک</a></li>
+<li><a href="#">بازرسی کد</a></li>
+<li><a href="#">بازاریابی دیجیتال</a></li>
+</ul>
+</div></div>
+<div class="col-lg-3 col-sm-6 col-xs-12"><div class="single_footer">
+<h4>اطلاعات تماس</h4>
+<div class="sf_contact">
+<span class="ti-map"></span><p>تهران , خیابان انقلاب , میدان آزادی</p>
+</div>
+<div class="sf_contact">
+<span class="ti-mobile"></span><p><a href="tel:+989928616443"> شماره تماس </a></p>
+</div>
+<div class="sf_contact">
+<span class="ti-email"></span><p><a href="amirsalarkhormaie@gmail.com">amirsalarkhormaie@gmail.com</a></p>
+</div>
+</div></div>
+<div class="col-lg-2 col-sm-6 col-xs-12"><div class="single_footer">
+<h4>دانلود برنامه</h4>
+<p>برنامه ما را از App Store و فروشگاه Google Play دانلود کنید.</p>
+<a href="index.html"><img src="/img/google-play.jpg" class="foot_img" alt=""></a><a href="index.html"><img src="/img/app-store.jpg" class="foot_img" alt=""></a>
+</div></div>
+</div></div></div>
+<div class="foot_copy"><div class="footer_copyright"><p>© 2026. All Rights Reserved, Development by AmirSalar Khormaie.</p></div></div>
+<script src="/js/jquery-1.12.4.min.js"></script><script src="/bootstrap/js/bootstrap.min.js"></script><script src="/js/modernizr-2.8.3.min.js"></script><script src="/js/jquery-simple-mobilemenu.js"></script><script src="/owlcarousel/js/owl.carousel.min.js"></script><script src="/js/jquery.magnific-popup.min.js"></script><script src="/js/jquery.inview.min.js"></script><script src="/js/scrolltopcontrol.js"></script><script src="/js/wow.min.js"></script><script src="/js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title><%= title %> - Eduleb</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/font-awesome.min.css">
+<link rel="stylesheet" href="/fonts/themify-icons.css">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+    .search-header {
+        background: linear-gradient(135deg, #525fe1, #f26b65);
+        padding: 60px 0;
+        color: white;
+        margin-bottom: 50px;
+    }
+    
+    .search-header h1 {
+        color: white;
+        font-size: 32px;
+        margin-bottom: 10px;
+    }
+    
+    .search-query {
+        background: rgba(255,255,255,0.2);
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-size: 18px;
+    }
+    
+    .search-stats {
+        margin-top: 20px;
+        font-size: 14px;
+    }
+    
+    .filter-sidebar {
+        background: #fff;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom: 30px;
+    }
+    
+    .filter-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .filter-group {
+        margin-bottom: 25px;
+    }
+    
+    .filter-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #1a1a2e;
+    }
+    
+    .filter-group select,
+    .filter-group input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 14px;
+    }
+    
+    .price-range {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .price-range input {
+        width: 50%;
+    }
+    
+    .course-card {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .course-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .course-info {
+        padding: 20px;
+    }
+    
+    .course-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    
+    .course-title a {
+        color: #1a1a2e;
+    }
+    
+    .course-title a:hover {
+        color: #525fe1;
+    }
+    
+    .course-meta {
+        font-size: 13px;
+        color: #6d7193;
+        margin-bottom: 10px;
+    }
+    
+    .course-price {
+        color: #f26b65;
+        font-weight: 800;
+        font-size: 18px;
+    }
+    
+    .category-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-3px);
+        background: #f8f9ff;
+    }
+    
+    .category-icon {
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+        background: linear-gradient(135deg, #525fe1, #f26b65);
+        border-radius: 50%;
+        margin: 0 auto 15px;
+    }
+    
+    .category-icon i {
+        font-size: 24px;
+        color: white;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 40px;
+    }
+    
+    .pagination a,
+    .pagination span {
+        padding: 10px 15px;
+        border-radius: 10px;
+        background: #fff;
+        color: #525fe1;
+        font-weight: 600;
+    }
+    
+    .pagination .active {
+        background: #525fe1;
+        color: white;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 60px;
+        background: #f8f9fa;
+        border-radius: 20px;
+    }
+    
+    .no-results i {
+        font-size: 64px;
+        color: #525fe1;
+        margin-bottom: 20px;
+    }
+</style>
+</head>
+<body>
+
+<!-- هدر مثل صفحه اصلی -->
+<!-- ... -->
+
+<section class="search-header">
+    <div class="container">
+        <div class="text-center">
+            <h1>نتایج جستجو</h1>
+            <div class="search-query">
+                <i class="fa fa-search"></i> <%= results.query %>
+            </div>
+            <div class="search-stats">
+                <strong><%= results.stats.totalFound %></strong> نتیجه پیدا شد
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="our_event section-padding" style="padding-top: 0;">
+    <div class="container">
+        <div class="row">
+            <!-- سایدبار فیلترها -->
+            <div class="col-lg-3 col-md-4">
+                <div class="filter-sidebar">
+                    <h4 class="filter-title">فیلترها</h4>
+                    
+                    <form id="filterForm" method="GET" action="/search">
+                        <input type="hidden" name="q" value="<%= results.query %>">
+                        
+                        <div class="filter-group">
+                            <label>نوع جستجو</label>
+                            <select name="type">
+                                <option value="all" <%= filters.type === 'all' ? 'selected' : '' %>>همه موارد</option>
+                                <option value="courses" <%= filters.type === 'courses' ? 'selected' : '' %>>دوره‌ها</option>
+                                <option value="categories" <%= filters.type === 'categories' ? 'selected' : '' %>>دسته‌بندی‌ها</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>مرتب‌سازی</label>
+                            <select name="sortBy">
+                                <option value="relevance" <%= filters.sortBy === 'relevance' ? 'selected' : '' %>>مرتبط‌ترین</option>
+                                <option value="newest" <%= filters.sortBy === 'newest' ? 'selected' : '' %>>جدیدترین</option>
+                                <option value="price_asc" <%= filters.sortBy === 'price_asc' ? 'selected' : '' %>>ارزان‌ترین</option>
+                                <option value="price_desc" <%= filters.sortBy === 'price_desc' ? 'selected' : '' %>>گران‌ترین</option>
+                                <option value="rating" <%= filters.sortBy === 'rating' ? 'selected' : '' %>>بالاترین امتیاز</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>محدوده قیمت (تومان)</label>
+                            <div class="price-range">
+                                <input type="number" name="minPrice" placeholder="از" value="<%= filters.minPrice %>">
+                                <input type="number" name="maxPrice" placeholder="تا" value="<%= filters.maxPrice %>">
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>سطح دوره</label>
+                            <select name="level">
+                                <option value="all" <%= filters.level === 'all' ? 'selected' : '' %>>همه سطوح</option>
+                                <option value="مقدماتی" <%= filters.level === 'مقدماتی' ? 'selected' : '' %>>مقدماتی</option>
+                                <option value="متوسط" <%= filters.level === 'متوسط' ? 'selected' : '' %>>متوسط</option>
+                                <option value="پیشرفته" <%= filters.level === 'پیشرفته' ? 'selected' : '' %>>پیشرفته</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn_one" style="width: 100%;">اعمال فیلتر</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- نتایج جستجو -->
+            <div class="col-lg-9 col-md-8">
+                <!-- نتایج دوره‌ها -->
+                <% if (results.courses && results.courses.length > 0) { %>
+                    <h4 class="mb-3">دوره‌های آموزشی (<%= results.totalCourses %>)</h4>
+                    <div class="row">
+                        <% results.courses.forEach(function(course) { %>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="course-card">
+                                    <img src="<%= course.cover ? '/img/cover/' + course.cover : '/img/course/1.png' %>" alt="<%= course.name %>">
+                                    <div class="course-info">
+                                        <div class="course-meta">
+                                            <span><i class="fa fa-folder"></i> <%= course.categoryID ? course.categoryID.title : 'بدون دسته' %></span>
+                                            <span><i class="fa fa-user"></i> <%= course.creator ? course.creator.name : 'نامشخص' %></span>
+                                        </div>
+                                        <h3 class="course-title"><a href="/course/<%= course.href %>"><%= course.name %></a></h3>
+                                        <div class="course-price">
+                                            <%= course.price.toLocaleString() %> تومان
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+                
+                <!-- نتایج دسته‌بندی‌ها -->
+                <% if (results.categories && results.categories.length > 0) { %>
+                    <h4 class="mb-3 mt-4">دسته‌بندی‌ها (<%= results.totalCategories %>)</h4>
+                    <div class="row">
+                        <% results.categories.forEach(function(category) { %>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="category-card" onclick="location.href='/categories/<%= category.href %>/courses'">
+                                    <div class="category-icon">
+                                        <i class="fa fa-folder-open"></i>
+                                    </div>
+                                    <h5><%= category.title %></h5>
+                                    <small><%= category.courseCount || 0 %> دوره</small>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+                
+                <!-- اگر نتیجه‌ای پیدا نشد -->
+                <% if ((!results.courses || results.courses.length === 0) && (!results.categories || results.categories.length === 0)) { %>
+                    <div class="no-results">
+                        <i class="fa fa-search"></i>
+                        <h3>نتیجه‌ای یافت نشد!</h3>
+                        <p>متاسفانه هیچ نتیجه‌ای برای "<strong><%= results.query %></strong>" پیدا نشد.</p>
+                        <a href="/" class="btn_one mt-3">بازگشت به صفحه اصلی</a>
+                    </div>
+                <% } %>
+                
+                <!-- صفحه‌بندی -->
+                <% if (results.totalPages > 1) { %>
+                    <div class="pagination">
+                        <% for(let i = 1; i <= results.totalPages; i++) { %>
+                            <a href="?q=<%= results.query %>&page=<%= i %>&type=<%= filters.type %>&sortBy=<%= filters.sortBy %>&minPrice=<%= filters.minPrice %>&maxPrice=<%= filters.maxPrice %>&level=<%= filters.level %>" 
+                               class="<%= i === results.currentPage ? 'active' : '' %>">
+                                <%= i %>
+                            </a>
+                        <% } %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- فوتر مثل صفحه اصلی -->
+
+<script>
+    // خودکار submit فرم وقتی فیلتر عوض میشه
+    document.querySelectorAll('#filterForm select, #filterForm input').forEach(element => {
+        element.addEventListener('change', () => {
+            document.getElementById('filterForm').submit();
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>دوره‌های <%= category.title %> - Eduleb</title>
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/font-awesome.min.css">
+<link rel="stylesheet" href="/fonts/themify-icons.css">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+    /* هدر دسته‌بندی */
+    .category-header {
+        background: linear-gradient(135deg, #525fe1, #f26b65);
+        border-radius: 24px;
+        padding: 40px;
+        margin-bottom: 40px;
+        text-align: center;
+        color: white;
+    }
+    
+    .category-header h1 {
+        color: white;
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+    
+    .category-header p {
+        color: rgba(255,255,255,0.9);
+        font-size: 16px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .category-stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 25px;
+    }
+    
+    .category-stats span {
+        background: rgba(255,255,255,0.2);
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 14px;
+    }
+    
+    /* استایل کارت دوره‌ها */
+    .single_course {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .single_course:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    
+    .single_c_img {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .single_c_img img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .single_course:hover .single_c_img img {
+        transform: scale(1.05);
+    }
+    
+    .single_course h4 {
+        padding: 20px 20px 10px 20px;
+        margin: 0;
+    }
+    
+    .single_course h4 a {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a2e;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .single_course h4 a:hover {
+        color: #525fe1;
+    }
+    
+    .course-meta-mini {
+        padding: 0 20px;
+        font-size: 13px;
+        color: #6d7193;
+        display: flex;
+        gap: 15px;
+    }
+    
+    .course-meta-mini i {
+        margin-left: 5px;
+        color: #525fe1;
+    }
+    
+    .single_course .price {
+        padding: 15px 20px;
+        border-top: 1px solid #eee;
+        color: #f26b65;
+        font-weight: 800;
+        font-size: 18px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: #f8f9fa;
+        border-radius: 24px;
+    }
+    
+    .empty-state i {
+        font-size: 64px;
+        color: #525fe1;
+        margin-bottom: 20px;
+    }
+    
+    .empty-state h3 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #1a1a2e;
+    }
+    
+    /* استایل سایدبار دسته‌بندی‌ها */
+    .category-list-sidebar li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .category-list-sidebar li a {
+        font-weight: 500;
+    }
+    
+    .category-list-sidebar li span {
+        background: #f0f2ff;
+        padding: 3px 10px;
+        border-radius: 30px;
+        font-size: 12px;
+        color: #525fe1;
+    }
+</style>
+</head>
+<body>
+
+<!-- هدر مثل صفحه اصلی -->
+<div id="navigation" class="navbar-light bg-faded site-navigation">
+    <!-- هدرت رو اینجا قرار بده مثل صفحه اصلی -->
+</div>
+
+<!-- بخش بالایی صفحه -->
+<section class="section-top">
+    <div class="container">
+        <div class="col-lg-10 offset-lg-1 text-center">
+            <div class="section-top-title">
+                <h1>دوره‌های <%= category.title %></h1>
+                <ul>
+                    <li><a href="/">صفحه اصلی</a></li>
+                    <li><a href="/categories">دسته‌بندی‌ها</a></li>
+                    <li>/ <%= category.title %></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="our_event section-padding">
+    <div class="container">
+        <div class="row">
+            <!-- ستون اصلی دوره‌ها -->
+            <div class="col-lg-8 col-sm-12">
+                <!-- هدر دسته‌بندی -->
+                <div class="category-header">
+                    <h1><%= category.title %></h1>
+                    <p><%= category.description || 'مجموعه‌ای از بهترین دوره‌های آموزشی در این دسته‌بندی' %></p>
+                    <div class="category-stats">
+                        <span><i class="fa fa-book"></i> <%= courseCount %> دوره آموزشی</span>
+                        <span><i class="fa fa-users"></i> +۱۰,۰۰۰ دانشجو</span>
+                    </div>
+                </div>
+                
+                <!-- لیست دوره‌ها -->
+                <% if (courses && courses.length > 0) { %>
+                    <div class="row">
+                        <% courses.forEach(function(course) { %>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="single_course">
+                                    <div class="single_c_img">
+                                        <img src="<%= course.cover ? '/img/cover/' + course.cover : '/img/course/1.png' %>" alt="<%= course.name %>">
+                                    </div>
+                                    <h4><a href="/course/<%= course.href %>"><%= course.name %></a></h4>
+                                    <div class="course-meta-mini">
+                                        <span><i class="fa fa-user"></i> <%= course.creator ? course.creator.name : 'نامشخص' %></span>
+                                        <span><i class="fa fa-star"></i> 4.5</span>
+                                        <span><i class="fa fa-clock-o"></i> 20 ساعت</span>
+                                    </div>
+                                    <div class="price">
+                                        <%= course.price.toLocaleString() %> تومان
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="fa fa-folder-open"></i>
+                        <h3>دوره‌ای در این دسته‌بندی یافت نشد</h3>
+                        <p>به زودی دوره‌های جدیدی به این دسته اضافه خواهد شد</p>
+                        <a href="/courses" class="btn_one mt-3">مشاهده همه دوره‌ها</a>
+                    </div>
+                <% } %>
+            </div>
+            
+            <!-- سایدبار سمت راست -->
+            <div class="col-lg-4 col-sm-12">
+                <!-- دسته‌بندی‌های دیگر -->
+                <div class="sidebar-post">
+                    <div class="sidebar_title"><h4>سایر دسته‌بندی‌ها</h4></div>
+                    <div class="single_category">
+                        <ul class="category-list-sidebar">
+                            <% if (otherCategories && otherCategories.length > 0) { %>
+                                <% otherCategories.forEach(function(cat) { %>
+                                    <li>
+                                        <a href="/categories/<%= cat.href %>">
+                                            <i class="fa fa-angle-left"></i> <%= cat.title %>
+                                        </a>
+                                        <span><%= cat.courseCount || 0 %> دوره</span>
+                                    </li>
+                                <% }); %>
+                            <% } %>
+                            <li>
+                                <a href="/categories">
+                                    <i class="fa fa-angle-left"></i> همه دسته‌بندی‌ها
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- دوره‌های محبوب -->
+                <div class="sidebar-post">
+                    <div class="sidebar_title"><h4>دوره‌های محبوب</h4></div>
+                    <div class="single_popular">
+                        <!-- میتونی محبوب‌ترین دوره‌ها رو اینجا اضافه کنی -->
+                    </div>
+                </div>
+                
+                <!-- شبکه‌های اجتماعی -->
+                <div class="sidebar-post">
+                    <div class="sidebar_title"><h4>ما را دنبال کنید</h4></div>
+                    <div class="single_social">
+                        <ul>
+                            <li><div class="social_item b_facebook"><a href="#"><i class="fa fa-facebook"></i><span class="item-list">150 هزار لایک</span></a></div></li>
+                            <li><div class="social_item b_twitter"><a href="#"><i class="fa fa-twitter"></i><span class="item-list">138 هزار دنبال کننده</span></a></div></li>
+                            <li><div class="social_item b_youtube"><a href="#"><i class="fa fa-youtube"></i><span class="item-list">90 هزار مشترک</span></a></div></li>
+                            <li><div class="social_item b_instagram"><a href="#"><i class="fa fa-instagram"></i><span class="item-list">120 هزار دنبال کننده</span></a></div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- فوتر مثل صفحه اصلی -->
+<div class="footer section-padding">
+    <!-- فوترت رو اینجا قرار بده مثل صفحه اصلی -->
+</div>
+
+<script src="/js/jquery-1.12.4.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
