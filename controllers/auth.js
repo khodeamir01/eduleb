@@ -1,10 +1,11 @@
 const  User  = require("./../models/User");
+const CourseUser = require('./../models/Course-User');
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const redis = require("./../redis");
 
 
-exports.showRegisterView =async (req, res) => {
+exports.showRegisterView = async (req, res) => {
     res.render("register.ejs", {messages: req.flash() })
 }
 
@@ -17,7 +18,7 @@ exports.register = async (req, res, next) => {
     if (isUserExist) {
      return res.render("login", {
        messages: {
-         error: "Email or Username Already Exist, Please Login",
+         error: "ایمیل یا نام کاربری تکراری است , لطقا لاگین کنید",
           redirect: "/auth/register",
         }
         });
@@ -35,6 +36,9 @@ exports.register = async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET_KEY,
       { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN_SECONDS + "s" }
     );
+
+      const hashedAcceessToken = await bcryptjs.hash(accessToken, 12);
+
 
     const refreshToken = jwt.sign(
       { id: user.id },
@@ -55,7 +59,7 @@ exports.register = async (req, res, next) => {
          maxAge: process.env.ACCESS_TOKEN_EXPIRES_IN_SECONDS * 1000,
       });
 
-      res.cookie("refreshToken", hashedRefreshToken, {
+      res.cookie("refreshToken", refreshToken, {
          httpOnly: true,
          maxAge: process.env.REFRESH_TOKEN_EXPIRES_IN_SECONDS * 1000
       });
@@ -79,6 +83,9 @@ exports.showLoginView = (req, res) => {
 
 exports.login = async (req, res, next) => {
   const user = req.user;
+
+  
+
   const accessToken = jwt.sign(
     { id: user.id, role: user.role },
     process.env.ACCESS_TOKEN_SECRET_KEY,
@@ -102,12 +109,12 @@ exports.login = async (req, res, next) => {
     
   );
 
-  res.cookie("accessToken", hashedAcceessToken, {
+  res.cookie("accessToken", accessToken, {
     httpOnly: true,
     maxAge: process.env.ACCESS_TOKEN_EXPIRES_IN_SECONDS * 1000,
   });
 
-  res.cookie("refreshToken",hashedRefreshToken, {
+  res.cookie("refreshToken",refreshToken, {
     httpOnly: true,
     maxAge: process.env.REFRESH_TOKEN_EXPIRES_IN_SECONDS * 1000,
   }); 
@@ -121,30 +128,93 @@ exports.login = async (req, res, next) => {
         
 };
 
-exports.getMe = async (req, res) => {
-  const user = req.user;
-  return res.json(user);
+
+exports.dashboard = async (req, res) => {
+    try {
+        const user = req.user;
+        
+        const enrollments = await CourseUser.find({ user: user._id })
+            .populate('course')
+            .sort({ createdAt: -1 });
+        
+        const totalCourses = enrollments.length;
+        const totalSpent = enrollments.reduce((sum, item) => sum + item.price, 0);
+        
+        return res.render('Admin/dashboard', {
+            user,
+            enrollments,
+            totalCourses,
+            totalSpent,
+            title: 'داشبورد کاربری'
+        });
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).render('dashboard.ejs', { message: 'خطا در دریافت اطلاعات', redirect: "/dashboard" });
+    }
 };
 
-exports.refreshToken = async (req, res) => {
-  const user = req.user;
+exports.showUpdateProfile = async (req, res) => {
+    try {
+        res.render('edit_profile', {
+            user: req.user,
+            title: 'ویرایش پروفایل'
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).render('dashboard.ejs', { message: 'خطا در دریافت اطلاعات',redirect: "/dashboard" });
+    }
+};
 
-  const accessToken = jwt.sign(
-    { id: user.id, role: user.role },
-    process.env.ACCESS_TOKEN_SECRET_KEY,
-    { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN_SECONDS + "s" }
-  );
+exports.updateProfile = async (req, res) => {
+    try {
+        const { name, email, phone, bio } = req.body;
+        const userId = req.user._id
+        
+        const updateData = {
+            name,
+            email,
+            phone,
+            bio,
+            updatedAt: Date.now()
+        };
+        
+        if (req.file) {
+            updateData.avatar = req.file.filename;
+        }
+        
+        await User.findByIdAndUpdate(userId, updateData);
+        
+        req.flash('success', 'پروفایل با موفقیت به‌روزرسانی شد');
+        res.redirect('/dashboard');
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).render('dashboard.ejs', { message: 'خطا در دریافت اطلاعات', redirect: "/dashboard" });
 
-    res.cookie("accesstoken", accessToken, {
-    httpOnly: true,
-    maxAge: process.env.ACCESS_TOKEN_EXPIRES_IN_SECONDS * 1000
-  });
+    }
+};
 
-
+// صفحه دوره‌های من
+exports.myCourses = async (req, res) => {
+    try {
+        const enrollments = await CourseUser.find({ user: req.user._id })
+            .populate('course')
+            .sort({ createdAt: -1 });
+        
+        res.render('my_courses', {
+            enrollments,
+            title: 'دوره‌های من'
+        });
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('error', { message: 'خطا در دریافت دوره‌ها' });
+    }
 };
 
 exports.logOut = async (req, res) => {
   const redisKey = `refreshToken:${req.user.id}`;
   await redis.del(redisKey);
-  return res.json({ message: "User Logged Out Successfully" });
+  return res.render("logout.ejs",{ message: "User Logged Out Successfully" });
 };

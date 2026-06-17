@@ -10,11 +10,9 @@ const captchaController = require("./controllers/captcha.js")
 const categoriesRouter = require("./routes/category.js")
 const searchRouter = require("./routes/search.js")
 const dashboardRouter = require("./routes/user.js")
+const commentsRouter = require("./routes/comment.js")
 const passport = require("passport");
 const { Strategy: JwtStrategy } = require("passport-jwt");
-const accessTokenStrategy = require("./strategies/jwtAccessTokenStrategy.js");
-const refreshTokenStrategy = require("./strategies/jwtRefreshTokenStrategy");
-const localStrategy = require("./strategies/localStrategy");
 
 
 
@@ -33,9 +31,7 @@ app.use(session({
 app.use(flash());
 app.use(cookieParser());
 app.use(passport.initialize());
-passport.use("accessToken", accessTokenStrategy);
-passport.use("refreshToken", refreshTokenStrategy);
-passport.use("local", localStrategy);
+
 app.use(express.static(path.resolve(__dirname, "public/assets")));
 app.use("/css",express.static(path.resolve(__dirname, "public/assets/css")));
 app.use("/js",express.static(path.resolve(__dirname, "public/assets/js")));
@@ -58,6 +54,7 @@ app.use("/course", courseRouter)
 app.use("/categories", categoriesRouter);
 app.use("/search", searchRouter);
 app.use("/dashboard", dashboardRouter);
+app.use("/comments", commentsRouter);
 app.get("/captcha", captchaController.get);
 
 

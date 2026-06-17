@@ -1,4 +1,3 @@
-const { errorResponse } = require("../helpers/responses")
 
 module.exports = (role) => {
     return async (req, res, next) => {

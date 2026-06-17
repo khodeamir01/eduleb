@@ -3126,6 +3126,119 @@ margin-top: 30px;
 .single-pricing-white h2{color:#fff;}
 .single-pricing-white h1{color:#fff;}
 .single-pricing-white h5{color:#fff;}
+
+.ratings {
+	display: flex; /* از فلکس‌باکس برای کنار هم قرار دادن آیتم‌ها استفاده می‌کنیم */
+	align-items: center; /* آیتم‌ها را در مرکز عمودی قرار می‌دهد */
+}
+
+.star-container {
+	margin: 0 2px; /* کمی فاصله بین ستاره‌ها */
+}
+
+/* اگر خواستید لینک<a> هم کمی فاصله داشته باشد */
+.star-container a {
+	display: inline-block; /* اطمینان از اینکه لینک هم رفتار درستی دارد */
+}
+
+.gold-star {
+	color: #FFD700;
+}
+
+.gray-star {
+	color: #cccccc;
+}
+
+.star-selectable {
+    cursor: pointer;
+    font-size: 24px;
+    margin: 0 2px;
+    color: #FFD700; /* همه ستاره‌ها طلایی */
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.star-selectable:hover {
+    transform: scale(1.2);
+}
+
+/* انیمیشن برای پر شدن ستاره */
+.star-selectable.fa-star {
+    animation: fillStar 0.3s ease;
+}
+
+@keyframes fillStar {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.rating-selection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rating-title {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.stars {
+    display: flex;
+    direction: rtl; /* راست به چپ */
+}
+
+
+
+    /* --- استایل‌های قبلی ستاره‌های نمایش --- */
+    .ratings .gold-star { color: #FFD700; }
+    .ratings .gray-star { color: #cccccc; }
+    .ratings li { /* ... استایل‌های مربوط به نمایش ستاره‌ها ... */ }
+    .ratings { display: flex; /* ... */ }
+    /* --------------------------------------- */
+
+    /* --- استایل‌های جدید برای فرم ثبت نظر --- */
+    .rating-selection .stars {
+        display: flex;
+        align-items: center;
+        cursor: pointer; /* نشان می‌دهد که قابل کلیک است */
+    }
+
+    .star-selectable {
+        color: #cccccc; /* رنگ پیش‌فرض ستاره‌های خاکستری */
+        font-size: 1.5em; /* کمی بزرگتر */
+        margin: 0 3px;
+        transition: color 0.2s ease-in-out; /* افکت نرم برای تغییر رنگ */
+    }
+
+    /* رنگ ستاره‌ها وقتی موس روی آن‌هاست */
+    .star-selectable:hover {
+        color: #FFD700; /* طلایی */
+    }
+
+    /* وقتی موس روی ستاره‌ای است و ستاره‌های قبلی (سمت چپ) هم انتخاب شده‌اند */
+    .star-selectable:hover ~ .star-selectable {
+        color: #cccccc; /* ستاره‌های بعد از ستاره فعلی، خاکستری بمانند */
+    }
+
+    /* استایل ستاره‌های انتخاب شده */
+    .star-selectable.selected {
+        color: #FFD700; /* طلایی */
+    }
+
+    /* زمانی که یک ستاره انتخاب شده، ستاره‌های قبل از آن هم طلایی بمانند */
+    .rating-selection .stars .selected ~ .star-selectable {
+        color: #cccccc;
+    }
+
+
 /*
  * ----------------------------------------------------------------------------------------
  * .END PRICING DESIGN

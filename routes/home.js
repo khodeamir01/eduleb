@@ -12,7 +12,6 @@ const router = express.Router();
 router.get("/", auth, async (req, res) => {
     try {
         const user = req.user
-        console.log(user);
         // 1. واکشی اطلاعات با populate برای دسته‌بندی
         const courses = await Course.find({}).populate("categoryID");
         const categories = await Category.find({})

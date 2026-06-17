@@ -1,8 +1,16 @@
 const { Strategy: JwtStrategy } = require("passport-jwt");
 const User  = require("./../models/User");
+const bcryptjs = require("bcryptjs");
 
-const cookieExtractor = (req) => {
-  return req?.cookies?.accessToken || null;
+
+const cookieExtractor = async (req) => {
+if (req?.cookies?.accessToken || null) {
+  const accessToken = req?.cookies?.accessToken;
+  console.log("accesstoken",accessToken);
+
+  const decode = await bcryptjs.decodeBase64(accessToken)
+  console.log("decode",decode);
+}
 };
 
 module.exports = new JwtStrategy({

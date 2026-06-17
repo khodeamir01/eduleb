@@ -1,44 +1,63 @@
-const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const redis = require("./../redis");
 
-module.exports = (req, res, next) => {
-  passport.authenticate("accessToken", { session: false }, (err, user) => {
-    console.log("useraccesstoken",user);
-    if (err) return next(err);
+const auth = async (req, res, next) => {
+    const { accessToken, refreshToken } = req.cookies;
 
-    if (user) {
-      req.user = user;
-      return next();
+    if (accessToken) {
+        try {
+            const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET_KEY);
+            req.user = await User.findById(decoded.id).select("-password");
+            return next(); 
+        } catch (err) {
+            console.log("Access Token invalid, checking Refresh Token...");
+        }
     }
 
-    // اگر accessToken نبود، میریم سراغ refreshToken
-    passport.authenticate("refreshToken", { session: false }, (err, refreshUser) => {
-      console.log("userrefreshtoken",user);
+    if (refreshToken) {
+        try {
+            const decodedRefresh = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_KEY);
+            
+            // چک کردن در Redis
+            const storedHash = await redis.get(`refreshToken:${decodedRefresh.id}`);
+            
+            if (!storedHash) {
+                return res.status(401).render("login.ejs", { messages: { error: "نشست شما منقضی شده است" } });
+            }
 
-      if (err) return next(err);
+            const isMatch = await bcrypt.compare(refreshToken, storedHash);
 
-      if (!refreshUser) {
-        return res.render("login.ejs", {
-          messages: {
-            error: "Unauthorized, Please Login !",
-            redirect: "/auth/login"
-          }
-        });
-      }
+            if (isMatch) {
+                // پیدا کردن کاربر
+                const user = await User.findById(decodedRefresh.id).select("-password");
+                if (!user) return res.status(401).render("login.ejs", { messages: { error: "کاربر یافت نشد" } });
 
-      // فقط وقتی refreshUser معتبر باشه این بخش اجرا میشه
-      const newAccessToken = jwt.sign(
-        { id: refreshUser.id, role: refreshUser.role },
-       process.env.ACCESS_TOKEN_SECRET_KEY,
-        { expiresIn: "15m" }
-      );
+                // تولید اکسس توکن جدید
+                const newAccessToken = jwt.sign(
+                    { id: user._id, role: user.role }, 
+                    process.env.ACCESS_TOKEN_SECRET_KEY, 
+                    { expiresIn: "15m" }
+                );
+                
+                // ست کردن کوکی جدید
+                res.cookie("accessToken", newAccessToken, { 
+                    httpOnly: true, 
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: "strict" 
+                });
 
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true
-      });
+                req.user = user;
+                return next();
+            }
+        } catch (err) {
+            console.error("Refresh Token Error:", err);
+            // رفرش توکن هم نامعتبر است
+        }
+    }
 
-      req.user = refreshUser;
-      next();
-    })(req, res, next);
-  })(req, res, next);
+    return res.status(401).render("login.ejs", { messages: { error: "لطفا ابتدا وارد شوید" } });
 };
+
+module.exports = auth;

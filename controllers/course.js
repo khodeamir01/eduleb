@@ -2,7 +2,7 @@ const Course = require("./../models/Course");
 const Session = require("./../models/Session");
 const CourseUser = require("./../models/Course-User");
 const Category = require("./../models/Category");
-const Comments = require("./../models/Comment");
+const Comment = require("./../models/Comment");
 const { isValidObjectId } = require("mongoose");
 const mongoose = require("mongoose");
 
@@ -164,11 +164,27 @@ exports.getOneCourse = async (req, res) => {
   
   const categories = await Category.find().sort({ title: 1 });
   
+    const comments = await Comment.find({ course: course._id })
+      .populate("user")
+      .populate({
+        path: "replies",
+        populate: { path: "user" },
+      })
+      .sort({ createdAt: -1 });
+      
+  
+      if (!comments) {
+        return res.render("course_details.ejs", { comments: [], error: "درس یافت نشد" });
+      }
+  
+  
+  
     return res.render("course_details.ejs", {
       course: course,
       categories: categories,
       user: user,
-      relatedCourses: relatedCourses
+      relatedCourses: relatedCourses,
+      comments: comments
   
     })
 
