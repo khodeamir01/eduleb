@@ -14,7 +14,7 @@ const upload = multerStorage("public/assets/img");
 const router  = express.Router();
 
 router.route("/register").get(Controller.showRegisterView).post(validate(registerSchema),Controller.register);
-router.route("/login").get(Controller.showLoginView).post(validate(loginSchema), captcha, auth , Controller.login);  
+router.route("/login").get(Controller.showLoginView).post(validate(loginSchema), captcha , Controller.login);  
 router.route("/me").get(auth, Controller.dashboard)
 router.get('/me/edit', auth, Controller.showUpdateProfile);
 router.post('/me/update', auth, upload.single('avatar'), Controller.updateProfile);

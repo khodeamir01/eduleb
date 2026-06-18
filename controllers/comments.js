@@ -2,34 +2,9 @@ const { isValidObjectId } = require("mongoose");
 const { createPaginationData } = require("./../helpers/pagination");
 const Course = require("./../models/Course");
 const Comment = require("./../models/Comment");
+const { createCommentValidator } = require("../validators/comment");
+const { errorResponse, successResponse } = require("../helpers/responses");
 
-
-
-exports.getComment = async (req, res, next) => {
-  const { href } = req.params;
-
-  // استفاده از findOne برای پیدا کردن یک مورد
-  const course = await Course.findOne({ href });
-  
-  if (!course) {
-    return res.render("course_details.ejs", { comments: [], error: "درس یافت نشد" });
-  }
-
-  const comments = await Comment.find({ course: course._id })
-    .populate("user")
-    .populate({
-      path: "replies",
-      populate: { path: "user" },
-    })
-    .sort({ createdAt: -1 }); // نمایش جدیدترین‌ها در ابتدا
-
-    if (!comments) {
-      return res.render("course_details.ejs", { comments: [], error: "درس یافت نشد" });
-    }
-
-
-  return res.render("course_details.ejs", { comments, course });
-};
 
 
 exports.getAllComments = async (req, res, next) => {
@@ -58,81 +33,104 @@ exports.getAllComments = async (req, res, next) => {
 };
 
 exports.createComment = async (req, res, next) => {
-  const user = req.user;
-  const { rating, content, courseId } = req.body;
+  try {
+    const user = req.user;
+    const { rating, content } = req.body;
+    const { href } = req.params;
 
-  await createCommentValidator.validate(req.body, { abortEarly: false });
+    if (!rating || !content) {
+      return errorResponse(res, 401, 'rating و content الزامی هستند')
+    }
 
-  const course = await Course.findById(courseId);
+    const course = await Course.findOne({ href });
+    if (!course) {
+      return errorResponse(res, 404,  "دوره مورد نظر یافت نشد" )
+    }
 
-  if (!Course) return errorResponse(res, 404, " Course not found !!");
+    const newComment = await Comment.create({
+      course: course._id,
+      user: user._id,
+      content: content,
+      rating: parseInt(rating),
+      replies: [],
+    });
 
-  const newComment = await Comment.create({
-    course: courseId,
-    user: user._id,
-    content,
-    rating,
-    replies: [],
-  });
+    // populate کردن user برای ارسال اطلاعات کامل به کلاینت
+    await newComment.populate('user', 'name avatar');
 
-  return successResponse(res, 201, {
-    comment: newComment,
-    message: "Comment created successfully",
-  });
-};
-
-exports.updateComment = async (req, res, next) => {
-  const user = req.user;
-  const { content, rating } = req.body;
-  const { commentId } = req.params;
-
-  if (!isValidObjectId(commentId))
-    return errorResponse(res, 400, "CommentID is not valid !!");
-
-  await updateCommentValidator.validate(req.body, { abortEarly: false });
-
-  const Comment = await Comment.findById(commentId);
-  if (!Comment) return errorResponse(res, 404, "Comment not found !");
-
-  if (Comment.user.toString() !== user._id.toString())
-    return errorResponse(res, 403, "You dont have access to this page");
-
-  const updatedComment = await Comment.findByIdAndUpdate(
-    commentId,
-    { content, rating },
-    { new: true }
-  );
-
-  return successResponse(res, 200, {
-    message: "Comment updataed successfully",
-    Comment: updatedComment,
-  });
+    return successResponse(res, 200, {
+      comment: newComment
+    })
+    
+  } catch (error) {
+    console.error('Error in createComment:', error);
+    return errorResponse(res, 500, error.err)
+  }
 };
 
 exports.removeComment = async (req, res, next) => {
+  const user = req.user
   const { commentId } = req.params;
 
-  if (!isValidObjectId(commentId))
-    return errorResponse(res, 400, "CommentID is not valid !!");
+  if (!isValidObjectId(commentId)) {
+    return errorResponse(res, 401, "آیدی کامنت معتبیر نیست" )
+  }
+  
 
-  const deleteComment = await Comment.findByIdAndDelete(commentId);
-  if (!deleteComment) return errorResponse(res, 404, "Comment not found ");
+  const comment = await Comment.findById(commentId);
+  if (!comment) { 
+    return errorResponse(res, 404,  "کامنت مورد نظر یافت نشد" )
+  }
+
+  if (comment.user.toString() !== user._id.toString()) {
+    return errorResponse(res, 403,  "شما دسترسی لازم برا دیدن  این صفحه را ندارید" )
+
+  }
+
+  const deleteOne = await Comment.deleteOne({_id: commentId})
 
   return successResponse(res, 200, {
-    message: "Comment deleted successfully",
-    deleteComment,
-  });
+    deletedComment: deleteOne
+  })
 };
 
 exports.addReply = async (req, res, next) => {
-  const { commentId } = req.params;
   const user = req.user;
-  const { content } = req.body;
+  const { rating, content } = req.body;
+  const { commentId } = req.params;
 
-  if (!isValidObjectId(commentId))
-    return errorResponse(res, 400, "CommentID is not valid !!");
+  if (!isValidObjectId(commentId)) {
+    return res.json({ 
+      success: false, 
+      error: "آیدی کامنت معتبیر نیست" 
+    });
+  }
 
-  await addReplyValidator.validate({ content }, { abortEarly: false });
+  if (!rating || !content) {
+    return res.json({ 
+      success: false, 
+      error: 'rating و content الزامی هستند' 
+    });
+  }
+
+  const ratingNumber = parseInt(rating);
+
+
+  const comment = await Comment.findById(commentId).populate("course")
+  if (!comment) {
+    return res.json({ 
+      success: false, 
+      error: "کامنت مورد نظر یافت نشد" 
+    });
+  }
+  
+  if (!comment.course) {
+    return res.json({ 
+      success: false, 
+      error: "دوره مورد نظر یافت نشد" 
+    });
+  }
+
 
   const reply = await Comment.findByIdAndUpdate(
     commentId,
@@ -141,71 +139,41 @@ exports.addReply = async (req, res, next) => {
         replies: {
           content,
           user: user._id,
+          rating: ratingNumber       
         },
       },
     },
-    { new: true }
+    { returnDocument: true }
   );
 
-  if (!reply) return errorResponse(res, 404, "reply not found");
+  if (!reply) return errorResponse(res, 404, "ریپلای یافت نشد");
 
   return successResponse(res, 200, { reply });
 };
 
-exports.updateReply = async (req, res, next) => {
-  const { commentId, replyId } = req.params;
-  const user = req.user;
-  const { content } = req.body;
 
-  if (!isValidObjectId(commentId))
-    return errorResponse(res, 400, "CommentID is not valid !!");
-
-  await updateReplyValidator.validate({ content }, { abortEarly: false });
-
-  const comment = await Comment.findById(commentId);
-  if (!comment) return errorResponse(res, 404, "Comment not found");
-
-  comment.replies.pull(replyId);
-
-  await comment.save();
-
-  const updatedreply = await Comment.findByIdAndUpdate(
-    commentId,
-    {
-      $push: {
-        replies: {
-          content,
-          user: user._id,
-        },
-      },
-    },
-    { new: true }
-  );
-
-  return successResponse(res, 200, { updatedreply });
-};
 
 exports.removeReply = async (req, res, next) => {
   const user = req.user;
   const { commentId, replyId } = req.params;
 
   if (!isValidObjectId(commentId) || !isValidObjectId(replyId))
-    return errorResponse(res, 400, "CommentID  pr ReplyID is not valid !!");
+    return errorResponse(res, 400, "CommentID  or ReplyID is not valid !!");
 
-  const Comment = await Comment.findById(commentId);
+  const comment = await Comment.findById(commentId);
 
-  if (!Comment) return errorResponse(res, 404, "Comment not found");
+  if (!comment) return errorResponse(res, 404, "Comment not found");
 
-  const reply = Comment.replies.id(replyId);
+  const reply = comment.replies.id(replyId);
 
   if (!reply) return errorResponse(res, 404, "Reply not found");
 
   if (reply.user.toString() !== user._id.toString())
     return errorResponse(res, 403, "You dont have access to this page");
 
-  Comment.replies.pull(replyId);
+  comment.replies.pull(replyId);
 
-  await Comment.save();
+  await comment.save()
 
   return successResponse(res, 200, { message: "Reply deleted successfully" });
 };

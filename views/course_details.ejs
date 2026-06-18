@@ -314,32 +314,189 @@
                       <ul class="review-contents">
                         <% if (comments.length > 0) { %> <%
                         comments.forEach(comment => { %>
-                        <li>
+                        <li
+                          class="comment-item"
+                          id="comment-<%= comment._id %>"
+                        >
                           <div class="thumb">
-                            <!-- فرض بر این است که عکس کاربر در پروفایلش موجود است -->
                             <img
-                              src="<%= comment.user.avatar || '/img/defualtPic.png' %>"
+                              src="<%= comment.user.avatar ? '/img/avatar/' + comment.user.avatar : '/img/defualtPic.png' %>"
                               alt="user"
                             />
                           </div>
                           <div class="cont">
                             <h6 class="subtitle"><%= comment.user.name %></h6>
                             <div class="ratings cl-theme">
-                              <% const rating = parseInt(comment.rating) || 0;
-                              %> <% for (let i = 1; i <= 5; i++) { %>
-                              <span class="star-container">
-                                <% // به جای li از span استفاده می‌کنیم %>
-
-                                <i
-                                  class="fa fa-star <%= i <= rating ? 'gold-star' : 'gray-star' %>"
-                                ></i>
-                              </span>
+                              <% const rating = parseInt(comment.rating) || 0; %>
+                              <% for (let i = 5; i >= 1; i--) { %>
+                                <span class="star-container">
+                                  <i class="fa fa-star <%= i >= rating ? 'gold-star' : 'gray-star' %>"></i>
+                                </span>
                               <% } %>
                             </div>
 
                             <p><%= comment.content %></p>
+
+                            <!-- فرم ارسال reply برای هر کامنت -->
+                            <div
+                              class="reply-form mt-3"
+                              style="display: none"
+                              id="replyForm-<%= comment._id %>"
+                            >
+                              <h6 class="review-title">پاسخ به این نظر</h6>
+                              <form
+                                action="/comments/<%= comment._id %>/reply"
+                                method="POST"
+                                class="row client-form align-items-center reply-form-element"
+                              >
+                                <!-- ستاره‌های قابل انتخاب برای reply -->
+                                <div class="col-md-4 col-12 mb-3">
+                                  <div class="rating-selection">
+                                    <span class="rating-title"
+                                      >امتیاز شما :</span
+                                    >
+                                    <div
+                                      class="stars reply-stars"
+                                      data-comment-id="<%= comment._id %>"
+                                    >
+                                      <% for (let i = 5; i >= 1; i--) { %>
+                                      <i
+                                        class="fa fa-star-o star-selectable reply-star"
+                                        data-rating="<%= i %>"
+                                      ></i>
+                                      <% } %>
+                                    </div>
+                                    <!-- Input hidden برای ذخیره امتیاز انتخاب شده -->
+                                    <input
+                                      type="hidden"
+                                      name="rating"
+                                      class="reply-rating"
+                                      value="0"
+                                      data-comment-id="<%= comment._id %>"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div class="col-md-12 col-12 mb-3">
+                                  <textarea
+                                    name="content"
+                                    rows="3"
+                                    class="form-control reply-textarea"
+                                    placeholder="پاسخ خود را بنویسید..."
+                                  ></textarea>
+                                </div>
+
+                                <div class="col-12">
+                                  <button
+                                    type="submit"
+                                    class="custom-button rounded"
+                                  >
+                                    ارسال پاسخ
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="custom-button rounded cancel-reply"
+                                    data-comment-id="<%= comment._id %>"
+                                  >
+                                    انصراف
+                                  </button>
+                                </div>
+                              </form>
+                            </div>
+
+                            <!-- دکمه نمایش فرم reply -->
+                            <button
+                              class="show-reply-form"
+                              data-comment-id="<%= comment._id %>"
+                            >
+                              پاسخ به این نظر
+                            </button>
+
+                            <!-- دکمه حذف -->
+                       <% if (user && user._id.toString() ===
+                            comment.user._id.toString()) { %>
+                            <button
+                              class="delete-comment-btn"
+                              data-comment-id="<%= comment._id %>"
+                              style="
+                              margin-top: 8px;
+                              padding: 4px 12px;
+                              background-color: #ff4757;
+                              color: white;
+                              border: none;
+                              border-radius: 4px;
+                              cursor: pointer;
+                              font-size: 12px;
+                              transition: all 0.3s ease;
+                            "
+                            onmouseover="this.style.backgroundColor='#ff3838'"
+                            onmouseout="this.style.backgroundColor='#ff4757'"
+                          >
+                            <i class="fa fa-trash"></i> حذف نظر
+                            </button>
+                            <% } %>
                           </div>
                         </li>
+
+                        <!-- نمایش Reply‌ها -->
+            <% if (comment.replies && comment.replies.length > 0) { %>
+              <div class="replies-section">
+                <% comment.replies.forEach((reply, replyIndex) => { %>
+                  <li class="reply-item" id="reply-<%= reply._id %>" style="margin-right: 50px; list-style: none;">
+                    <div class="thumb">
+                      <img 
+                        src="<%= reply.user && reply.user.avatar ? '/img/avatar/' + reply.user.avatar : '/img/defualtPic.png' %>" 
+                        alt="user" 
+                        style="width: 35px; height: 35px; border-radius: 50%;"
+                      />
+                    </div>
+                    <div class="cont">
+                      <h6 class="subtitle" style="font-size: 14px;">
+                        <%= reply.user ? reply.user.name : 'کاربر ناشناس' %>
+                        <small style="color: #999; font-size: 12px;">
+                          <%= reply.createdAt ? new Date(reply.createdAt).toLocaleDateString('fa-IR') : '' %>
+                        </small>
+                      </h6>
+                      
+                      <!-- ستاره‌های Reply -->
+                      <div class="ratings cl-theme">
+                        <% const replyRating = parseInt(reply.rating) || 0; %>
+                        <% for (let i = 5; i >= 1; i--) { %>
+                          <span class="star-container">
+                            <i class="fa fa-star <%= i >= replyRating ? 'gold-star' : 'gray-star' %>" style="font-size: 12px;"></i>
+                          </span>
+                        <% } %>
+                      </div>
+                      
+                      <p style="font-size: 13px;"><%= reply.content %></p>
+                                <!-- دکمه حذف Reply -->
+          <% if (user && reply.user && user._id.toString() === reply.user._id.toString()) { %>
+            <button 
+              class="delete-reply-btn" 
+              data-comment-id="<%= comment._id %>" 
+              data-reply-id="<%= reply._id %>"
+              style="
+                margin-top: 8px;
+                padding: 4px 12px;
+                background-color: #ff4757;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                transition: all 0.3s ease;
+              "
+              onmouseover="this.style.backgroundColor='#ff3838'"
+              onmouseout="this.style.backgroundColor='#ff4757'"
+            >
+              <i class="fa fa-trash"></i> حذف پاسخ
+            </button>
+          <% } %>
+                    </div>
+                  </li>
+                <% }); %>
+              </div>
+            <% } %>
                         <% }); %> <% } else { %>
                         <p>هنوز نظری برای این دوره ثبت نشده است.</p>
                         <% } %>
@@ -353,7 +510,7 @@
                       </h6>
                       <!-- اکشن فرم را به روت ثبت نظر هدایت کنید -->
                       <form
-                        action="/comments/create"
+                        action="/comments/<%= course.href %>/create"
                         method="POST"
                         class="row client-form align-items-center"
                         id="reviewForm"
@@ -389,6 +546,7 @@
                         <div class="col-md-12 col-12 mb-3">
                           <textarea
                             name="content"
+                            id="commentInput"
                             rows="5"
                             class="form-control"
                             placeholder="اینجا پیام را تایپ کنید"
@@ -630,15 +788,11 @@
               </div>
               <div class="sf_contact">
                 <span class="ti-mobile"></span>
-                <p>+88 457 845 695</p>
-              </div>
-              <div class="sf_contact">
-                <span class="ti-mobile"></span>
-                <p><a href="tel:+88457845695">تماس با واتساپ</a></p>
+                <p>+989928616443</p>
               </div>
               <div class="sf_contact">
                 <span class="ti-email"></span>
-                <p>example@yourmail.com</p>
+                <p>amirsalarkhormaie@gmail.com</p>
               </div>
             </div>
           </div>
@@ -646,7 +800,8 @@
             <div class="single_footer">
               <h4>دانلود برنامه</h4>
               <p>
-                برنامه ما را از فروشگاه برنامه و فروشگاه goole play دانلود کنید.
+                برنامه ما را از فروشگاه برنامه و فروشگاه google play دانلود
+                کنید.
               </p>
               <a href="index.html"
                 ><img src="/img/google-play.jpg" class="foot_img" alt="" /></a
@@ -661,6 +816,7 @@
     <div class="foot_copy">
       <div class="footer_copyright"><p>© 2024. All Rights Reserved.</p></div>
     </div>
+    <script src="/js/sweetAlert2.js"></script>
     <script src="/js/jquery-1.12.4.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/js/modernizr-2.8.3.min.js"></script>
@@ -672,95 +828,475 @@
     <script src="/js/wow.min.js"></script>
     <script src="/js/scripts.js"></script>
     <script>
+      // ============= حذف Reply با SweetAlert2 =============
+document.querySelectorAll(".delete-reply-btn").forEach((button) => {
+  button.addEventListener("click", async function () {
+    const commentId = this.getAttribute("data-comment-id");
+    const replyId = this.getAttribute("data-reply-id");
+    
+    const result = await Swal.fire({
+      title: "حذف پاسخ",
+      text: "آیا مطمئن هستید که می‌خواهید این پاسخ را حذف کنید؟",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "بله، حذف کن",
+      cancelButtonText: "انصراف",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      reverseButtons: true
+    });
+
+    if (result.isConfirmed) {
+      try {
+        Swal.fire({
+          title: "در حال حذف پاسخ...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        const response = await fetch(`/comments/${commentId}/reply/${replyId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "حذف شد!",
+            text: "پاسخ با موفقیت حذف شد",
+            timer: 2000,
+            showConfirmButton: false
+          });
+
+          // حذف عنصر Reply از DOM
+          const replyElement = document.getElementById(`reply-${replyId}`);
+          if (replyElement) {
+            replyElement.remove();
+            
+            // بررسی کن آیا replies دیگه‌ای باقی مونده
+            const repliesSection = replyElement.closest(".replies-section");
+            if (repliesSection && repliesSection.children.length === 0) {
+              repliesSection.remove();
+            }
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "خطا",
+            text: data.error || "خطا در حذف پاسخ",
+            confirmButtonText: "باشه",
+            confirmButtonColor: "#667eea"
+          });
+        }
+      } catch (error) {
+        console.error("خطا:", error);
+        Swal.fire({
+          icon: "error",
+          title: "خطا",
+          text: "خطا در ارتباط با سرور",
+          confirmButtonText: "باشه",
+          confirmButtonColor: "#667eea"
+        });
+      }
+    }
+  });
+});
       document.addEventListener("DOMContentLoaded", function () {
-        const stars = document.querySelectorAll(".star-selectable");
-        const ratingInput = document.getElementById("selectedRating");
-
-        // تابع برای پر و خالی کردن ستاره‌ها از راست به چپ
-        function highlightStars(rating) {
-          const starsArray = Array.from(stars);
-
-          starsArray.forEach((star) => {
-            const starRating = parseInt(star.getAttribute("data-rating"));
-            if (starRating >= rating) {
-              // ستاره پر
-              star.classList.remove("fa-star-o");
-              star.classList.add("fa-star");
-              star.style.color = "#FFD700"; // رنگ طلایی
-            } else {
-              // ستاره خالی
+        
+        // ============= مدیریت ستاره‌های کامنت اصلی =============
+        const mainStars = document.querySelectorAll("#reviewForm .star-selectable");
+        const mainRatingInput = document.getElementById("selectedRating");
+        setupStarSystem(mainStars, mainRatingInput);
+      
+        // ============= مدیریت ستاره‌های Reply =============
+        const replyStarGroups = document.querySelectorAll(".reply-stars");
+        replyStarGroups.forEach((starGroup) => {
+          const commentId = starGroup.getAttribute("data-comment-id");
+          const replyStars = starGroup.querySelectorAll(".reply-star");
+          const replyRatingInput = document.querySelector(
+            `.reply-rating[data-comment-id="${commentId}"]`
+          );
+          setupStarSystem(replyStars, replyRatingInput);
+        });
+      
+        // ============= تابع اصلی مدیریت ستاره‌ها =============
+        function setupStarSystem(stars, ratingInput) {
+          function highlightStars(rating) {
+            const starsArray = Array.from(stars);
+            starsArray.forEach((star) => {
+              const starRating = parseInt(star.getAttribute("data-rating"));
+              if (starRating >= rating) {
+                star.classList.remove("fa-star-o");
+                star.classList.add("fa-star");
+                star.style.color = "#FFD700";
+              } else {
+                star.classList.remove("fa-star");
+                star.classList.add("fa-star-o");
+                star.style.color = "#FFD700";
+              }
+            });
+          }
+      
+          function setRating(rating) {
+            ratingInput.value = rating;
+            highlightStars(rating);
+          }
+      
+          stars.forEach((star) => {
+            star.addEventListener("click", function () {
+              const rating = parseInt(this.getAttribute("data-rating"));
+              setRating(rating);
+            });
+      
+            star.addEventListener("mouseenter", function () {
+              const rating = parseInt(this.getAttribute("data-rating"));
+              highlightStars(rating);
+            });
+      
+            star.addEventListener("mouseleave", function () {
+              const currentRating = parseInt(ratingInput.value);
+              if (currentRating === 0) {
+                resetStars();
+              } else {
+                highlightStars(currentRating);
+              }
+            });
+          });
+      
+          function resetStars() {
+            stars.forEach((star) => {
               star.classList.remove("fa-star");
               star.classList.add("fa-star-o");
-              star.style.color = "#FFD700"; // رنگ طلایی برای ستاره‌های خالی هم
-            }
-          });
+              star.style.color = "#FFD700";
+            });
+          }
+      
+          resetStars();
         }
-
-        // تابع برای تنظیم امتیاز
-        function setRating(rating) {
-          ratingInput.value = rating;
-          highlightStars(rating);
-        }
-
-        // رویداد کلیک روی ستاره‌ها
-        stars.forEach((star) => {
-          star.addEventListener("click", function () {
-            const rating = parseInt(this.getAttribute("data-rating"));
-            setRating(rating);
-          });
-
-          // افکت hover
-          star.addEventListener("mouseenter", function () {
-            const rating = parseInt(this.getAttribute("data-rating"));
-            highlightStars(rating);
-          });
-
-          // برگشت به حالت انتخاب شده بعد از hover
-          star.addEventListener("mouseleave", function () {
-            const currentRating = parseInt(ratingInput.value);
-            if (currentRating === 0) {
-              // اگر هیچی انتخاب نشده، همه رو خالی کن
-              resetStars();
-            } else {
-              highlightStars(currentRating);
+      
+        // ============= مدیریت نمایش/مخفی کردن فرم Reply =============
+        const showReplyButtons = document.querySelectorAll(".show-reply-form");
+        const cancelReplyButtons = document.querySelectorAll(".cancel-reply");
+      
+        showReplyButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const commentId = this.getAttribute("data-comment-id");
+            const replyForm = document.getElementById(`replyForm-${commentId}`);
+      
+            document.querySelectorAll(".reply-form").forEach((form) => {
+              form.style.display = "none";
+            });
+      
+            if (replyForm) {
+              replyForm.style.display = "block";
             }
           });
         });
-
-        // تابع ریست کردن ستاره‌ها به حالت اولیه
-        function resetStars() {
+      
+        cancelReplyButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            const commentId = this.getAttribute("data-comment-id");
+            const replyForm = document.getElementById(`replyForm-${commentId}`);
+      
+            if (replyForm) {
+              const textarea = replyForm.querySelector(".reply-textarea");
+              const ratingInput = replyForm.querySelector(".reply-rating");
+              
+              // اگر متنی نوشته شده، تأیید بگیر
+              if (textarea && textarea.value.trim() !== "") {
+                Swal.fire({
+                  title: "انصراف از پاسخ؟",
+                  text: "متن نوشته شده پاک می‌شود",
+                  icon: "question",
+                  showCancelButton: true,
+                  confirmButtonText: "بله، منصرف شدم",
+                  cancelButtonText: "ادامه نوشتن",
+                  confirmButtonColor: "#d33",
+                  cancelButtonColor: "#3085d6",
+                  reverseButtons: true
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    hideReplyForm(replyForm, textarea, ratingInput);
+                  }
+                });
+              } else {
+                hideReplyForm(replyForm, textarea, ratingInput);
+              }
+            }
+          });
+        });
+      
+        function hideReplyForm(replyForm, textarea, ratingInput) {
+          replyForm.style.display = "none";
+          if (textarea) textarea.value = "";
+          if (ratingInput) ratingInput.value = "0";
+          
+          const stars = replyForm.querySelectorAll(".reply-star");
           stars.forEach((star) => {
             star.classList.remove("fa-star");
             star.classList.add("fa-star-o");
             star.style.color = "#FFD700";
           });
         }
-
-        // اعتبارسنجی فرم
-        document
-          .getElementById("reviewForm")
-          .addEventListener("submit", function (e) {
-            const rating = parseInt(ratingInput.value);
-            const content = document
-              .querySelector('textarea[name="content"]')
-              .value.trim();
-
+      
+        // ============= ارسال فرم Reply با SweetAlert2 =============
+        document.querySelectorAll(".reply-form-element").forEach((form) => {
+          form.addEventListener("submit", async function (e) {
+            e.preventDefault();
+      
+            const commentId = this.closest(".reply-form").id.replace("replyForm-", "");
+            const ratingInput = this.querySelector(".reply-rating");
+            const contentInput = this.querySelector(".reply-textarea");
+      
+            const rating = parseInt(ratingInput?.value || 0);
+            const content = contentInput?.value?.trim() || "";
+      
+            // اعتبارسنجی با SweetAlert2
             if (rating === 0) {
-              e.preventDefault();
-              alert("لطفاً امتیاز خود را انتخاب کنید");
-              return false;
+              Swal.fire({
+                icon: "warning",
+                title: "اخطار",
+                text: "لطفاً امتیاز خود را انتخاب کنید",
+                confirmButtonText: "باشه",
+              });
+              return;
             }
-
+      
             if (content === "") {
-              e.preventDefault();
-              alert("لطفاً نظر خود را بنویسید");
-              return false;
+              Swal.fire({
+                icon: "warning",
+                title: "اخطار",
+                text: "لطفاً پاسخ خود را بنویسید",
+                confirmButtonText: "باشه",
+              });
+              return;
+            }
+      
+            try {
+              // نمایش لودینگ
+              Swal.fire({
+                title: "در حال ثبت پاسخ...",
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+      
+              const response = await fetch(`/comments/${commentId}/reply`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  rating: rating,
+                  content: content,
+                }),
+              });
+      
+              const data = await response.json();
+      
+              if (data.success) {
+                Swal.fire({
+                  icon: "success",
+                  title: "پاسخ ثبت شد! 🎉",
+                  text: "پاسخ شما با موفقیت ارسال شد",
+                  confirmButtonText: "رفتن به صفحه اصلی",
+                  showCancelButton: true,
+                  cancelButtonText: "ماندن در صفحه",
+                  reverseButtons: true,
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.href = "/";
+                  } else {
+                    location.reload();
+                  }
+                });
+              } else {
+                Swal.fire({
+                  icon: "error",
+                  title: "خطا",
+                  text: data.error || "مشکلی در ثبت پاسخ پیش آمد",
+                  confirmButtonText: "باشه",
+                });
+              }
+            } catch (error) {
+              console.error("Error:", error);
+              Swal.fire({
+                icon: "error",
+                title: "خطا",
+                text: "خطا در ارتباط با سرور",
+                confirmButtonText: "باشه",
+              });
             }
           });
-
-        // حالت اولیه: همه ستاره‌ها طلایی و خالی
-        resetStars();
+        });
+      
+        // ============= ارسال فرم کامنت اصلی با SweetAlert2 =============
+        document.getElementById("reviewForm")?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+      
+          const rating = parseInt(mainRatingInput.value);
+          const content = document.getElementById("commentInput").value.trim();
+      
+          if (rating === 0) {
+            Swal.fire({
+              icon: "warning",
+              title: "اخطار",
+              text: "لطفاً امتیاز خود را انتخاب کنید",
+              confirmButtonText: "باشه",
+            });
+            return;
+          }
+      
+          if (content === "") {
+            Swal.fire({
+              icon: "warning",
+              title: "اخطار",
+              text: "لطفاً نظر خود را بنویسید",
+              confirmButtonText: "باشه",
+            });
+            return;
+          }
+      
+          try {
+            Swal.fire({
+              title: "در حال ثبت نظر...",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+      
+            const response = await fetch("/comments/<%= course.href %>/create", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                rating: rating,
+                content: content,
+              }),
+            });
+      
+            const data = await response.json();
+      
+            if (data.success) {
+              Swal.fire({
+                icon: "success",
+                title: "موفقیت",
+                text: "نظر شما با موفقیت ثبت شد",
+                confirmButtonText: "رفتن به صفحه اصلی",
+                showCancelButton: true,
+                cancelButtonText: "ماندن در صفحه",
+                reverseButtons: true,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = "/";
+                } else {
+                  location.reload();
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "خطا",
+                text: data.error || "مشکلی در ثبت نظر پیش آمد",
+                confirmButtonText: "باشه",
+              });
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            Swal.fire({
+              icon: "error",
+              title: "خطا",
+              text: "خطا در ارتباط با سرور",
+              confirmButtonText: "باشه",
+            });
+          }
+        });
+      
+        // ============= حذف کامنت با SweetAlert2 =============
+        document.querySelectorAll(".delete-comment-btn").forEach((button) => {
+          button.addEventListener("click", async function () {
+            const commentId = this.getAttribute("data-comment-id");
+            
+            const result = await Swal.fire({
+              title: "حذف کامنت",
+              text: "آیا مطمئن هستید که می‌خواهید این کامنت را حذف کنید؟",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonText: "بله، حذف کن",
+              cancelButtonText: "انصراف",
+              confirmButtonColor: "#d33",
+              cancelButtonColor: "#3085d6",
+              reverseButtons: true
+            });
+      
+            if (result.isConfirmed) {
+              try {
+                Swal.fire({
+                  title: "در حال حذف...",
+                  allowOutsideClick: false,
+                  didOpen: () => {
+                    Swal.showLoading();
+                  },
+                });
+      
+                const response = await fetch(`/comments/${commentId}`, {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                });
+      
+                const data = await response.json();
+      
+                if (data.success) {
+                  Swal.fire({
+                    icon: "success",
+                    title: "حذف شد!",
+                    text: "کامنت با موفقیت حذف شد",
+                    timer: 2000,
+                    showConfirmButton: false
+                  });
+      
+                  const commentElement = document.getElementById(`comment-${commentId}`);
+                  if (commentElement) {
+                    commentElement.remove();
+                  }
+      
+                  const reviewContents = document.querySelector(".review-contents");
+                  if (reviewContents && reviewContents.children.length === 0) {
+                    reviewContents.innerHTML = "<p>هنوز نظری برای این دوره ثبت نشده است.</p>";
+                  }
+                } else {
+                  Swal.fire({
+                    icon: "error",
+                    title: "خطا",
+                    text: data.error || "خطا در حذف کامنت",
+                    confirmButtonText: "باشه",
+                  });
+                }
+              } catch (error) {
+                console.error("خطا:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "خطا",
+                  text: "خطا در ارتباط با سرور",
+                  confirmButtonText: "باشه",
+                });
+              }
+            }
+          });
+        });
+      
       });
-    </script>
+      </script>
   </body>
 </html>

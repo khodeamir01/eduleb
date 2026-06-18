@@ -13,6 +13,7 @@ exports.showCreateCoursePanel = async (req, res, next) => {
 }
 exports.getAllCourses = async (req, res, next) => {
   const courses = await Course.find({});
+  const categories = await Category.find({})
   return res.render("course.ejs", {
     courses: courses,
     categories: categories,
@@ -163,21 +164,32 @@ exports.getOneCourse = async (req, res) => {
   
   
   const categories = await Category.find().sort({ title: 1 });
-  
-    const comments = await Comment.find({ course: course._id })
-      .populate("user")
+
+      const comments = await Comment.find({ course: course._id })
+      .populate("user") // populate کاربر کامنت اصلی
       .populate({
-        path: "replies",
-        populate: { path: "user" },
+        path: "replies.user", // populate کاربر داخل replies
+        model: "User",
+        select: "name avatar" // فقط فیلدهای مورد نیاز
       })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
       
-  
       if (!comments) {
         return res.render("course_details.ejs", { comments: [], error: "درس یافت نشد" });
       }
-  
-  
+
+      if (!course) {
+      return res.render("course_details.ejs", { 
+        course: null, 
+        comments: [], 
+        categories: [], 
+        user: null, 
+        relatedCourses: [], 
+        error: "دوره مورد نظر یافت نشد" 
+      });
+      }
+
   
     return res.render("course_details.ejs", {
       course: course,

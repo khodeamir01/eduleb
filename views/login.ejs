@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>وارد شوید - سبزبلاگ</title>
     <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css" />
   </head>
   <body>
     <section class="container">
       <form action="/auth/login" method="post" class="form">
-        <div class="left-side image-bg"></div>
         <div class="form-content">
+          
+          <!-- لوگو -->
+          <div class="form-logo">
+            <i class="fa fa-user-circle"></i>
+          </div>
+          
           <header>
             <p class="welcome">خوش آمدید !</p>
             <div class="go-register-text">
@@ -21,113 +27,164 @@
             <div class="login-methods">
               <div>
                 <a href="/auth/google">
-                  <img src="/img/google.png" alt="" class="login-logo" />
+                  <img src="/img/google.png" alt="google" class="login-logo" />
                   ورود با گوگل
                 </a>
               </div>
             </div>
-
           </header>
+          
           <main class="form-main">
             <p class="or">یا وارد شوید با :</p>
 
             <div class="inputs-container">
-              <input
-                class="form-input"
-                name="username"
-                type="text"
-                placeholder="نام کاربری ..."
-              />
-              <input
-                class="form-input"
-                name="password"
-                type="password"
-                placeholder="گذرواژه ..."
-              />
-              <input
-                class="form-input"
-                name="confirmPassword"
-                type="password"
-                placeholder="گذرواژه خود را دوباره وارد کنید ..."
-              />
-              <input type="text" name="captcha" placeholder="متن داخل عکس را وارد کنید ...">
-              <input type="hidden" class="uuid" name="uuid">
-              <div class="captcha"></div>
-            </div>
-            <div>
-              <div class="remember-me">
-                <input type="checkbox" name="remember-me" id="remember-me" />
-                <label for="remember-me">مرا به خاطر بسپار</label>
+              
+              <!-- نام کاربری -->
+              <div class="input-wrapper">
+                <i class="fa fa-user"></i>
+                <input
+                  class="form-input"
+                  name="username"
+                  type="text"
+                  placeholder="نام کاربری ..."
+                  autocomplete="username"
+                />
+              </div>
+              
+              <!-- رمز عبور -->
+              <div class="input-wrapper">
+                <i class="fa fa-lock"></i>
+                <input
+                  class="form-input make-ltr"
+                  name="password"
+                  type="password"
+                  placeholder="گذرواژه ..."
+                  autocomplete="current-password"
+                />
+              </div>
+              
+              <!-- تایید رمز عبور -->
+              <div class="input-wrapper">
+                <i class="fa fa-check-circle"></i>
+                <input
+                  class="form-input make-ltr"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="گذرواژه خود را دوباره وارد کنید ..."
+                />
+              </div>
+              
+              <!-- کپچا -->
+              <div class="input-wrapper">
+                <i class="fa fa-shield"></i>
+                <input 
+                  type="text" 
+                  name="captcha" 
+                  placeholder="متن داخل عکس را وارد کنید ..." 
+                />
+              </div>
+              
+              <input type="hidden" class="uuid" name="uuid" />
+              
+              <!-- تصویر کپچا -->
+              <div class="captcha-wrapper">
+                <div class="captcha"></div>
               </div>
             </div>
+            
+            <!-- مرا به خاطر بسپار -->
+            <div class="remember-me">
+              <input type="checkbox" name="remember-me" id="remember-me" />
+              <label for="remember-me">مرا به خاطر بسپار</label>
+            </div>
           </main>
+          
           <footer class="form-footer">
-            <button class="login-button">وارد شوید</button>
+            <button type="submit" class="login-button">
+              <i class="fa fa-sign-in"></i> وارد شوید
+            </button>
+            
+            <!-- فراموشی رمز -->
+            <div class="forgot-password">
+              <a href="/auth/forgot-password">رمز عبور خود را فراموش کرده‌اید؟</a>
+            </div>
           </footer>
         </div>
       </form>
     </section>
+    
+    <!-- اسکریپت کپچا -->
     <script>
       (async function () {
         const captcha = document.querySelector(".captcha");
         const uuid = document.querySelector(".uuid");
 
-        const res = await fetch("/captcha");
-        const response = await res.json();
+        try {
+          const res = await fetch("/captcha");
+          const response = await res.json();
 
-        console.log(response);
-        uuid.value = response.uuid;
-        captcha.innerHTML = response.captcha
-      })()
-
+          console.log(response);
+          uuid.value = response.uuid;
+          captcha.innerHTML = response.captcha;
+        } catch (error) {
+          console.error("Error loading captcha:", error);
+        }
+      })();
     </script>
 
-    <!-- <script src="/js/SweetAlert.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="/js/sweetAlert2.js"></script>
+
+    <% if (locals.messages && locals.messages.error) { %>
     <script>
-      if ("<%= locals.messages.error %>") {
-        swal.fire({
-          title: "<%= locals.messages.error %>",
-          icon: "error",
-          buttons: "Try Again",
-        });
-      } else if ("<%= locals.messages.success %>") {
-        swal.fire({
-          title: "<%= locals.messages.success %>",
-          icon: "success",
-          buttons: "Ok",
-        });
+      Swal.fire({
+        title: "خطا",
+        text: "<%= locals.messages.error %>",
+        icon: "error",
+        confirmButtonText: "تلاش مجدد",
+        confirmButtonColor: "#667eea",
+        customClass: {
+          title: 'swal-title',
+          content: 'swal-text'
+        }
+      });
+    </script>
+    <% } %>
+
+    <% if (locals.messages && locals.messages.success) { %>
+    <script>
+      Swal.fire({
+        title: "موفقیت",
+        text: "<%= locals.messages.success %>",
+        icon: "success",
+        confirmButtonText: "باشه",
+        confirmButtonColor: "#667eea",
+        customClass: {
+          title: 'swal-title',
+          content: 'swal-text'
+        }
+      }).then(() => {
+        window.location.href = "<%= locals.messages.redirect %>";
+      });
+    </script>
+    <% } %>
+
+    <!-- استایل اضافی برای SweetAlert2 راست‌چین -->
+    <style>
+      .swal-title {
+        font-family: "IranSans-Bold" !important;
+        text-align: right !important;
+        direction: rtl !important;
       }
-    </script> -->
-
-
-<script src="/js/sweetAlert2.js"></script>
-
-<% if (locals.messages && locals.messages.error) { %>
-<script>
-  Swal.fire({
-    title: "Error",
-    text: "<%= locals.messages.error %>",
-    icon: "error",
-    confirmButtonText: "Try Again",
-  });
-</script>
-<% } %>
-
-<% if (locals.messages && locals.messages.success) { %>
-<script>
-  Swal.fire({
-    title: "Success",
-    text: "<%= locals.messages.success %>",
-    icon: "success",
-    confirmButtonText: "Ok",
-  }).then(() => {
-    window.location.href = "<%= locals.messages.redirect %>";
-  });
-</script>
-<% } %>
-
-
-
+      .swal-text {
+        font-family: "IranSans-Regular" !important;
+        text-align: right !important;
+        direction: rtl !important;
+      }
+      .swal2-confirm {
+        font-family: "IranSans-Bold" !important;
+      }
+    </style>
 
   </body>
 </html>

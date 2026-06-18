@@ -82,12 +82,34 @@ exports.showLoginView = (req, res) => {
 }
 
 exports.login = async (req, res, next) => {
-  const user = req.user;
+  const { username, password } = req.body;
+    
+  // پیدا کردن کاربر با email
+  const user = await User.findOne({ username });
+  
+  if (!user) {
+    return res.render("login", {
+      messages: {
+        error: "ایمیل یا رمز عبور اشتباه است"
+      }
+    });
+  }
+  
+  // چک کردن رمز عبور
+  const isMatch = await bcryptjs.compare(password, user.password);
+  
+  if (!isMatch) {
+    return res.render("login", {
+      messages: {
+        error: "ایمیل یا رمز عبور اشتباه است"
+      }
+    });
+  }
 
   
 
   const accessToken = jwt.sign(
-    { id: user.id, role: user.role },
+    { id: user.id, role: user.roles },
     process.env.ACCESS_TOKEN_SECRET_KEY,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN_SECONDS + "s" }
   );
