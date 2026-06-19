@@ -3283,6 +3283,333 @@ margin-top: 30px;
     direction: rtl;
 }
 
+.session-status {
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-family: 'IranSans-Bold';
+  }
+  
+  .session-status.free {
+	background: #e8f5e9;
+	color: #2e7d32;
+  }
+  
+  .session-status.paid {
+	background: #fff3e0;
+	color: #e65100;
+  }
+.curriculum-list {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.curriculum-item:hover {
+  background-color: #f8f9fa;
+  transform: translateX(-5px);
+}
+
+/* استایل وضعیت جلسات */
+.session-status {
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: bold;
+	white-space: nowrap;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+  }
+  
+  .session-status.free {
+	background: #e8f5e9;
+	color: #2e7d32;
+  }
+  
+  .session-status.paid {
+	background: #fff3e0;
+	color: #e65100;
+  }
+  
+  /* استایل لیست جلسات */
+  .curriculum-list {
+	border: 1px solid #e0e0e0;
+	border-radius: 10px;
+	overflow: hidden;
+  }
+  
+  .curriculum-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 15px;
+	border-bottom: 1px solid #eee;
+	transition: all 0.3s ease;
+  }
+  
+  .curriculum-item:last-child {
+	border-bottom: none;
+  }
+  
+  .curriculum-item:hover {
+	background-color: #f8f9fa;
+  }
+  
+  .curriculum-item-left {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	flex: 1;
+	min-width: 0;
+  }
+  
+  .curriculum-item-right {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	flex-shrink: 0;
+  }
+  
+  .session-number {
+	width: 40px;
+	height: 40px;
+	min-width: 40px;
+	background: linear-gradient(135deg, #667eea, #764ba2);
+	color: white;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	font-size: 14px;
+  }
+  
+  .session-info {
+	min-width: 0;
+  }
+  
+  .session-title {
+	margin: 0;
+	font-size: 15px;
+	color: #333;
+  }
+  
+  .session-description {
+	margin: 5px 0 0;
+	font-size: 13px;
+	color: #666;
+  }
+  
+  .session-duration {
+	font-size: 13px;
+	color: #888;
+	white-space: nowrap;
+  }
+  
+  .watch-btn {
+	padding: 6px 14px;
+	background: #667eea;
+	color: white;
+	border-radius: 6px;
+	text-decoration: none;
+	font-size: 13px;
+	white-space: nowrap;
+	transition: all 0.3s ease;
+  }
+  
+  .watch-btn:hover {
+	background: #764ba2;
+	color: white;
+	text-decoration: none;
+  }
+  
+  /* اطلاعات کلی */
+  .curriculum-summary {
+	margin-top: 30px;
+	padding: 20px;
+	background: #f8f9fa;
+	border-radius: 10px;
+	display: flex;
+	justify-content: space-around;
+	flex-wrap: wrap;
+	gap: 20px;
+  }
+  
+  .summary-item {
+	text-align: center;
+  }
+  
+  .summary-number {
+	color: #667eea;
+	font-weight: bold;
+	margin: 0;
+	font-size: 24px;
+  }
+  
+  .summary-label {
+	margin: 5px 0 0;
+	color: #666;
+	font-size: 14px;
+  }
+  
+  /* خالی */
+  .empty-state {
+	text-align: center;
+	padding: 40px;
+	color: #999;
+  }
+  
+  .empty-state i {
+	font-size: 48px;
+	margin-bottom: 15px;
+	display: block;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+	.curriculum-item {
+	  flex-direction: column;
+	  align-items: flex-start;
+	  gap: 10px;
+	}
+	
+	.curriculum-item-right {
+	  width: 100%;
+	  justify-content: space-between;
+	}
+  }
+  /* مودال ویدیو */
+.video-modal-container {
+	position: relative;
+	width: 100%;
+	background: #000;
+	border-radius: 12px;
+	overflow: hidden;
+  }
+  
+  .video-wrapper {
+	position: relative;
+	padding-bottom: 56.25%; /* نسبت 16:9 */
+	height: 0;
+	overflow: hidden;
+  }
+  
+  .video-wrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border: none;
+  }
+  
+  .video-modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 20px;
+	background: #1a1a2e;
+	color: white;
+  }
+  
+  .video-modal-title {
+	font-size: 16px;
+	font-weight: bold;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+  }
+  
+  .video-modal-close {
+	background: rgba(255, 255, 255, 0.1);
+	border: none;
+	color: white;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+  }
+  
+  .video-modal-close:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transform: rotate(90deg);
+  }
+  
+  /* Custom SweetAlert2 برای ویدیو */
+  .video-swal-popup {
+	background: transparent !important;
+	padding: 0 !important;
+	max-width: 900px !important;
+  }
+  
+  .video-swal-content {
+	padding: 0 !important;
+  }
+/* دکمه افزودن به سبد خرید */
+.add-to-cart-btn {
+	transition: all 0.3s ease !important;
+	position: relative;
+	overflow: hidden;
+  }
+  
+  .add-to-cart-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  }
+  
+  .add-to-cart-btn:active {
+	transform: translateY(0);
+  }
+  
+  /* انیمیشن اضافه شدن به سبد */
+  .add-to-cart-btn.added {
+	background: #28a745 !important;
+  }
+  
+  .add-to-cart-btn i {
+	margin-left: 8px;
+  }
+  
+  /* دکمه مشاهده سبد خرید */
+  .view-cart-btn {
+	background: #28a745 !important;
+  }
+  
+  .view-cart-btn:hover {
+	background: #218838 !important;
+  }
+
+.watch-session-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.watch-session-btn i {
+  font-size: 11px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .curriculum-item {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 10px;
+  }
+  
+  .curriculum-item > div:last-child {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
 /* استایل‌های اصلی ستاره */
 .star-selectable,
 .reply-star {

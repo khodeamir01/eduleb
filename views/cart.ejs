@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>سبد خرید - <%= user.name %></title>
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/fonts/font-awesome.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  
+  <style>
+    /* استایل‌های سبد خرید */
+    .cart-container {
+      padding: 40px 0;
+      min-height: 80vh;
+      background: #f5f7fa;
+    }
+
+    .cart-header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 30px;
+      border-radius: 16px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .cart-header h1 {
+      font-size: 28px;
+      margin: 0 0 8px;
+    }
+
+    .cart-header p {
+      margin: 0;
+      opacity: 0.9;
+    }
+
+    .cart-content {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .cart-items {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .cart-item {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .cart-item:hover {
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .cart-item-image {
+      width: 160px;
+      height: 110px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .cart-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cart-item-details {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin: 0 0 8px;
+    }
+
+    .cart-item-title a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .cart-item-title a:hover {
+      color: #667eea;
+    }
+
+    .cart-item-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .cart-item-teacher {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .cart-item-teacher img {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .cart-item-price-section {
+      text-align: left;
+      flex-shrink: 0;
+    }
+
+    .cart-item-price {
+      font-size: 22px;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 8px;
+    }
+
+    .cart-item-price small {
+      font-size: 14px;
+      color: #999;
+      margin-right: 4px;
+    }
+
+    .remove-btn {
+      background: #fff;
+      border: 1px solid #ff4757;
+      color: #ff4757;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .remove-btn:hover {
+      background: #ff4757;
+      color: white;
+    }
+
+    /* سایدبار */
+    .cart-sidebar {
+      width: 350px;
+      flex-shrink: 0;
+    }
+
+    .cart-summary {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 20px;
+    }
+
+    .cart-summary h3 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #333;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 15px;
+      color: #666;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 2px solid #f0f0f0;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .total-price {
+      color: #667eea;
+      font-size: 24px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .checkout-btn:hover {
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .continue-shopping {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #667eea;
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+
+    .continue-shopping:hover {
+      color: #764ba2;
+    }
+
+    /* سبد خرید خالی */
+    .empty-cart {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .empty-cart i {
+      font-size: 80px;
+      color: #ddd;
+      margin-bottom: 20px;
+    }
+
+    .empty-cart h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .empty-cart p {
+      color: #999;
+      margin-bottom: 30px;
+    }
+
+    .browse-courses-btn {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .browse-courses-btn:hover {
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+      color: white;
+      text-decoration: none;
+    }
+
+    /* ریسپانسیو */
+    @media (max-width: 768px) {
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .cart-item-image {
+        width: 100%;
+        height: 180px;
+      }
+
+      .cart-item-price-section {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .cart-sidebar {
+        width: 100%;
+      }
+
+      .cart-content {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- هدر (مثل بقیه صفحات) -->
+  <div id="navigation" class="navbar-light bg-faded site-navigation">
+    <!-- کد هدر رو اینجا بذار -->
+  </div>
+
+  <section class="cart-container">
+    <div class="container">
+      
+      <!-- هدر سبد خرید -->
+      <div class="cart-header">
+        <h1><i class="fa fa-shopping-cart"></i> سبد خرید</h1>
+        <p><%= user.name %> عزیز، دوره‌های انتخاب شده شما</p>
+      </div>
+
+      <% if (isEmpty || !cart) { %>
+        
+        <!-- سبد خرید خالی -->
+        <div class="empty-cart">
+          <i class="fa fa-shopping-cart"></i>
+          <h2>سبد خرید شما خالی است</h2>
+          <p>شما هنوز هیچ دوره‌ای را به سبد خرید اضافه نکرده‌اید</p>
+          <a href="/courses" class="browse-courses-btn">
+            <i class="fa fa-search"></i> مشاهده دوره‌ها
+          </a>
+        </div>
+
+      <% } else { %>
+
+        <div class="cart-content">
+          
+          <!-- لیست آیتم‌ها -->
+          <div class="cart-items">
+            <% cart.items.forEach(item => { %>
+              <div class="cart-item" id="cart-item-<%= item.course._id %>">
+                
+                <!-- تصویر دوره -->
+                <div class="cart-item-image">
+                  <a href="/course/<%= item.course.href %>">
+                    <img src="/img/cover/<%= item.course.cover || 'default-course.jpg' %>" alt="<%= item.course.name %>">
+                  </a>
+                </div>
+
+                <!-- جزئیات دوره -->
+                <div class="cart-item-details">
+                  <h4 class="cart-item-title">
+                    <a href="/course/<%= item.course.href %>"><%= item.course.name %></a>
+                  </h4>
+                  
+                  <div class="cart-item-meta">
+                    <div class="cart-item-teacher">
+                      <img src="<%= item.teacher.avatar ? '/img/avatar/' + item.teacher.avatar : '/img/default-avatar.png' %>" alt="<%= item.teacher.name %>">
+                      <span><%= item.teacher.name %></span>
+                    </div>
+                    
+                    <% if (item.course.category) { %>
+                      <span class="badge bg-light text-dark">
+                        <i class="fa fa-folder"></i> <%= item.course.category %>
+                      </span>
+                    <% } %>
+                  </div>
+                </div>
+
+                <!-- قیمت و دکمه حذف -->
+                <div class="cart-item-price-section">
+                  <div class="cart-item-price">
+                    <%= item.priceAtTime.toLocaleString() %> <small>تومان</small>
+                  </div>
+                  
+                  <button class="remove-btn remove-from-cart" 
+                          data-course-id="<%= item.course._id %>">
+                    <i class="fa fa-trash"></i> حذف
+                  </button>
+                </div>
+
+              </div>
+            <% }); %>
+          </div>
+
+          <!-- خلاصه سفارش -->
+          <div class="cart-sidebar">
+            <div class="cart-summary">
+              <h3><i class="fa fa-receipt"></i> خلاصه سفارش</h3>
+              
+              <div class="summary-row">
+                <span>تعداد دوره‌ها:</span>
+                <span><%= cart.items.length %> دوره</span>
+              </div>
+              
+              <div class="summary-row">
+                <span>مجموع ساعات:</span>
+                <span><%= cart.items.length * 12 %> ساعت</span>
+              </div>
+              
+              <div class="summary-total">
+                <span>مبلغ قابل پرداخت:</span>
+                <span class="total-price"><%= totalPrice.toLocaleString() %> تومان</span>
+              </div>
+              
+              <button class="checkout-btn" onclick="checkout()">
+                <i class="fa fa-credit-card"></i> پرداخت و ثبت نام
+              </button>
+              
+              <a href="/courses" class="continue-shopping">
+                <i class="fa fa-arrow-right"></i> ادامه خرید
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+      <% } %>
+
+    </div>
+  </section>
+
+  <!-- فوتر -->
+  <div class="footer section-padding">
+    <!-- کد فوتر رو اینجا بذار -->
+  </div>
+
+  <!-- اسکریپت‌ها -->
+  <script src="/js/sweetAlert2.js"></script>
+  <script src="/js/jquery-1.12.4.min.js"></script>
+  <script src="/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/js/scripts.js"></script>
+
+  <script>
+    // ============= حذف از سبد خرید =============
+    document.querySelectorAll('.remove-from-cart').forEach(button => {
+      button.addEventListener('click', async function() {
+        const courseId = this.getAttribute('data-course-id');
+        
+        const result = await Swal.fire({
+          title: "حذف از سبد خرید",
+          text: "آیا مطمئن هستید می‌خواهید این دوره را از سبد خرید حذف کنید؟",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "بله، حذف کن",
+          cancelButtonText: "انصراف",
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          reverseButtons: true
+        });
+
+        if (result.isConfirmed) {
+          try {
+            Swal.fire({
+              title: "در حال حذف...",
+              allowOutsideClick: false,
+              didOpen: () => Swal.showLoading()
+            });
+
+            const response = await fetch('/cart/remove', {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ courseId: courseId })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              // حذف آیتم از DOM
+              const cartItem = document.getElementById(`cart-item-${courseId}`);
+              if (cartItem) {
+                cartItem.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => cartItem.remove(), 300);
+              }
+
+              Swal.fire({
+                icon: 'success',
+                title: 'حذف شد!',
+                text: 'دوره با موفقیت از سبد خرید حذف شد',
+                timer: 2000,
+                showConfirmButton: false
+              });
+
+              // رفرش صفحه بعد از 2 ثانیه برای آپدیت قیمت
+              setTimeout(() => location.reload(), 2000);
+
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'خطا',
+                text: data.error || 'مشکلی پیش آمده'
+              });
+            }
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'خطا',
+              text: 'خطا در ارتباط با سرور'
+            });
+          }
+        }
+      });
+    });
+
+    // ============= پرداخت =============
+    function checkout() {
+      Swal.fire({
+        title: 'هدایت به درگاه پرداخت',
+        text: 'آیا برای پرداخت آماده هستید؟',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'بله، پرداخت',
+        cancelButtonText: 'انصراف',
+        confirmButtonColor: '#667eea'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // ریدایرکت به صفحه پرداخت
+          window.location.href = '/checkout';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

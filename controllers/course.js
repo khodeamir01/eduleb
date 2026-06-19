@@ -59,12 +59,14 @@ exports.create = async (req, res) => {
 };
 
 exports.createSession = async (req, res) => {
+
   const { time, free, title } = req.body;
-  const { id } = req.params;
-  const isValidUserID = isValidObjectId(id);
-  if (!isValidUserID) {
+
+  const { courseId } = req.params;
+
+  if (!isValidObjectId(courseId)) {
     return res.status(409).json({
-      message: "This User ID is Not Valid !!",
+      message: "This Course ID is Not Valid !!",
     });
   }
   
@@ -73,7 +75,7 @@ exports.createSession = async (req, res) => {
     time,
     free,
     video: `/img/session/${req.file.filename}`,
-    course: id,
+    course: courseId,
   });
   return res.status(201).json(session);
 };
@@ -83,7 +85,7 @@ exports.getAllSession = async (req, res) => {
   return res.status(200).json(session);
 };
 
-exports.getSessionInfo = async (req, res) => {
+exports.getOneSession = async (req, res) => {
   const course = await Course.findOne({ href: req.params.href });
   const session = await Session.findOne({ _id: req.params.sessionsID });
   const sessions = await Session.find({ course: course._id });
@@ -153,7 +155,7 @@ exports.getOneCourse = async (req, res) => {
     .findOne({href})
     .populate(
       "creator",
-      "-password -phone -email -username -role -_id -__v -createdAt -updatedAt"
+      "-password -phone -email -username -role  -__v -createdAt -updatedAt"
     ).lean();
   
     const relatedCourses = await Course.find({
@@ -188,7 +190,24 @@ exports.getOneCourse = async (req, res) => {
         relatedCourses: [], 
         error: "دوره مورد نظر یافت نشد" 
       });
-      }
+      };
+
+      const sessions = await Session.find({ course: course._id })
+      .populate("course", "name")
+      .sort({ createdAt: 1 }) // یا sort بر اساس شماره جلسه
+      .lean();
+
+      if (!sessions) {
+        return res.render("course_details.ejs", { 
+          course: null, 
+          comments: [], 
+          categories: [],
+          sessions: [], 
+          user: null, 
+          relatedCourses: [], 
+          error: "جلسه مورد نظر یافت نشد" 
+        });
+        };
 
   
     return res.render("course_details.ejs", {
@@ -196,7 +215,8 @@ exports.getOneCourse = async (req, res) => {
       categories: categories,
       user: user,
       relatedCourses: relatedCourses,
-      comments: comments
+      comments: comments,
+      sessions: sessions
   
     })
 

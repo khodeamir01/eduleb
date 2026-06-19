@@ -24,15 +24,15 @@ router
   router.route("/:href").get(auth,Controller.getOneCourse);
 
 
-// router
-//   .route("/:id/sessions")
-//   .post(
-//     multer({ storage: multerStorage, limits: { filesize: 1000000000 } }).single(
-//       "video"
-//     ),
-//     auth,
-//     Controller.createSession
-//   );
+router
+  .route("/:courseId/sessions")
+  .post(
+    multer({ storage: multerStorage, limits: { filesize: 1000000000 } }).single(
+      "video"
+    ),
+    auth,
+    Controller.createSession
+  );
 
 // router
 //   .route("/sessions")

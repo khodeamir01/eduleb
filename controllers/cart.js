@@ -1,118 +1,156 @@
-const { isValidObjectId } = require("mongoose")
-const { addToCartValidator, removeFromCartValidator } = require("../../validators/cart")
-const Product = require("./../../models/Products")
-const Seller = require("./../../models/Seller")
-const Cart = require("./../../models/Cart")
+const { isValidObjectId } = require("mongoose");
+const Course = require("./../models/Course");
+const Cart = require("./../models/Cart");
 
-exports.getcart = async (req, res, next) => {
-
+exports.getCart = async (req, res, next) => {
     try {
         const user = req.user;
-    
-        const cart = await Cart.findOne({user: user._id}).populate("items.product").populate("items.seller");
-    
-        if (!cart) return errorResponse(res, 404, "Cart not found for this user !!");
-    
-        return successResponse(res, 200, {cart})
         
-        
-    } catch (err) {
-        next(err)
-    }
-}
-
-exports.addTocart = async (req, res, next) => {
-
-    try {
-        
-        await addToCartValidator.validate(req.body, {abortEarly: false});
-    
-        const {sellerId, productId, quantity} = req.body;
-        const user = req.user;
-    
-        if (!isValidObjectId(sellerId) || !isValidObjectId(productId)) {
-            return errorResponse(res, 400, "SellerId or ProductId is not valid !!")
-        }
-    
-        const product = await Product.findById(productId);
-        if (!product) {
-            return errorResponse(res, 404, "Product not found !!")
-        }
-    
-        const seller = await Seller.findById(sellerId);
-        if (!seller) {
-            return errorResponse(res, 404, "Seller not found !!")
-        }
-    
-        
-        const sellerDetails = product.sellers.find(s => s.seller.toString() === sellerId.toString());
-        if (!sellerDetails) {
-            return errorResponse(res, 400, "Seller dosent sell this product");
-        }
-    
-        const priceAtTime = sellerDetails.price
-    
-        const cart = await Cart.findOne({user: user._id});
-        if (!cart) {
-            const newCart = await Cart.create({
-                user: user._id,
-                items: [
-                    {
-                        product: productId,
-                        seller: sellerId,
-                        quantity,
-                        priceAtTime
-    
-                    }
-                ]
+        const cart = await Cart.findOne({ user: user._id })
+            .populate({
+                path: "items.course",
+                select: "name href cover price description"
             })
-            return successResponse(res, 201, {cart : newCart})
-        };
+            .populate({
+                path: "items.teacher",
+                select: "name avatar"
+            });
 
-        const existingItems = cart.items.find(item => item.product.toString() === productId && item.seller.toString() === sellerId);
+        // اگر سبد خرید خالی بود یا وجود نداشت
+        if (!cart || cart.items.length === 0) {
+            return res.render("cart", {
+                cart: null,
+                user: user,
+                isEmpty: true
+            });
+        }
 
-        if (existingItems) {
-            existingItems.quantity += quantity;
-            existingItems.priceAtTime = priceAtTime
+        // محاسبه قیمت کل
+        const totalPrice = cart.items.reduce((total, item) => {
+            return total + (item.priceAtTime * item.quantity);
+        }, 0);
+
+        return res.render("cart", {
+            cart: cart,
+            user: user,
+            totalPrice: totalPrice,
+            isEmpty: false
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.addToCart = async (req, res, next) => {
+    try {
+        const { courseId, teacherId, quantity } = req.body;
+        const user = req.user;
+
+
+        if (!isValidObjectId(courseId) || !isValidObjectId(teacherId)) {
+            return res.json({ 
+                success: false, 
+                error: "آیدی دوره یا مدرس معتبر نیست" 
+            });
+        }
+
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.json({ 
+                success: false, 
+                error: "دوره مورد نظر یافت نشد" 
+            });
+        }
+
+        // چک کردن اینکه کاربر قبلاً این دوره رو خریده یا نه
+        const existingCart = await Cart.findOne({ 
+            user: user._id,
+            "items.course": courseId 
+        });
+
+        if (existingCart) {
+            const existingItem = existingCart.items.find(
+                item => item.course.toString() === courseId
+            );
+            if (existingItem) {
+                return res.json({ 
+                    success: false, 
+                    error: "این دوره قبلاً به سبد خرید اضافه شده است" 
+                });
+            }
+        }
+
+        const priceAtTime = course.price;
+        const quantityToAdd = quantity || 1;
+
+        let cart = await Cart.findOne({ user: user._id });
+        
+        if (!cart) {
+            cart = await Cart.create({
+                user: user._id,
+                items: [{
+                    course: courseId,
+                    teacher: teacherId,
+                    quantity: quantityToAdd,
+                    priceAtTime: priceAtTime
+                }]
+            });
         } else {
             cart.items.push({
-                product: productId,
-                seller: sellerId,
-                quantity,
-                priceAtTime
-            })
-
+                course: courseId,
+                teacher: teacherId,
+                quantity: quantityToAdd,
+                priceAtTime: priceAtTime
+            });
+            await cart.save();
         }
-        await cart.save();
 
-        return successResponse(res, 200, {cart})
+        return res.json({ 
+            success: true, 
+            message: "دوره با موفقیت به سبد خرید اضافه شد",
+            cart: cart 
+        });
+
     } catch (err) {
-        next(err)
+        next(err);
     }
-    
-}
+};
 
-exports.removeFromcart = async (req, res, next) => {
+exports.removeFromCart = async (req, res, next) => {
     try {
-
-        await removeFromCartValidator.validate(req.body, {abortEarly: false})
         const user = req.user;
-        const {sellerId, productId} = req.body;
-    
-        const cart = await Cart.findOne({user: user._id});
-        if (!cart) return errorResponse(res, 404, "Cart not founf for this user !!");
-    
-        const itemIndex = cart.items.findIndex(item => item.product.toString() === productId && item.seller.toString() === sellerId); // findIndex find index of item that user want to delete 
-        if (itemIndex === -1) return errorResponse(res, 404, "Product not found in your cart !!"); // if findIndex not true, it return -1
-    
-        cart.items.splice(itemIndex, 1);  //Splice method remove answer of itemIndex , itemIndex always return a index number
-    
+        const { courseId } = req.body;
+
+        const cart = await Cart.findOne({ user: user._id });
+        if (!cart) {
+            return res.json({ 
+                success: false, 
+                error: "سبد خرید یافت نشد" 
+            });
+        }
+
+        const itemIndex = cart.items.findIndex(
+            item => item.course.toString() === courseId
+        );
+
+        if (itemIndex === -1) {
+            return res.json({ 
+                success: false, 
+                error: "این دوره در سبد خرید شما وجود ندارد" 
+            });
+        }
+
+        cart.items.splice(itemIndex, 1);
         await cart.save();
-    
-        return successResponse(res, 200, {message: "Item remove from your shopping cart successfully", cart})
-        
-        
+
+        return res.json({ 
+            success: true, 
+            message: "دوره با موفقیت از سبد خرید حذف شد",
+            cart: cart 
+        });
+
     } catch (err) {
-        next(err)
+        next(err);
     }
-}
+};

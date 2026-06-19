@@ -190,7 +190,7 @@
                 </li>
                 <li>
                   <a href="#curriculum" class="nav-link" data-bs-toggle="tab"
-                    >برنامه تحصیلی</a
+                    >جلسات </a
                   >
                 </li>
                 <li class="nav-item">
@@ -231,36 +231,81 @@
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" role="tabpanel" id="curriculum">
+                <!-- برنامه تحصیلی -->
+                <div class="tab-pane fade" id="curriculum">
                   <div class="overview">
-                    <p>
-                      لورم ایوم متن ساختگی با تولید آسان نامفهوم از صنعت چاپ با
-                      استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه
-                      و در ستون و سطرآنان است که لازم است و برای شرایط فعلی
-                      تکنولوژی مورد نیاز و کاربردهای متنوع با هدف بهبود ابزارهای
-                      کاربردی می باشد. کتابهای بسیاری در شصت و سه درصد گذشته،
-                      حال و آینده شناخت جامعه و متخصصان را می طلبد تا با نرم
-                      افزارها بیشتر را برای طراحان رایانه ای علی الخصوص طراحان
-                      خلاق و فرهنگ پیشرو در زبان بشناسد.
-                    </p>
-                    <div class="details-buttons-area">
-                      <a href="#0" class="custom-button theme-one"
-                        >اکنون ثبت نام کنید<i class="fa fa-angle-right"></i
-                      ></a>
-                      <a href="#0" class="custom-button bg-white"
-                        >عضویت دریافت کنید</a
-                      >
-                      <ul class="social-icons">
-                        <li>
-                          <a href="#0"><i class="fa fa-facebook"></i></a>
-                        </li>
-                        <li>
-                          <a href="#0"><i class="fa fa-twitter"></i></a>
-                        </li>
-                        <li>
-                          <a href="#0"><i class="fa fa-instagram"></i></a>
-                        </li>
-                      </ul>
+                    <% if (sessions && sessions.length > 0) { %>
+                      <div class="curriculum-list">
+                        <% sessions.forEach((session, index) => { %>
+                          <div class="curriculum-item">
+                            <div class="curriculum-item-left">
+                              <!-- شماره جلسه -->
+                              <div class="session-number">
+                                <%= session.order || index + 1 %>
+                              </div>
+                              
+                              <div class="session-info">
+                                <!-- عنوان جلسه -->
+                                <h6 class="session-title"><%= session.title %></h6>
+                                
+                                <!-- توضیحات -->
+                                <% if (session.description) { %>
+                                  <p class="session-description"><%= session.description %></p>
+                                <% } %>
+                              </div>
+                            </div>
+                            
+                            <div class="curriculum-item-right">
+                              <!-- مدت زمان -->
+                              <% if (session.duration) { %>
+                                <span class="session-duration">
+                                  <i class="fa fa-clock-o"></i> <%= session.duration %> دقیقه
+                                </span>
+                              <% } %>
+                              
+                              <!-- وضعیت رایگان/پولی -->
+                              <span class="session-status <%= session.isFree ? 'free' : 'paid' %>">
+                                <% if (session.isFree) { %>
+                                  <i class="fa fa-unlock"></i> رایگان
+                                <% } else { %>
+                                  <i class="fa fa-lock"></i> پولی
+                                <% } %>
+                              </span>
+                              
+                              <!-- دکمه نمایش ویدیو -->
+                              <a href="#" class="watch-btn watch-session-btn" 
+                                data-video="/img/session/<%= session.video %>" 
+                                data-title="<%= session.title %>">
+                                <i class="fa fa-play"></i> مشاهده
+                              </a>
+                            </div>
+                          </div>
+                        <% }); %>
+                      </div>
+                      
+                      <!-- اطلاعات کلی -->
+                      <div class="curriculum-summary">
+                        <div class="summary-item">
+                          <h4 class="summary-number"><%= sessions.length %></h4>
+                          <p class="summary-label">جلسه</p>
+                        </div>
+                        
+                        <div class="summary-item">
+                          <h4 class="summary-number"><%= sessions.filter(s => s.isFree).length %></h4>
+                          <p class="summary-label">جلسه رایگان</p>
+                        </div>
+                      </div>
+                      
+                    <% } else { %>
+                      <div class="empty-state">
+                        <i class="fa fa-video-camera"></i>
+                        <p>هنوز جلسه‌ای برای این دوره ثبت نشده است.</p>
+                      </div>
+                    <% } %>
+                    
+                    <div class="details-buttons-area" style="margin-top: 30px;">
+                      <a href="#0" class="custom-button theme-one">اکنون ثبت نام کنید<i class="fa fa-angle-left"></i></a>
+                      <a href="#0" class="custom-button bg-white">عضویت دریافت کنید</a>
                     </div>
                   </div>
                 </div>
@@ -600,9 +645,28 @@
             <div class="event_info_price">
               <h4>قیمت - <%= course.price %> تومان</h4>
             </div>
-            <div class="event_info_register">
-              <a class="btn_one" href="#">امروز ثبت نام کنید</a>
-            </div>
+<!-- دکمه‌های ثبت نام و افزودن به سبد خرید -->
+<div class="event_info_register">
+  <% if (user) { %>
+    <!-- اگر کاربر لاگین کرده -->
+    <button class="btn_one add-to-cart-btn" 
+    data-course-id="<%= course._id.toString() %>" 
+    data-teacher-id="<%= course.creator && course.creator._id ? course.creator._id.toString() : '' %>"
+    style="width: 100%; border: none; cursor: pointer;">
+<i class="fa fa-cart-plus"></i> افزودن به سبد خرید
+</button>
+    
+    <a class="btn_one" href="/cart" style="margin-top: 10px; display: block; text-align: center; background: #28a745;">
+      <i class="fa fa-shopping-cart"></i> مشاهده سبد خرید
+    </a>
+  <% } else { %>
+    <!-- اگر کاربر لاگین نکرده -->
+    <a class="btn_one" href="/auth/login">
+      <i class="fa fa-sign-in"></i> برای ثبت نام وارد شوید
+    </a>
+  <% } %>
+</div>
+
 
             <div class="related_course">
               <h3>دیگر دوره های مرتبط</h3>
@@ -828,6 +892,173 @@
     <script src="/js/wow.min.js"></script>
     <script src="/js/scripts.js"></script>
     <script>
+      // ============= افزودن به سبد خرید =============
+document.querySelector('.add-to-cart-btn')?.addEventListener('click', async function() {
+  const btn = this;
+  const courseId = btn.getAttribute('data-course-id');
+  const teacherId = btn.getAttribute('data-teacher-id');
+  
+  // غیرفعال کردن دکمه برای جلوگیری از کلیک مجدد
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> در حال افزودن...';
+  
+  try {
+    const response = await fetch('/cart/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        courseId: courseId,
+        teacherId: teacherId,
+        quantity: 1
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      // تغییر ظاهر دکمه
+      btn.innerHTML = '<i class="fa fa-check"></i> اضافه شد ✓';
+      btn.classList.add('added');
+      
+      // نمایش پیام موفقیت
+      Swal.fire({
+        icon: 'success',
+        title: 'به سبد خرید اضافه شد! 🎉',
+        text: 'دوره با موفقیت به سبد خرید شما اضافه شد',
+        showCancelButton: true,
+        confirmButtonText: 'مشاهده سبد خرید',
+        cancelButtonText: 'ادامه خرید',
+        confirmButtonColor: '#667eea',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/cart';
+        }
+      });
+      
+      // برگشت دکمه به حالت اول بعد از 3 ثانیه
+      setTimeout(() => {
+        btn.innerHTML = '<i class="fa fa-cart-plus"></i> افزودن به سبد خرید';
+        btn.classList.remove('added');
+        btn.disabled = false;
+      }, 3000);
+      
+    } else {
+      // خطا
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa fa-cart-plus"></i> افزودن به سبد خرید';
+      
+      Swal.fire({
+        icon: 'warning',
+        title: 'توجه',
+        text: data.error || 'این دوره قبلاً به سبد خرید اضافه شده است',
+        confirmButtonText: 'باشه',
+        confirmButtonColor: '#667eea',
+        footer: '<a href="/cart">مشاهده سبد خرید</a>'
+      });
+    }
+  } catch (error) {
+    // خطای شبکه
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa fa-cart-plus"></i> افزودن به سبد خرید';
+    
+    Swal.fire({
+      icon: 'error',
+      title: 'خطا',
+      text: 'خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید',
+      confirmButtonText: 'باشه'
+    });
+  }
+});
+      // نسخه ساده - فقط برای لینک‌های مستقیم
+// ============= مودال نمایش ویدیو =============
+document.querySelectorAll('.watch-session-btn').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const videoUrl = this.getAttribute('data-video');
+    const title = this.getAttribute('data-title');
+    const sessionNumber = this.closest('.curriculum-item')?.querySelector('.session-number')?.textContent?.trim();
+    
+    console.log('Video URL:', videoUrl); // دیباگ
+    
+    // چک کردن خالی نبودن لینک
+    if (!videoUrl || videoUrl === 'undefined' || videoUrl === 'null') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'ویدیو موجود نیست',
+        text: 'متاسفانه ویدیوی این جلسه هنوز بارگذاری نشده است',
+        confirmButtonText: 'باشه',
+        confirmButtonColor: '#667eea'
+      });
+      return;
+    }
+    
+    Swal.fire({
+      title: sessionNumber ? `جلسه ${sessionNumber} - ${title}` : title,
+      html: `
+        <div style="position: relative; background: #000; border-radius: 8px; overflow: hidden;">
+          <video 
+            controls 
+            autoplay 
+            playsinline
+            style="width: 100%; max-height: 70vh; display: block;"
+          >
+            <source src="${videoUrl}" type="video/mp4">
+            مرورگر شما از پخش این ویدیو پشتیبانی نمی‌کند.
+          </video>
+        </div>
+      `,
+      width: '900px',
+      showCloseButton: true,
+      showConfirmButton: false,
+      background: '#000',
+      customClass: {
+        popup: 'video-swal-popup'
+      },
+      didOpen: () => {
+        // اضافه کردن دکمه بستن سفارشی
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = '✕';
+        closeBtn.style.cssText = `
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          z-index: 9999;
+          background: rgba(255,255,255,0.2);
+          border: none;
+          color: white;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          cursor: pointer;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+        `;
+        closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255,0,0,0.7)';
+        closeBtn.onmouseout = () => closeBtn.style.background = 'rgba(255,255,255,0.2)';
+        closeBtn.onclick = () => Swal.close();
+        
+        const popup = Swal.getPopup();
+        if (popup) popup.appendChild(closeBtn);
+      },
+      willClose: () => {
+        // قطع ویدیو موقع بستن
+        const video = document.querySelector('.swal2-html-container video');
+        if (video) {
+          video.pause();
+          video.currentTime = 0;
+        }
+      }
+    });
+  });
+});
       // ============= حذف Reply با SweetAlert2 =============
 document.querySelectorAll(".delete-reply-btn").forEach((button) => {
   button.addEventListener("click", async function () {

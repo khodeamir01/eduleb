@@ -11,6 +11,7 @@ const categoriesRouter = require("./routes/category.js")
 const searchRouter = require("./routes/search.js")
 const dashboardRouter = require("./routes/user.js")
 const commentsRouter = require("./routes/comment.js")
+const cartRouter = require("./routes/cart.js")
 const passport = require("passport");
 const { Strategy: JwtStrategy } = require("passport-jwt");
 
@@ -21,6 +22,7 @@ const { setHeaders } = require("./middlewares/headers.js");
 const { errorHandler } = require("./middlewares/errorHandler.js");
 
 const app = express();
+// Nodemailer  TODO ------------------------------------------------------------------------->
 
 app.use(session({
     secret: "Secret Key",
@@ -55,6 +57,7 @@ app.use("/categories", categoriesRouter);
 app.use("/search", searchRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/comments", commentsRouter);
+app.use("/cart", cartRouter);
 app.get("/captcha", captchaController.get);
 
 

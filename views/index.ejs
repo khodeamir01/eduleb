@@ -212,9 +212,16 @@
                             <div class="single_c_img">
                                 <!-- نمایش تصویر کاور -->
                                 <img src="<%= course.cover ? 'img/cover/' + course.cover : 'img/course/1.png' %>" class="img-fluid" alt="<%= course.name %>">
-                                
                                 <!-- نمایش دسته‌بندی (با استفاده از populate) -->
-                                <span><%= course.categoryID ? course.categoryID.title : 'بدون دسته' %></span>
+                                <span>
+                                    <% if (course.categoryID) { %>
+                                      <a href="/categories/<%= course.categoryID.href %>">
+                                        <%= course.categoryID.title %>
+                                      </a>
+                                    <% } else { %>
+                                      بدون دسته
+                                    <% } %>
+                                  </span>
                             </div>
 
                             <!-- ستاره‌ها (می‌توانی از rating دیتابیس استفاده کنی یا ثابت بگذاری) -->
