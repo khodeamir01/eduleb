@@ -1,122 +1,173 @@
-const { createPayment, verifyPayment } = require("../../services/zarinpal")
-const { createCheckoutValidator } = require("../../validators/checkout")
-const Cart = require("../../models/Cart")
-const Checkout = require("../../models/Checkout")
-const Order = require("../../models/Order")
-const Product = require("../../models/Products")
+const { createPayment, verifyPayment } = require("./../services/zarinpal");
+const {successResponse, errorResponse} = require("./../helpers/responses")
+const Cart = require("./../models/Cart");
+const Checkout = require("./../models/Checkout");
+const Order = require("./../models/Order");
+const Course = require("./../models/Course"); // مدل Course خودت
+const CourseUser = require("./../models/Course-User"); 
 
 exports.createCheckout = async (req, res, next) => {
-
     try {
-        
         const user = req.user;
-        const {shippingAddress} = req.body;
-    
-        await createCheckoutValidator.validate(req.body, {abortEarly: false});
-    
-        const cart = await Cart.findOne({user: user._id}).populate("items.seller").populate("items.product");
-        if (!cart?.items?.length) return errorResponse(res, 400, "Cart is empty or not found !!");
-    
-        const checkoutItems = [];
-    
-        for (const item of cart.items) {
-            const {product, seller} = item;
-    
-            const sellerDetails = product.sellers.find(sellerInfo => sellerInfo.seller.toString() === seller._id.toString())
-            if (!sellerDetails) return errorResponse(res, 400, "seller doesnt sell this product !!");
-    
-            checkoutItems.push({
-                product: product._id,
-                seller: seller._id,
-                quantity: item.quantity,
-                priceAtTimeOfPurchase: item.priceAtTime
-            });
-    
+
+
+        // populate با فیلدهای مدل خودت
+        const cart = await Cart.findOne({ user: user._id })
+            .populate("items.course")   // به جای items.Course
+            .populate("items.teacher");  // به جای items.seller
+
+        if (!cart?.items?.length) {
+            return errorResponse(res, 400, "سبد خرید خالی است!");
         }
-        
+
+        const checkoutItems = [];
+
+        for (const item of cart.items) {
+            const { course, teacher, quantity, priceAtTime } = item;
+
+            // چک کردن اینکه مدرس این دوره رو تدریس میکنه
+            if (course.creator.toString() !== teacher._id.toString()) {
+                return errorResponse(res, 400, "مدرس این دوره را تدریس نمی‌کند!");
+            }
+
+            checkoutItems.push({
+                course: course._id,      // به جای Course
+                teacher: teacher._id,     // به جای seller
+                quantity: quantity,
+                priceAtTimeOfPurchase: priceAtTime   // به جای priceAtTime
+            });
+        }
+
         const newCheckout = new Checkout({
             user: user._id,
             items: checkoutItems,
-            shippingAddress
+            authority: "pending"  // موقتاً یه مقدار بذار
+
         });
 
+        // محاسبه قیمت کل
+        const totalPrice = checkoutItems.reduce((total, item) => {
+            return total + item.priceAtTimeOfPurchase * 10       // *10  : Change Tooman to Rial
+        }, 0);
+
         const payment = await createPayment({
-            amountInRial: newCheckout.totalprice,
-            description: `سفارش با شناسه  ${newCheckout._id}`,
-            mobile: "09128972378"
+            amountInRial: totalPrice,  
+            description: `سفارش با شناسه ${newCheckout._id}`,
+            mobile: user.phone || "09120000000"  
         });
-    
-        //newCheckout.authority = payment.authority;
+
         newCheckout.authority = payment.authority;
-    
         await newCheckout.save();
-    
+
         return successResponse(res, 201, {
             message: "Checkout created successfully",
             checkout: newCheckout,
             paymentUrl: payment.paymentUrl
-        })
-    } catch (err) {
-        next(err)
-    }
+        });
 
-}
+    } catch (err) {
+        next(err);
+    }
+};
 
 exports.verifyCheckout = async (req, res, next) => {
-
     try {
-        const {Authority:authority} = req.query;
-  
-        const alreadyCreatedOrder = await Order.findOne({authority});
-        if (alreadyCreatedOrder) return errorResponse(res, 400, "Payment alredy verified !!");
+        const { Authority: authority } = req.query;
 
-        const checkout = await Checkout.findOne({authority});
-        if (!checkout) return errorResponse(res, 404, "Checkout not found");      
+        // چک کردن تکراری نبودن پرداخت
+        const alreadyCreatedOrder = await Order.findOne({ authority });
+        if (alreadyCreatedOrder) {
+            return res.render("payment-result", {
+                success: false,
+                message: "این پرداخت قبلاً تأیید شده است!",
+                orderId: alreadyCreatedOrder._id
+            });
+        }
 
-        const payment = await verifyPayment({authority, amountInRial: checkout.totalprice});
+        // پیدا کردن checkout
+        const checkout = await Checkout.findOne({ authority });
+        if (!checkout) {
+            return res.render("payment-result", {
+                success: false,
+                message: "Checkout یافت نشد",
+                orderId: null
+            });
+        }
 
-         if (![100, 101].includes(payment.code)) return errorResponse(res, 400, "Payment not verified !!");
+        // محاسبه قیمت کل
+        const totalPrice = checkout.items.reduce((total, item) => {
+            return total + item.priceAtTimeOfPurchase * 10;
+        }, 0);
 
-         const order = new Order({
+        // تأیید پرداخت
+        const payment = await verifyPayment({ 
+            authority, 
+            amountInRial: totalPrice 
+        });
+        console.log("payment --->",payment);
+
+        if (![100, 101].includes(payment.code)) {
+            return res.render("payment-result", {
+                success: false,
+                message: "پرداخت تأیید نشد!",
+                orderId: null
+            });
+        }
+
+        // ایجاد سفارش
+        const order = new Order({
             user: checkout.user,
             authority: checkout.authority,
             items: checkout.items,
-            shippingAddress: checkout.shippingAddress,
-            
+        });
 
-         });
+        await order.save();
 
-         await order.save()
+        // ثبت نام در دوره‌ها
+        for (const item of checkout.items) {
+            const course = await Course.findById(item.course);
 
-         for (const item of checkout.items) {
-            const product = await Product.findById(item.product);
-            console.log("product ---->",product);
-
-            if (product) {
-             const sellerInfo = product.sellers.find((sellerData) => sellerData.seller.toString() === item.seller.toString());
-                 console.log("sellerinfo----->>>",sellerInfo);
-
-                 sellerInfo.stock -= item.quantity;
-                 await product.save()
-
+            if (course) {
+                const existStudent = await CourseUser.findOne({
+                    user: checkout.user,
+                    course: course._id
+                });
+                
+                if (!existStudent) {
+                    await CourseUser.create({
+                        user: checkout.user,
+                        course: course._id,
+                        price: item.priceAtTimeOfPurchase
+                    });
+                }
+                await course.save();
             }
-         };
+        }
 
-         await Cart.findOneAndUpdate({user: checkout.user}, {items: []});
+        // خالی کردن سبد خرید
+        await Cart.findOneAndUpdate(
+            { user: checkout.user }, 
+            { items: [] }
+        );
 
-         await Checkout.deleteOne({_id: checkout._id});
+        // حذف checkout
+        await Checkout.deleteOne({ _id: checkout._id });
 
-         return successResponse(res, 200, {
-            message: "Payment verified ✅",
-            order
-         })
+        // رندر صفحه موفقیت
+        return res.render("payment-result", {
+            success: true,
+            message: "پرداخت با موفقیت انجام شد ✅",
+            orderId: order._id,
+            order: order,
+            ref_id: payment.ref_id || null
+        });
 
-        
     } catch (err) {
-        next(err)
-        
+        console.error("Verify error:", err);
+        return res.render("payment-result", {
+            success: false,
+            message: "خطا در تأیید پرداخت",
+            orderId: null
+        });
     }
-    
-}
-
-
+};

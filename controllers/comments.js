@@ -82,7 +82,7 @@ exports.removeComment = async (req, res, next) => {
     return errorResponse(res, 404,  "کامنت مورد نظر یافت نشد" )
   }
 
-  if (comment.user.toString() !== user._id.toString()) {
+  if (comment.user.toString() !== user._id.toString() && user.roles !== "ADMIN") {
     return errorResponse(res, 403,  "شما دسترسی لازم برا دیدن  این صفحه را ندارید" )
 
   }

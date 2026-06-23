@@ -6,22 +6,86 @@ const Comment = require("./../models/Comment");
 const { isValidObjectId } = require("mongoose");
 const mongoose = require("mongoose");
 
+
+exports.getAllCourses = async (req, res, next) => {
+  try {
+      const user = req.user;
+      
+      // اول همه رو بدون هیچ فیلتری بشمار
+      const allCoursesCount = await Course.countDocuments({});
+      
+      const allCourses = await Course.find({}).lean();
+      
+      // حالا ببین filter چی داره
+      const { search, category, priceType, sort = 'newest', page = 1 } = req.query;
+      
+      const filter = {};
+      
+      // موقتاً status رو کامنت کن ببین چندتا میاد
+      // filter.status = 'published';
+      
+      if (search && search.trim() !== '') {
+          filter.name = { $regex: search, $options: 'i' };
+          console.log("🔍 Searching for:", search);
+      }
+      
+      if (category && category !== '') {
+          filter.categoryID = category;
+      }
+      
+      if (priceType === 'free') {
+          filter.price = 0;
+      } else if (priceType === 'paid') {
+          filter.price = { $gt: 0 };
+      }
+      
+      
+      const totalCourses = await Course.countDocuments(filter);
+      
+      // اگه صفر بود، بدون filter بگیر
+      if (totalCourses === 0 && Object.keys(filter).length > 0) {
+          filter = {};
+      }
+      
+      const limit = 9;
+      const pageNum = parseInt(page) || 1;
+      const skip = (pageNum - 1) * limit;
+      
+      const courses = await Course.find(filter)
+          .populate('categoryID', 'title href')
+          .populate('creator', 'name avatar')
+          .sort(sort === 'priceAsc' ? { price: 1 } : 
+                sort === 'priceDesc' ? { price: -1 } : 
+                sort === 'oldest' ? { createdAt: 1 } : 
+                { createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean();
+      
+      
+      const categories = await Category.find({}).lean();
+      
+      return res.render("course.ejs", {
+          courses,
+          categories,
+          user: user || null,
+          totalCourses: totalCourses,
+          totalPages: Math.ceil(totalCourses / limit),
+          currentPage: pageNum,
+          filters: { search: search || '', category: category || '', priceType: priceType || 'all', sort: sort || 'newest' }
+      });
+      
+  } catch (error) {
+      console.error("❌ Error:", error);
+      res.status(500).send("خطای سرور");
+  }
+};
+
 exports.showCreateCoursePanel = async (req, res, next) => {
   const categories = await Category.find({}); console.log(categories);
   return res.render("Admin/createCourse.ejs", {categories})
 
 }
-exports.getAllCourses = async (req, res, next) => {
-  const courses = await Course.find({});
-  const categories = await Category.find({})
-  return res.render("course.ejs", {
-    courses: courses,
-    categories: categories,
-
-  })
-};
-
-
 exports.create = async (req, res) => {
   const {
     name,
@@ -168,11 +232,11 @@ exports.getOneCourse = async (req, res) => {
   const categories = await Category.find().sort({ title: 1 });
 
       const comments = await Comment.find({ course: course._id })
-      .populate("user") // populate کاربر کامنت اصلی
+      .populate("user", "name avatar roles") // populate کاربر کامنت اصلی
       .populate({
         path: "replies.user", // populate کاربر داخل replies
         model: "User",
-        select: "name avatar" // فقط فیلدهای مورد نیاز
+        select: "name avatar roles" // فقط فیلدهای مورد نیاز
       })
       .sort({ createdAt: -1 })
       .lean();

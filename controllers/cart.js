@@ -27,7 +27,7 @@ exports.getCart = async (req, res, next) => {
 
         // محاسبه قیمت کل
         const totalPrice = cart.items.reduce((total, item) => {
-            return total + (item.priceAtTime * item.quantity);
+            return total + item.priceAtTime 
         }, 0);
 
         return res.render("cart", {
@@ -44,7 +44,7 @@ exports.getCart = async (req, res, next) => {
 
 exports.addToCart = async (req, res, next) => {
     try {
-        const { courseId, teacherId, quantity } = req.body;
+        const { courseId, teacherId } = req.body;
         const user = req.user;
 
 
@@ -82,7 +82,6 @@ exports.addToCart = async (req, res, next) => {
         }
 
         const priceAtTime = course.price;
-        const quantityToAdd = quantity || 1;
 
         let cart = await Cart.findOne({ user: user._id });
         
@@ -92,7 +91,6 @@ exports.addToCart = async (req, res, next) => {
                 items: [{
                     course: courseId,
                     teacher: teacherId,
-                    quantity: quantityToAdd,
                     priceAtTime: priceAtTime
                 }]
             });
@@ -100,7 +98,6 @@ exports.addToCart = async (req, res, next) => {
             cart.items.push({
                 course: courseId,
                 teacher: teacherId,
-                quantity: quantityToAdd,
                 priceAtTime: priceAtTime
             });
             await cart.save();
@@ -122,7 +119,11 @@ exports.removeFromCart = async (req, res, next) => {
         const user = req.user;
         const { courseId } = req.body;
 
+        console.log("Removing course:", courseId, "for user:", user._id); // دیباگ
+
+        // پیدا کردن سبد خرید کاربر
         const cart = await Cart.findOne({ user: user._id });
+        
         if (!cart) {
             return res.json({ 
                 success: false, 
@@ -130,8 +131,9 @@ exports.removeFromCart = async (req, res, next) => {
             });
         }
 
+        // پیدا کردن ایندکس آیتم
         const itemIndex = cart.items.findIndex(
-            item => item.course.toString() === courseId
+            item => item.course.toString() === courseId.toString()
         );
 
         if (itemIndex === -1) {
@@ -141,16 +143,42 @@ exports.removeFromCart = async (req, res, next) => {
             });
         }
 
+        // حذف آیتم از آرایه
         cart.items.splice(itemIndex, 1);
+
+        // اگر سبد خرید خالی شد، کلش رو حذف کن
+        if (cart.items.length === 0) {
+            await Cart.findByIdAndDelete(cart._id);
+            console.log("Cart deleted because it's empty");
+            
+            return res.json({ 
+                success: true, 
+                message: "دوره حذف شد و سبد خرید شما خالی است",
+                cart: null,
+                isEmpty: true
+            });
+        }
+
+        // اگر هنوز آیتم داره، ذخیره کن
         await cart.save();
+
+        // populate برای نمایش
+        const populatedCart = await Cart.findById(cart._id)
+            .populate("items.course", "name href cover price")
+            .populate("items.teacher", "name avatar");
 
         return res.json({ 
             success: true, 
             message: "دوره با موفقیت از سبد خرید حذف شد",
-            cart: cart 
+            cart: populatedCart,
+            isEmpty: false
         });
 
     } catch (err) {
-        next(err);
+        console.error("Error in removeFromCart:", err);
+        return res.json({ 
+            success: false, 
+            error: "خطا در حذف از سبد خرید" 
+        });
     }
 };

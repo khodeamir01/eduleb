@@ -9,9 +9,10 @@ const authRouter = require("./routes/auth.js")
 const captchaController = require("./controllers/captcha.js")
 const categoriesRouter = require("./routes/category.js")
 const searchRouter = require("./routes/search.js")
-const dashboardRouter = require("./routes/user.js")
+const dashboardRouter = require("./routes/dashboard.js")
 const commentsRouter = require("./routes/comment.js")
 const cartRouter = require("./routes/cart.js")
+const checkoutRouter = require("./routes/checkout.js")
 const passport = require("passport");
 const { Strategy: JwtStrategy } = require("passport-jwt");
 
@@ -58,6 +59,7 @@ app.use("/search", searchRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/comments", commentsRouter);
 app.use("/cart", cartRouter);
+app.use("/checkout", checkoutRouter);
 app.get("/captcha", captchaController.get);
 
 
