@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نتیجه پرداخت</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css">
+    <script src="/js/sweetAlert2.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'IranSans-Regular', sans-serif;
+        }
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.6s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .icon-success {
+            font-size: 80px;
+            color: #28a745;
+            animation: bounce 1s ease infinite;
+        }
+        .icon-error {
+            font-size: 80px;
+            color: #dc3545;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .order-id {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #666;
+            margin: 20px 0;
+        }
+        .btn-home {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-card">
+        <% if (success) { %>
+            <div class="icon-success">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <h2 style="color: #28a745; margin: 20px 0;">پرداخت موفق!</h2>
+            <p style="color: #666; font-size: 16px;"><%= message %></p>
+            
+            <% if (ref_id) { %>
+                <div class="order-id">
+                    <strong>کد پیگیری:</strong> <%= ref_id %>
+                </div>
+            <% } %>
+            
+            <div class="order-id">
+                <strong>شماره سفارش:</strong> <%= orderId %>
+            </div>
+            
+            <a href="/my-courses" class="btn-home">
+                <i class="fa fa-book"></i> مشاهده دوره‌های من
+            </a>
+            
+        <% } else { %>
+            <div class="icon-error">
+                <i class="fa fa-times-circle"></i>
+            </div>
+            <h2 style="color: #dc3545; margin: 20px 0;">خطا در پرداخت</h2>
+            <p style="color: #666; font-size: 16px;"><%= message %></p>
+            
+            <a href="/cart" class="btn-home" style="background: #dc3545;">
+                <i class="fa fa-refresh"></i> تلاش مجدد
+            </a>
+        <% } %>
+        
+        <br>
+        <a href="/" style="color: #667eea; margin-top: 15px; display: inline-block;">
+            <i class="fa fa-home"></i> بازگشت به صفحه اصلی
+        </a>
+    </div>
+
+    <% if (success) { %>
+    <script>
+        // SweetAlert2 برای موفقیت
+        Swal.fire({
+            icon: 'success',
+            title: 'پرداخت موفق! 🎉',
+            text: 'پرداخت شما با موفقیت انجام شد. به دوره‌های خود هدایت می‌شوید...',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: true,
+            confirmButtonText: 'مشاهده دوره‌های من',
+            confirmButtonColor: '#667eea'
+        }).then((result) => {
+
+        });
+    </script>
+    <% } else { %>
+    <script>
+        // SweetAlert2 برای خطا
+        Swal.fire({
+            icon: 'error',
+            title: 'پرداخت ناموفق',
+            text: '<%= message %>',
+            confirmButtonText: 'تلاش مجدد',
+            confirmButtonColor: '#667eea'
+        }).then(() => {
+            window.location.href = '/cart';
+        });
+    </script>
+    <% } %>
+</body>
+</html>
