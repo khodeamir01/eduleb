@@ -1,474 +1,262 @@
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>داشبورد کاربری - Eduleb</title>
-<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/fonts/font-awesome.min.css">
-<link rel="stylesheet" href="/fonts/themify-icons.css">
-<link rel="stylesheet" href="/css/style.css">
-<style>
-    .dashboard-wrapper {
-        background: #f8f9fc;
-        min-height: 100vh;
-        padding: 40px 0;
-    }
-    
-    /* سایدبار پروفایل */
-    .profile-sidebar {
-        background: #fff;
-        border-radius: 24px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        overflow: hidden;
-        margin-bottom: 30px;
-    }
-    
-    .profile-cover {
-        height: 120px;
-        background: linear-gradient(135deg, #525fe1, #f26b65);
-        position: relative;
-    }
-    
-    .profile-avatar {
-        position: absolute;
-        bottom: -50px;
-        right: 30px;
-    }
-    
-    .profile-avatar img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        border: 4px solid #fff;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        object-fit: cover;
-        background: #fff;
-    }
-    
-    .profile-info {
-        padding: 60px 25px 25px 25px;
-    }
-    
-    .profile-name {
-        font-size: 22px;
-        font-weight: 700;
-        margin-bottom: 5px;
-        color: #1a1a2e;
-    }
-    
-    .profile-email {
-        color: #6d7193;
-        font-size: 14px;
-        margin-bottom: 15px;
-    }
-    
-    .profile-phone {
-        color: #6d7193;
-        font-size: 14px;
-        margin-bottom: 15px;
-    }
-    
-    .profile-bio {
-        font-size: 14px;
-        color: #5a5e7a;
-        line-height: 1.6;
-        margin: 15px 0;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
-    }
-    
-    .profile-stats {
-        display: flex;
-        gap: 15px;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-    }
-    
-    .stat-item {
-        flex: 1;
-        text-align: center;
-    }
-    
-    .stat-number {
-        font-size: 24px;
-        font-weight: 800;
-        color: #525fe1;
-        display: block;
-    }
-    
-    .stat-label {
-        font-size: 12px;
-        color: #6d7193;
-    }
-    
-    .btn-edit {
-        background: #f0f2ff;
-        color: #525fe1;
-        padding: 8px 20px;
-        border-radius: 50px;
-        font-size: 13px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: inline-block;
-        text-align: center;
-    }
-    
-    .btn-edit:hover {
-        background: #525fe1;
-        color: #fff;
-    }
-    
-    /* کارت‌های داشبورد */
-    .dashboard-card {
-        background: #fff;
-        border-radius: 20px;
-        padding: 25px;
-        margin-bottom: 30px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-    }
-    
-    .dashboard-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    }
-    
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid #f0f0f0;
-    }
-    
-    .card-header h3 {
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0;
-    }
-    
-    .card-header i {
-        font-size: 28px;
-        color: #525fe1;
-    }
-    
-    /* آمار کارت‌ها */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-    
-    .stat-card {
-        background: #fff;
-        border-radius: 20px;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        transition: all 0.3s ease;
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-3px);
-    }
-    
-    .stat-card i {
-        font-size: 35px;
-        color: #525fe1;
-        margin-bottom: 15px;
-    }
-    
-    .stat-card .number {
-        font-size: 28px;
-        font-weight: 800;
-        color: #1a1a2e;
-    }
-    
-    .stat-card .label {
-        font-size: 13px;
-        color: #6d7193;
-    }
-    
-    /* منوی سریع */
-    .menu-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-    
-    .menu-item {
-        padding: 15px;
-        border-radius: 15px;
-        background: #f8f9fc;
-        transition: all 0.3s ease;
-    }
-    
-    .menu-item:hover {
-        background: #f0f2ff;
-    }
-    
-    .menu-item a {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        color: #4a4e6e;
-        font-weight: 500;
-    }
-    
-    .menu-item a i {
-        width: 30px;
-        font-size: 18px;
-        color: #525fe1;
-    }
-    
-    /* دوره‌ها */
-    .course-item {
-        display: flex;
-        gap: 15px;
-        padding: 15px 0;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    
-    .course-item:last-child {
-        border-bottom: none;
-    }
-    
-    .course-item img {
-        width: 80px;
-        height: 80px;
-        border-radius: 12px;
-        object-fit: cover;
-    }
-    
-    .course-info {
-        flex: 1;
-    }
-    
-    .course-info h4 {
-        font-size: 16px;
-        font-weight: 700;
-        margin-bottom: 5px;
-    }
-    
-    .course-info h4 a {
-        color: #1a1a2e;
-    }
-    
-    .course-info h4 a:hover {
-        color: #525fe1;
-    }
-    
-    .course-meta-mini {
-        font-size: 12px;
-        color: #6d7193;
-        display: flex;
-        gap: 15px;
-        margin-top: 5px;
-    }
-    
-    .course-meta-mini i {
-        margin-left: 3px;
-    }
-    
-    .btn-start {
-        display: inline-block;
-        background: #525fe1;
-        color: white;
-        padding: 5px 15px;
-        border-radius: 8px;
-        font-size: 12px;
-        margin-top: 8px;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-start:hover {
-        background: #f26b65;
-        color: white;
-    }
-    
-    .empty-state {
-        text-align: center;
-        padding: 40px;
-    }
-    
-    .empty-state i {
-        font-size: 48px;
-        color: #ccc;
-    }
-    
-    @media (max-width: 768px) {
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-        
-        .menu-grid {
-            grid-template-columns: 1fr;
-        }
-        
-        .profile-avatar img {
-            width: 70px;
-            height: 70px;
-        }
-        
-        .profile-name {
-            font-size: 18px;
-        }
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل - <%= user.name %></title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
 
-<!-- هدر -->
-<div id="navigation" class="navbar-light bg-faded site-navigation">
-    <!-- هدرت رو اینجا قرار بده -->
-</div>
+<div class="dashboard-layout">
+    
+    <!-- ========== سایدبار ========== -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <img src="<%= user.avatar ? '/img/avatar/' + user.avatar : '/img/defualtPic.png' %>" 
+                 alt="<%= user.name %>" class="sidebar-avatar">
+            <h5 class="sidebar-name"><%= user.name %></h5>
+            <div class="sidebar-roles">
+                <% user.roles.forEach(role => { %>
+                    <span class="sidebar-role-badge <%= role.toLowerCase() %>"><%= role %></span>
+                <% }); %>
+            </div>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/dashboard" class="active">
+                    <i class="fa fa-home"></i> پنل مدیریت
+                </a>
+            </li>
+            <li>
+                <a href="/">
+                    <i class="fa fa-globe"></i> صفحه اصلی
+                </a>
+            </li>
+            <li>
+                <a href="/auth/logout" style="color: #ff6b6b;">
+                    <i class="fa fa-sign-out"></i> خروج از حساب کاربری
+                </a>
+            </li>
+        </ul>
+    </aside>
 
-<div class="dashboard-wrapper">
-    <div class="container">
-        <div class="row">
-            <!-- سایدبار پروفایل -->
-            <div class="col-lg-4 col-md-5">
-                <div class="profile-sidebar">
-                    <div class="profile-cover"></div>
-                    <div class="profile-avatar">
-                        <img src="<%= user.avatar ? '/img/avatar/' + user.avatar : '/img/default-avatar.png' %>" alt="<%= user.name %>">
-                    </div>
-                    <div class="profile-info">
-                        <h3 class="profile-name"><%= user.name %></h3>
-                        <div class="profile-email">
-                            <i class="fa fa-envelope"></i> <%= user.email %>
-                        </div>
-                        <% if (user.phone) { %>
-                            <div class="profile-phone">
-                                <i class="fa fa-phone"></i> <%= user.phone %>
-                            </div>
-                        <% } %>
-                        <% if (user.bio) { %>
-                            <div class="profile-bio">
-                                <i class="fa fa-quote-right"></i> <%= user.bio %>
-                            </div>
-                        <% } %>
-                        <div class="profile-stats">
-                            <div class="stat-item">
-                                <span class="stat-number"><%= totalCourses %></span>
-                                <span class="stat-label">دوره ثبت نامی</span>
-                            </div>
-                            <div class="stat-item">
-                                <span class="stat-number"><%= totalSpent.toLocaleString() %></span>
-                                <span class="stat-label">مجموع پرداختی</span>
-                            </div>
-                        </div>
-                        <div class="text-center mt-3">
-                            <a href="/dashboard/edit" class="btn-edit">
-                                <i class="fa fa-edit"></i> ویرایش پروفایل
-                            </a>
-                        </div>
-                    </div>
+    <!-- ========== محتوا ========== -->
+    <main class="main-content">
+        
+        <!-- هدر -->
+        <div class="page-header">
+            <h2><i class="fa fa-dashboard"></i> داشبورد</h2>
+            <span class="date"><%= new Date().toLocaleDateString('fa-IR') %></span>
+        </div>
+
+        <% // ==================== ADMIN ==================== %>
+        <% if (user.roles.includes("ADMIN")) { %>
+            
+            <!-- آمار -->
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-icon"><i class="fa fa-users"></i></div>
+                    <div class="stat-number"><%= totalUsers %></div>
+                    <div class="stat-label">کاربران</div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon"><i class="fa fa-book"></i></div>
+                    <div class="stat-number"><%= totalCourses %></div>
+                    <div class="stat-label">دوره‌ها</div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-icon"><i class="fa fa-comments"></i></div>
+                    <div class="stat-number"><%= totalComments %></div>
+                    <div class="stat-label">کامنت‌ها</div>
+                </div>
+                <div class="stat-card red">
+                    <div class="stat-icon"><i class="fa fa-shopping-cart"></i></div>
+                    <div class="stat-number"><%= totalOrders %></div>
+                    <div class="stat-label">سفارشات</div>
+                </div>
+                <div class="stat-card purple">
+                    <div class="stat-icon"><i class="fa fa-video-camera"></i></div>
+                    <div class="stat-number"><%= totalSessions %></div>
+                    <div class="stat-label">جلسات</div>
+                </div>
+                <div class="stat-card teal">
+                    <div class="stat-icon"><i class="fa fa-file-text"></i></div>
+                    <div class="stat-number"></div>
+                    <div class="stat-label">مقالات</div>
                 </div>
             </div>
-            
-            <!-- محتوای اصلی -->
-            <div class="col-lg-8 col-md-7">
-                <!-- کارت‌های آمار -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fa fa-book"></i>
-                        <div class="number"><%= totalCourses %></div>
-                        <div class="label">دوره ثبت نامی</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fa fa-credit-card"></i>
-                        <div class="number"><%= totalSpent.toLocaleString() %></div>
-                        <div class="label">مجموع پرداختی</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fa fa-clock-o"></i>
-                        <div class="number"><%= new Date().getFullYear() %></div>
-                        <div class="label">عضو از</div>
-                    </div>
-                </div>
-                
-                <!-- منوی سریع -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fa fa-bolt"></i> منوی سریع</h3>
-                        <i class="fa fa-dashboard"></i>
-                    </div>
-                    <div class="menu-grid">
-                        <div class="menu-item">
-                            <a href="/dashboard/my-courses">
-                                <i class="fa fa-book"></i>
-                                <span>دوره‌های من</span>
-                            </a>
-                        </div>
-                        <div class="menu-item">
-                            <a href="/dashboard/edit">
-                                <i class="fa fa-user"></i>
-                                <span>ویرایش پروفایل</span>
-                            </a>
-                        </div>
-                        <div class="menu-item">
-                            <a href="/cart">
-                                <i class="fa fa-shopping-cart"></i>
-                                <span>سبد خرید</span>
-                            </a>
-                        </div>
-                        <div class="menu-item">
-                            <a href="/auth/logout">
-                                <i class="fa fa-sign-out"></i>
-                                <span>خروج از حساب</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- آخرین دوره‌های ثبت نامی -->
-                <div class="dashboard-card">
-                    <div class="card-header">
-                        <h3><i class="fa fa-graduation-cap"></i> آخرین دوره‌های من</h3>
-                        <a href="/dashboard/my-courses" class="btn-edit">مشاهده همه</a>
-                    </div>
-                    <% if (enrollments && enrollments.length > 0) { %>
-                        <% enrollments.slice(0, 3).forEach(function(enrollment) { %>
-                            <div class="course-item">
-                                <img src="<%= enrollment.course.cover ? '/img/cover/' + enrollment.course.cover : '/img/course/1.png' %>" alt="<%= enrollment.course.name %>">
-                                <div class="course-info">
-                                    <h4><a href="/course/<%= enrollment.course.href %>"><%= enrollment.course.name %></a></h4>
-                                    <div class="course-meta-mini">
-                                        <span><i class="fa fa-calendar"></i> <%= new Date(enrollment.createdAt).toLocaleDateString('fa-IR') %></span>
-                                        <span><i class="fa fa-credit-card"></i> <%= enrollment.price.toLocaleString() %> تومان</span>
+
+            <!-- آخرین سفارشات -->
+            <% if (recentOrders && recentOrders.length > 0) { %>
+                <div class="content-card">
+                    <h5 class="card-title"><i class="fa fa-clock-o"></i> آخرین سفارشات</h5>
+                    <div class="item-list">
+                        <% recentOrders.forEach(order => { %>
+                            <div class="item-row">
+                                <div class="item-info">
+                                    <div class="item-details">
+                                        <p class="item-name"><%= order.user.name %></p>
+                                        <span class="item-meta"><%= order.user.email %></span>
                                     </div>
-                                    <a href="/course/<%= enrollment.course.href %>" class="btn-start">
-                                        <i class="fa fa-play"></i> شروع دوره
+                                </div>
+                                <div class="item-actions">
+                                    <span class="badge badge-info"><%= order.items.length %> دوره</span>
+                                    <span class="item-meta"><%= new Date(order.createdAt).toLocaleDateString('fa-IR') %></span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
+
+        <% } %>
+
+        <% // ==================== TEACHER ==================== %>
+        <% if (user.roles.includes("TEACHER")) { %>
+            
+            <!-- جلسات -->
+            <div class="content-card">
+                <h5 class="card-title"><i class="fa fa-video-camera"></i> جلسات ایجاد شده (<%= mySessions.length %>)</h5>
+                <% if (mySessions.length > 0) { %>
+                    <div class="item-list">
+                        <% mySessions.forEach(session => { %>
+                            <div class="item-row">
+                                <div class="item-info">
+                                    <div class="item-details">
+                                        <p class="item-name"><%= session.title %></p>
+                                        <span class="item-meta">دوره: <%= session.course ? session.course.name : '---' %></span>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <span class="badge <%= session.isFree ? 'badge-free' : 'badge-paid' %>">
+                                        <%= session.isFree ? 'رایگان' : 'پولی' %>
+                                    </span>
+                                    <span class="item-meta"><%= session.duration || 0 %> دقیقه</span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="fa fa-video-camera"></i>
+                        <p>جلسه‌ای ایجاد نشده است</p>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- کامنت‌های دوره‌های مدرس -->
+            <div class="content-card">
+                <h5 class="card-title"><i class="fa fa-comments"></i> کامنت‌های دوره‌های من (<%= courseComments.length %>)</h5>
+                <% if (courseComments.length > 0) { %>
+                    <div class="item-list">
+                        <% courseComments.forEach(comment => { %>
+                            <div class="item-row">
+                                <div class="item-info">
+                                    <img src="<%= comment.user?.avatar ? '/img/avatar/' + comment.user.avatar : '/img/defualtPic.png' %>" 
+                                         alt="" class="item-thumb" style="width: 40px; height: 40px;">
+                                    <div class="item-details">
+                                        <p class="item-name"><%= comment.user?.name || 'کاربر' %></p>
+                                        <span class="comment-preview"><%= comment.content %></span>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <span class="stars">
+                                        <% for (let i = 1; i <= 5; i++) { %>
+                                            <i class="fa fa-star<%= i <= comment.rating ? '' : '-o' %>"></i>
+                                        <% } %>
+                                    </span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="fa fa-comment-o"></i>
+                        <p>کامنتی برای دوره‌های شما ثبت نشده</p>
+                    </div>
+                <% } %>
+            </div>
+
+        <% } %>
+
+        <% // ==================== AUTHOR ==================== %>
+
+
+        <% // ==================== USER ==================== %>
+        <% if (user.roles.includes("USER")) { %>
+            
+            <!-- دوره‌های من -->
+            <div class="content-card">
+                <h5 class="card-title"><i class="fa fa-book"></i> دوره‌های خریداری شده (<%= myCourses.length %>)</h5>
+                <% if (myCourses.length > 0) { %>
+                    <div class="item-list">
+                        <% myCourses.forEach(item => { %>
+                            <div class="item-row">
+                                <div class="item-info">
+                                    <img src="/img/cover/<%= item.course.cover || 'default.jpg' %>" 
+                                         alt="<%= item.course.name %>" class="item-thumb">
+                                    <div class="item-details">
+                                        <p class="item-name"><%= item.course.name %></p>
+                                        <span class="item-meta"><%= new Date(item.purchaseDate).toLocaleDateString('fa-IR') %></span>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <span class="price-text"><%= item.price.toLocaleString() %> تومان</span>
+                                    <a href="/course/<%= item.course.href %>" class="btn-dashboard btn-primary-dash">
+                                        <i class="fa fa-eye"></i> مشاهده
                                     </a>
                                 </div>
                             </div>
                         <% }); %>
-                    <% } else { %>
-                        <div class="empty-state">
-                            <i class="fa fa-book"></i>
-                            <p class="mt-3">هنوز در هیچ دوره‌ای ثبت نام نکرده‌اید</p>
-                            <a href="/courses" class="btn_one mt-2">مشاهده دوره‌ها</a>
-                        </div>
-                    <% } %>
-                </div>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="fa fa-shopping-cart"></i>
+                        <p>هنوز دوره‌ای خریداری نکرده‌اید</p>
+                        <a href="/course" class="btn-dashboard btn-primary-dash">مشاهده دوره‌ها</a>
+                    </div>
+                <% } %>
             </div>
-        </div>
-    </div>
+
+            <!-- کامنت‌های من -->
+            <div class="content-card">
+                <h5 class="card-title"><i class="fa fa-comments"></i> کامنت‌های من (<%= myComments.length %>)</h5>
+                <% if (myComments.length > 0) { %>
+                    <div class="item-list">
+                        <% myComments.forEach(comment => { %>
+                            <div class="item-row">
+                                <div class="item-info">
+                                    <div class="item-details">
+                                        <p class="item-name"><%= comment.course ? comment.course.name : 'دوره حذف شده' %></p>
+                                        <span class="comment-preview"><%= comment.content %></span>
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <span class="stars">
+                                        <% for (let i = 1; i <= 5; i++) { %>
+                                            <i class="fa fa-star<%= i <= comment.rating ? '' : '-o' %>"></i>
+                                        <% } %>
+                                    </span>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else { %>
+                    <div class="empty-state">
+                        <i class="fa fa-comment-o"></i>
+                        <p>کامنتی ثبت نشده است</p>
+                    </div>
+                <% } %>
+            </div>
+
+        <% } %>
+
+    </main>
 </div>
 
-<!-- فوتر -->
-<div class="footer section-padding">
-    <!-- فوترت رو اینجا قرار بده -->
-</div>
-
-<script src="/js/jquery-1.12.4.min.js"></script>
-<script src="/bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
