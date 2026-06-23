@@ -47,6 +47,7 @@ exports.verifyPayment = async function ({authority, amountInRial}) {
     });
  
     const responseData = await response.json();
+    console.log(responseData);
   
     return responseData.data
     

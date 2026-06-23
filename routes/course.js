@@ -7,46 +7,22 @@ const upload = multerStorage("public/assets/img");
 
 const router = express.Router();
 
-router
-  .route("/create")
-  .post(
-    upload.single(
-      "cover"
-    ),
-    auth,
-    Controller.create
-  )
+// 1. لیست همه دوره‌ها
+router.get("/",auth ,Controller.getAllCourses);
 
-  router.route("/").get(Controller.showCreateCoursePanel)
+// 2. ایجاد دوره (GET فرم + POST ثبت) - هر دو روی /create
+router.route("/create")
+    .get(auth, Controller.showCreateCoursePanel)    // نمایش فرم
+    .post(upload.single("cover"), auth, Controller.create);  // ثبت دوره
 
-  router.route("/getAll").get(Controller.getAllCourses);
+// 3. جزئیات دوره
+router.get("/:href", auth, Controller.getOneCourse);
 
-  router.route("/:href").get(auth,Controller.getOneCourse);
-
-
-router
-  .route("/:courseId/sessions")
-  .post(
-    multer({ storage: multerStorage, limits: { filesize: 1000000000 } }).single(
-      "video"
-    ),
-    auth,
+// 4. ایجاد جلسه
+router.post("/:courseId/sessions", 
+    multer({ storage: multerStorage, limits: { filesize: 1000000000 } }).single("video"),
+    auth, 
     Controller.createSession
-  );
-
-// router
-//   .route("/sessions")
-//   .get(auth, Controller.getAllSession);
-
-// router.route("/categories/:href").get(Controller.getAllByCategory);
-// // router.route("/:href/:sessionsID").get(Controller.getSessionInfo);
-
-// router
-//   .route("/sessions/:id")
-//   .delete(auth, Controller.removeSession);
-
-// router.route("/:id/register").post(auth, Controller.register);
-// router.route("/:href").get( auth,Controller.getOne);
-
+);
 
 module.exports = router;

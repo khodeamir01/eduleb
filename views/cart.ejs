@@ -413,11 +413,11 @@
                 <span class="total-price"><%= totalPrice.toLocaleString() %> تومان</span>
               </div>
               
-              <button class="checkout-btn" onclick="checkout()">
+              <button class="checkout-btn" onclick="goToPayment()">
                 <i class="fa fa-credit-card"></i> پرداخت و ثبت نام
               </button>
               
-              <a href="/courses" class="continue-shopping">
+              <a href="/course" class="continue-shopping">
                 <i class="fa fa-arrow-right"></i> ادامه خرید
               </a>
             </div>
@@ -515,22 +515,72 @@
     });
 
     // ============= پرداخت =============
-    function checkout() {
+    async function goToPayment() {
+  
+  // نمایش لودینگ
+  Swal.fire({
+    title: 'در حال اتصال به درگاه پرداخت...',
+    html: 'لطفاً کمی صبر کنید',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
+  try {
+    const response = await fetch('/checkout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        // اگه validator چیزی نیاز داره اینجا بفرست
+        // مثلاً آدرس یا شماره تماس
+      })
+    });
+
+    const data = await response.json();
+    console.log('Checkout response:', data);
+
+    if (data.success && data.data.paymentUrl) {
+      // بستن لودینگ
+      Swal.close();
+      
+      // نمایش پیام و هدایت به درگاه
       Swal.fire({
-        title: 'هدایت به درگاه پرداخت',
-        text: 'آیا برای پرداخت آماده هستید؟',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'بله، پرداخت',
-        cancelButtonText: 'انصراف',
+        icon: 'success',
+        title: 'اتصال برقرار شد',
+        text: 'در حال انتقال به درگاه پرداخت...',
+        timer: 2000,
+        showConfirmButton: false,
+        timerProgressBar: true
+      }).then(() => {
+        // هدایت به صفحه پرداخت زرین‌پال
+        window.location.href = data.data.paymentUrl;
+      });
+
+    } else {
+      // خطا از سرور
+      Swal.fire({
+        icon: 'error',
+        title: 'خطا',
+        text: data.error || data.message || 'مشکلی در ایجاد پرداخت پیش آمد',
+        confirmButtonText: 'باشه',
         confirmButtonColor: '#667eea'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // ریدایرکت به صفحه پرداخت
-          window.location.href = '/checkout';
-        }
       });
     }
+
+  } catch (error) {
+    console.error('Payment error:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'خطای ارتباط',
+      text: 'خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید',
+      confirmButtonText: 'باشه',
+      confirmButtonColor: '#667eea'
+    });
+  }
+}
   </script>
 
 </body>

@@ -3585,6 +3585,146 @@ margin-top: 30px;
 	background: #218838 !important;
   }
 
+  .course-filters select,
+.course-filters input {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+}
+
+.course-filters .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 8px;
+}
+
+.course-filters .btn-outline-secondary {
+    border-radius: 8px;
+}
+
+.single_course .ratings {
+    margin: 8px 0;
+}
+
+.single_course .ratings .fa-star {
+    color: #FFD700;
+    font-size: 14px;
+}
+
+.single_course .ratings .fa-star-o {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.single_course .instructor {
+    color: #666;
+    font-size: 13px;
+    margin: 5px 0;
+}
+
+.single_course .course-meta {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+    font-size: 13px;
+    color: #888;
+}
+
+.single_course .price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.single_course .price .free {
+    color: #28a745;
+}
+
+.pagination-nav {
+    margin-top: 40px;
+}
+
+/* ========== Pagination ========== */
+.pagination-container {
+	margin-top: 40px;
+	text-align: center;
+  }
+  
+  .pagination-list {
+	display: inline-flex;
+	list-style: none;
+	gap: 5px;
+	padding: 0;
+	margin: 0;
+  }
+  
+  .pagination-item {
+	display: inline-block;
+  }
+  
+  .pagination-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 40px;
+	height: 40px;
+	padding: 8px 14px;
+	border-radius: 8px;
+	text-decoration: none;
+	font-size: 14px;
+	font-weight: bold;
+	transition: all 0.3s ease;
+	background: #f0f0f0;
+	color: #333;
+	border: 1px solid transparent;
+  }
+  
+  .pagination-link:hover {
+	background: #e0e0e0;
+	transform: translateY(-2px);
+	box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  
+  .pagination-link.active {
+	background: linear-gradient(135deg, #667eea, #764ba2);
+	color: white;
+	border-color: #667eea;
+	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  }
+  
+  .pagination-link.active:hover {
+	background: linear-gradient(135deg, #764ba2, #667eea);
+	color: white;
+  }
+  
+  /* دکمه‌های قبلی و بعدی */
+  .pagination-prev,
+  .pagination-next {
+	font-size: 13px;
+	background: white;
+	border: 1px solid #e0e0e0;
+  }
+  
+  .pagination-prev:hover,
+  .pagination-next:hover {
+	background: #f8f9fa;
+	border-color: #667eea;
+	color: #667eea;
+  }
+  
+  .pagination-dots {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 40px;
+	height: 40px;
+	color: #999;
+	font-size: 14px;
+  }
+
+  
+
 .watch-session-btn {
   display: inline-flex;
   align-items: center;

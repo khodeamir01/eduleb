@@ -44,16 +44,11 @@
           <div class="col-60 d-flex">
             <nav id="main-menu">
               <ul>
+
+                <li><a href="/">صفحه اصلی</a></li>
+                <li><a href="about.html">درباره</a></li>
                 <li class="menu-item-has-children">
-                  <a href="#">صفحه اصلی</a>
-                  <ul>
-                    <li><a href="index.html">صفحه اصلی 01</a></li>
-                    <li><a href="index2.html">صفحه اصلی 02</a></li>
-                  </ul>
-                </li>
-                <li><a href="about.html">در باره</a></li>
-                <li class="menu-item-has-children">
-                  <a href="course.html">دوره</a>
+                  <a href="/course/all">دوره ها</a>
                   <ul>
                     <li><a href="course.html">دوره</a></li>
                     <li><a href="course_details.html">جزئیات دوره</a></li>
@@ -69,14 +64,8 @@
                     <li><a href="404.html">404</a></li>
                   </ul>
                 </li>
-                <li class="menu-item-has-children">
-                  <a href="blog.html">وبلاگ</a>
-                  <ul>
-                    <li><a href="blog.html">وبلاگ</a></li>
-                    <li><a href="blog_single.html">جزئیات وبلاگ</a></li>
-                  </ul>
-                </li>
-                <li><a href="contact.html">مخاطب</a></li>
+                <li><a href="blog.html">مقالات</a></li>
+
               </ul>
             </nav>
           </div>
@@ -137,8 +126,7 @@
           >
             <h1>جزئیات دوره</h1>
             <ul>
-              <li><a href="index.html">صفحه اصلی</a></li>
-              <li>/ جزئیات دروس</li>
+              <li><a href="/">صفحه اصلی</a></li>
             </ul>
           </div>
         </div>
@@ -209,12 +197,7 @@
                   <div class="overview">
                     <p><%= course.description %></p>
                     <div class="details-buttons-area">
-                      <a href="#0" class="custom-button theme-one"
-                        >اکنون ثبت نام کنید<i class="fa fa-angle-right"></i
-                      ></a>
-                      <a href="#0" class="custom-button bg-white"
-                        >عضویت دریافت کنید</a
-                      >
+                      
                       <ul class="social-icons">
                         <li>
                           <a href="#0" class="active"
@@ -268,16 +251,18 @@
                                 <% if (session.isFree) { %>
                                   <i class="fa fa-unlock"></i> رایگان
                                 <% } else { %>
-                                  <i class="fa fa-lock"></i> پولی
+                                  <i class="fa fa-lock"></i> نقدی
                                 <% } %>
                               </span>
                               
-                              <!-- دکمه نمایش ویدیو -->
-                              <a href="#" class="watch-btn watch-session-btn" 
-                                data-video="/img/session/<%= session.video %>" 
-                                data-title="<%= session.title %>">
-                                <i class="fa fa-play"></i> مشاهده
-                              </a>
+                              <!-- دکمه نمایش ویدیو - فقط برای جلسات رایگان -->
+                              <% if (session.isFree) { %>
+                                <a href="#" class="watch-btn watch-session-btn" 
+                                   data-video="/img/session/<%= session.video %>" 
+                                   data-title="<%= session.title %>">
+                                  <i class="fa fa-play"></i> مشاهده
+                                </a>
+                              <% } %>
                             </div>
                           </div>
                         <% }); %>
@@ -303,10 +288,7 @@
                       </div>
                     <% } %>
                     
-                    <div class="details-buttons-area" style="margin-top: 30px;">
-                      <a href="#0" class="custom-button theme-one">اکنون ثبت نام کنید<i class="fa fa-angle-left"></i></a>
-                      <a href="#0" class="custom-button bg-white">عضویت دریافت کنید</a>
-                    </div>
+
                   </div>
                 </div>
                 <div class="tab-pane fade" id="instructor">
@@ -458,8 +440,7 @@
                             </button>
 
                             <!-- دکمه حذف -->
-                       <% if (user && user._id.toString() ===
-                            comment.user._id.toString()) { %>
+                       <% if (user && (user._id.toString() === comment.user._id.toString() || (user.roles && user.roles.includes('ADMIN')))) { %>
                             <button
                               class="delete-comment-btn"
                               data-comment-id="<%= comment._id %>"
@@ -515,7 +496,7 @@
                       
                       <p style="font-size: 13px;"><%= reply.content %></p>
                                 <!-- دکمه حذف Reply -->
-          <% if (user && reply.user && user._id.toString() === reply.user._id.toString()) { %>
+          <% if (user && (user._id.toString() === reply.user._id.toString() || (user.roles && user.roles.includes('ADMIN')))) { %>
             <button 
               class="delete-reply-btn" 
               data-comment-id="<%= comment._id %>" 

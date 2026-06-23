@@ -23,78 +23,93 @@
 </head>
 <body data-spy="scroll" data-offset="80">
     
-<div class="preloaders"><span class="loader"></span></div>
-<div id="navigation" class="navbar-light bg-faded site-navigation"><div class="container-fluid"><div class="row">
-<div class="col-20 align-self-center"><div class="site-logo"><a href="index.html"><img src="/img/logo.png" alt=""></a></div></div>
-<div class="col-60 d-flex"><nav id="main-menu"><ul>
-
-<li><a href="/">صفحه اصلی</a></li>
-
-
-<li><a href="about.ejs">درباره</a></li>
-<li class="menu-item-has-children">
-<a href="course.ejs">دوره</a><ul>
-<li><a href="/course/getAll"> همه دوره ها</a></li>
-<li><a href="course_details.ejs">جزئیات دوره</a></li>
-</ul>
-</li>
-<li class="menu-item-has-children">
-<a href="#">صفحات</a><ul>
-<li><a href="instructor.html">مربی</a></li>
-<li><a href="ins_details.html">مشخصات مربی</a></li>
-<li><a href="pricing.html">طرح قیمت گذاری</a></li>
-<li><a href="faq.html">صفحه فک</a></li>
-<li><a href="404.html">404</a></li>
-</ul>
-</li>
-<li class="menu-item-has-children">
-<a href="blog.html">وبلاگ</a><ul>
-<li><a href="blog.html">وبلاگ</a></li>
-<li><a href="blog_single.html">جزئیات وبلاگ</a></li>
-</ul>
-</li>
-<li><a href="contact.html">مخاطب</a></li>
-</ul></nav></div>
-
-<%if (user) { %>
-    <p>خوش آمدید <%= user.name %></p>
-    <% } else { %>
-        <div class="col-20 d-none d-xl-block text-end align-self-center">
-<a href="/auth/login" class="header-btn">ورود</a><a href="/auth/register" class="btn_one">ثبت نام</a>
+    <div class="preloaders"><span class="loader"></span></div>
+    <div id="navigation" class="navbar-light bg-faded site-navigation">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-20 align-self-center">
+            <div class="site-logo">
+              <a href="/"><img src="/img/logo.png" alt=""></a>
+            </div>
+          </div>
+          
+          <div class="col-60 d-flex">
+            <nav id="main-menu">
+              <ul>
+                <li><a href="/">صفحه اصلی</a></li>
+                <li><a href="/about">درباره</a></li>
+                <li class="menu-item-has-children">
+                  <a href="/course">دوره</a>
+                  <ul>
+                    <li><a href="/course">همه دوره ها</a></li>
+                    <li><a href="/course">جزئیات دوره</a></li>
+                  </ul>
+                </li>
+                <li class="menu-item-has-children">
+                  <a href="#">صفحات</a>
+                  <ul>
+                    <li><a href="/instructor">مربی</a></li>
+                    <li><a href="/ins-details">مشخصات مربی</a></li>
+                    <li><a href="/pricing">طرح قیمت گذاری</a></li>
+                    <li><a href="/faq">سوالات متداول</a></li>
+                    <li><a href="/404">404</a></li>
+                  </ul>
+                </li>
+                <li class="menu-item-has-children">
+                  <a href="/blog">وبلاگ</a>
+                  <ul>
+                    <li><a href="/blog">وبلاگ</a></li>
+                    <li><a href="/blog">جزئیات وبلاگ</a></li>
+                  </ul>
+                </li>
+                <li><a href="/contact">مخاطب</a></li>
+              </ul>
+            </nav>
+          </div>
+    
+          <%if (user) { %>
+            <p>خوش آمدید <%= user.name %></p>
+            <% } else { %>
+            <div class="col-20 d-none d-xl-block text-end align-self-center">
+              <a href="/auth/login" class="header-btn">ورود</a
+              ><a href="/auth/register" class="btn_one">ثبت نام</a>
+            </div>
+            <% } %>
+    
+          <!-- منوی موبایل -->
+          <ul class="mobile_menu">
+            <li><a href="/">صفحه اصلی</a></li>
+            <li><a href="/about">درباره</a></li>
+            <li>
+              <a href="#">دوره</a>
+              <ul class="sub-menu">
+                <li><a href="/course">همه دوره ها</a></li>
+                <li><a href="/course">جزئیات دوره</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="#">صفحات</a>
+              <ul class="sub-menu">
+                <li><a href="/instructor">مربی</a></li>
+                <li><a href="/ins-details">مشخصات مربی</a></li>
+                <li><a href="/pricing">طرح قیمت گذاری</a></li>
+                <li><a href="/faq">سوالات متداول</a></li>
+                <li><a href="/404">404</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="/blog">وبلاگ</a>
+              <ul class="sub-menu">
+                <li><a href="/blog">وبلاگ</a></li>
+                <li><a href="/blog">جزئیات وبلاگ</a></li>
+              </ul>
+            </li>
+            <li><a href="/contact">مخاطب</a></li>
+          </ul>
+          
         </div>
-        <% } %>
-<ul class="mobile_menu">
-<li>
-<a href="index.html">صفحه اصلی</a><ul class="sub-menu">
-<li><a href="index.html">صفحه اصلی 01</a></li>
-<li><a href="index2.html">صفحه اصلی 02</a></li>
-</ul>
-</li>
-<li><a href="about.html">در باره</a></li>
-<li>
-<a href="#">دوره</a><ul class="sub-menu">
-<li><a href="course.html">دوره</a></li>
-<li><a href="course_details.html">جزئیات دوره</a></li>
-</ul>
-</li>
-<li>
-<a href="#">صفحات</a><ul class="sub-menu">
-<li><a href="instructor.html">مربی</a></li>
-<li><a href="ins_details.html">مشخصات مربی</a></li>
-<li><a href="pricing.html">طرح قیمت گذاری</a></li>
-<li><a href="faq.html">صفحه فک</a></li>
-<li><a href="404.html">404</a></li>
-</ul>
-</li>
-<li>
-<a href="blog.html">وبلاگ</a><ul class="sub-menu">
-<li><a href="blog.html">وبلاگ</a></li>
-<li><a href="blog_single.html">جزئیات وبلاگ</a></li>
-</ul>
-</li>
-<li><a href="contact.html">مخاطب</a></li>
-</ul>
-</div></div></div>
+      </div>
+    </div>
 <section class="home_bg hb_height" style="background-image: url(/img/bg/home-bg.jpg); background-size:cover; background-position: center center;"><div class="container"><div class="row">
 <div class="col-lg-6 col-sm-12 col-xs-12">
 <div class="hero-text ht_top">

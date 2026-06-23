@@ -13,11 +13,6 @@ const checkoutItemSchema = new mongoose.Schema({
     required: true,
   },
 
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1,
-  },
 
   priceAtTimeOfPurchase: {
     type: Number,
@@ -50,11 +45,7 @@ const checkoutSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-checkoutSchema.virtual("totalprice").get(function () {
-  return this.items.reduce((total, item) => {
-    return total + item.priceAtTimeOfPurchase * item.quantity;
-  }, 0);
-});
+
 
 checkoutSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 

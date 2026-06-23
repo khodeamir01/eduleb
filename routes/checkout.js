@@ -1,13 +1,10 @@
 const exporess = require("express");
-const { auth } = require("../../middlewares/auth");
-const {
-  createCheckout,
-  verifyCheckout,
-} = require("../../controllers/v1/checkout");
+const Controller = require("./../controllers/checkout")
+const auth = require("../middlewares/auth");
 
 const router = exporess.Router();
 
-router.route("/").post(auth, createCheckout);
-router.route("/verify").get(verifyCheckout);
+router.route("/").post(auth,Controller.createCheckout);
+router.route("/verify").get(Controller.verifyCheckout);
 
 module.exports = router;

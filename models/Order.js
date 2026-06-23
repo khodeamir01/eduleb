@@ -13,11 +13,6 @@ const orderItemSchema = new mongoose.Schema({
     required: true,
   },
 
-  quantity: {
-    type: Number,
-    min: 1,
-    required: true,
-  },
 
   priceAtTimeOfPurchase: {
     type: Number,
@@ -35,12 +30,6 @@ const orderSchema = new mongoose.Schema(
 
     items: [orderItemSchema],
 
-    status: {
-      type: String,
-      enum: ["PROCESSING", "SHIPPED", "DELIVERED"],
-      default: "PROCESSING",
-    },
-
     authority: {
       type: String,
       required: true,
@@ -50,11 +39,6 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-orderSchema.virtual("totalprice").get(function () {
-  return this.items.reduce((total, item) => {
-    return total + item.priceAtTime * item.quantity;
-  }, 0);
-});
 
 const model = mongoose.model("Order", orderSchema);
 
