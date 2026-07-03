@@ -11,185 +11,235 @@
   <link rel="stylesheet" href="/css/style.css" />
   
   <style>
-    /* استایل‌های سبد خرید */
+    :root {
+      --cart-primary: #525fe1;
+      --cart-accent: #f26b65;
+      --cart-bg: #f8f9fb;
+      --card-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    }
+
+    body { background: var(--cart-bg); }
+
     .cart-container {
-      padding: 40px 0;
+      padding: 50px 0;
       min-height: 80vh;
-      background: #f5f7fa;
     }
 
-    .cart-header {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+    /* ========== هدر سبد خرید ========== */
+    .cart-hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #302b63 100%);
+      border-radius: 24px;
+      padding: 40px;
+      margin-bottom: 40px;
       color: white;
-      padding: 30px;
-      border-radius: 16px;
-      margin-bottom: 30px;
-      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    .cart-header h1 {
-      font-size: 28px;
-      margin: 0 0 8px;
+    .cart-hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: rgba(82,95,225,0.15);
+      border-radius: 50%;
+      animation: cartPulse 6s ease-in-out infinite;
     }
 
-    .cart-header p {
-      margin: 0;
-      opacity: 0.9;
+    @keyframes cartPulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 0.8; }
     }
 
-    .cart-content {
+    .cart-hero-content {
+      position: relative;
+      z-index: 1;
       display: flex;
-      gap: 30px;
+      justify-content: space-between;
+      align-items: center;
       flex-wrap: wrap;
+      gap: 20px;
     }
 
-    .cart-items {
-      flex: 1;
-      min-width: 300px;
+    .cart-hero h1 {
+      font-size: 32px;
+      margin: 0;
+      background: linear-gradient(135deg, #fff, #e0e0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .cart-item {
+    .cart-hero p { margin: 5px 0 0; opacity: 0.8; }
+
+    .cart-badge {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    /* ========== محتوای اصلی ========== */
+    .cart-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 30px;
+    }
+
+    /* ========== کارت محصول ========== */
+    .cart-item-card {
       background: white;
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 24px;
       margin-bottom: 20px;
       display: flex;
-      gap: 20px;
-      align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      gap: 24px;
+      box-shadow: var(--card-shadow);
       transition: all 0.3s ease;
+      border: 1px solid #f0f0f0;
+    }
+
+    .cart-item-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+    }
+
+    .cart-item-cover {
+      width: 200px;
+      height: 130px;
+      border-radius: 14px;
+      overflow: hidden;
+      flex-shrink: 0;
       position: relative;
     }
 
-    .cart-item:hover {
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-      transform: translateY(-2px);
-    }
-
-    .cart-item-image {
-      width: 160px;
-      height: 110px;
-      border-radius: 12px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .cart-item-image img {
+    .cart-item-cover img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 0.5s;
     }
 
-    .cart-item-details {
+    .cart-item-card:hover .cart-item-cover img {
+      transform: scale(1.05);
+    }
+
+    .cart-item-info {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .cart-item-title {
+    .cart-item-name {
       font-size: 18px;
-      font-weight: bold;
-      color: #333;
+      font-weight: 700;
+      color: #1a1a2e;
       margin: 0 0 8px;
     }
 
-    .cart-item-title a {
+    .cart-item-name a {
       color: inherit;
       text-decoration: none;
       transition: color 0.3s;
     }
 
-    .cart-item-title a:hover {
-      color: #667eea;
-    }
-
-    .cart-item-meta {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
+    .cart-item-name a:hover { color: var(--cart-primary); }
 
     .cart-item-teacher {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
+      gap: 10px;
       color: #666;
+      font-size: 13px;
     }
 
     .cart-item-teacher img {
-      width: 28px;
-      height: 28px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       object-fit: cover;
+      border: 2px solid #f0f0f0;
     }
 
-    .cart-item-price-section {
-      text-align: left;
-      flex-shrink: 0;
+    .cart-item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
     }
 
     .cart-item-price {
       font-size: 22px;
-      font-weight: bold;
-      color: #667eea;
-      margin-bottom: 8px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #525fe1, #f26b65);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .cart-item-price small {
-      font-size: 14px;
-      color: #999;
-      margin-right: 4px;
+      font-size: 13px;
+      -webkit-text-fill-color: #999;
     }
 
-    .remove-btn {
+    .btn-remove {
       background: #fff;
-      border: 1px solid #ff4757;
+      border: 2px solid #ff4757;
       color: #ff4757;
-      padding: 8px 16px;
-      border-radius: 8px;
+      padding: 10px 20px;
+      border-radius: 12px;
       cursor: pointer;
       font-size: 13px;
-      transition: all 0.3s ease;
-      display: inline-flex;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .remove-btn:hover {
+    .btn-remove:hover {
       background: #ff4757;
       color: white;
+      transform: scale(1.05);
     }
 
-    /* سایدبار */
+    /* ========== سایدبار ========== */
     .cart-sidebar {
-      width: 350px;
-      flex-shrink: 0;
-    }
-
-    .cart-summary {
-      background: white;
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
       position: sticky;
       top: 20px;
+      align-self: start;
     }
 
-    .cart-summary h3 {
+    .summary-card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: var(--card-shadow);
+      border: 1px solid #f0f0f0;
+    }
+
+    .summary-card h3 {
       font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #333;
+      font-weight: 700;
+      margin-bottom: 25px;
       padding-bottom: 15px;
       border-bottom: 2px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .summary-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 15px;
-      font-size: 15px;
+      margin-bottom: 14px;
+      font-size: 14px;
       color: #666;
     }
 
@@ -200,224 +250,229 @@
       padding-top: 20px;
       border-top: 2px solid #f0f0f0;
       font-size: 18px;
-      font-weight: bold;
-      color: #333;
+      font-weight: 700;
     }
 
     .total-price {
-      color: #667eea;
-      font-size: 24px;
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #525fe1, #f26b65);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .checkout-btn {
+    .btn-checkout {
       width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 16px;
+      background: linear-gradient(135deg, #525fe1, #f26b65);
       color: white;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 700;
       cursor: pointer;
-      margin-top: 20px;
-      transition: all 0.3s ease;
+      margin-top: 25px;
+      transition: all 0.3s;
+      box-shadow: 0 10px 25px rgba(82,95,225,0.3);
     }
 
-    .checkout-btn:hover {
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    .btn-checkout:hover {
       transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(82,95,225,0.4);
     }
 
-    .continue-shopping {
-      display: block;
-      text-align: center;
-      margin-top: 15px;
-      color: #667eea;
+    .btn-continue {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 16px;
+      color: #666;
       text-decoration: none;
       font-size: 14px;
       transition: color 0.3s;
     }
 
-    .continue-shopping:hover {
-      color: #764ba2;
-    }
+    .btn-continue:hover { color: var(--cart-primary); }
 
-    /* سبد خرید خالی */
-    .empty-cart {
+    /* ========== خالی ========== */
+    .empty-state {
       text-align: center;
-      padding: 80px 20px;
+      padding: 100px 20px;
     }
 
-    .empty-cart i {
-      font-size: 80px;
-      color: #ddd;
-      margin-bottom: 20px;
+    .empty-state-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      font-size: 50px;
+      color: #ccc;
     }
 
-    .empty-cart h2 {
+    .empty-state h2 {
       font-size: 24px;
       color: #333;
       margin-bottom: 10px;
     }
 
-    .empty-cart p {
-      color: #999;
-      margin-bottom: 30px;
-    }
+    .empty-state p { color: #999; margin-bottom: 30px; }
 
-    .browse-courses-btn {
+    .btn-browse {
       display: inline-block;
-      padding: 12px 30px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 14px 35px;
+      background: linear-gradient(135deg, #525fe1, #f26b65);
       color: white;
-      border-radius: 10px;
+      border-radius: 14px;
       text-decoration: none;
-      font-weight: bold;
-      transition: all 0.3s ease;
+      font-weight: 700;
+      transition: all 0.3s;
     }
 
-    .browse-courses-btn:hover {
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    .btn-browse:hover {
       transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(82,95,225,0.4);
       color: white;
       text-decoration: none;
     }
 
-    /* ریسپانسیو */
-    @media (max-width: 768px) {
-      .cart-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+    /* ========== انیمیشن ========== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-      .cart-item-image {
+    .cart-item-card {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    /* ========== ریسپانسیو ========== */
+    @media (max-width: 768px) {
+      .cart-layout {
+        grid-template-columns: 1fr;
+      }
+      
+      .cart-item-card {
+        flex-direction: column;
+      }
+      
+      .cart-item-cover {
         width: 100%;
         height: 180px;
       }
-
-      .cart-item-price-section {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 10px;
+      
+      .cart-hero {
+        padding: 30px 20px;
       }
-
-      .cart-sidebar {
-        width: 100%;
-      }
-
-      .cart-content {
-        flex-direction: column;
-      }
+      
+      .cart-hero h1 { font-size: 24px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- هدر (مثل بقیه صفحات) -->
+  <!-- نویگیشن -->
   <div id="navigation" class="navbar-light bg-faded site-navigation">
-    <!-- کد هدر رو اینجا بذار -->
+    <!-- هدر سایت -->
   </div>
 
   <section class="cart-container">
     <div class="container">
       
-      <!-- هدر سبد خرید -->
-      <div class="cart-header">
-        <h1><i class="fa fa-shopping-cart"></i> سبد خرید</h1>
-        <p><%= user.name %> عزیز، دوره‌های انتخاب شده شما</p>
+      <!-- هدر -->
+      <div class="cart-hero">
+        <div class="cart-hero-content">
+          <div>
+            <h1><i class="fa fa-shopping-cart"></i> سبد خرید</h1>
+            <p><%= user.name %> عزیز، دوره‌های انتخابی شما</p>
+          </div>
+          <% if (cart && cart.items) { %>
+            <div class="cart-badge">
+              <i class="fa fa-book"></i>
+              <%= cart.items.length %> دوره
+            </div>
+          <% } %>
+        </div>
       </div>
 
       <% if (isEmpty || !cart) { %>
         
-        <!-- سبد خرید خالی -->
-        <div class="empty-cart">
-          <i class="fa fa-shopping-cart"></i>
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <i class="fa fa-shopping-cart"></i>
+          </div>
           <h2>سبد خرید شما خالی است</h2>
-          <p>شما هنوز هیچ دوره‌ای را به سبد خرید اضافه نکرده‌اید</p>
-          <a href="/courses" class="browse-courses-btn">
+          <p>هنوز هیچ دوره‌ای انتخاب نکرده‌اید</p>
+          <a href="/course" class="btn-browse">
             <i class="fa fa-search"></i> مشاهده دوره‌ها
           </a>
         </div>
 
       <% } else { %>
 
-        <div class="cart-content">
+        <div class="cart-layout">
           
-          <!-- لیست آیتم‌ها -->
-          <div class="cart-items">
+          <!-- لیست دوره‌ها -->
+          <div class="cart-items-list">
             <% cart.items.forEach(item => { %>
-              <div class="cart-item" id="cart-item-<%= item.course._id %>">
-                
-                <!-- تصویر دوره -->
-                <div class="cart-item-image">
+              <div class="cart-item-card" id="cart-item-<%= item.course._id %>">
+                <div class="cart-item-cover">
                   <a href="/course/<%= item.course.href %>">
-                    <img src="/img/cover/<%= item.course.cover || 'default-course.jpg' %>" alt="<%= item.course.name %>">
+                    <img src="/img/cover/<%= item.course.cover || 'default.jpg' %>" alt="<%= item.course.name %>">
                   </a>
                 </div>
-
-                <!-- جزئیات دوره -->
-                <div class="cart-item-details">
-                  <h4 class="cart-item-title">
-                    <a href="/course/<%= item.course.href %>"><%= item.course.name %></a>
-                  </h4>
-                  
-                  <div class="cart-item-meta">
+                <div class="cart-item-info">
+                  <div>
+                    <h4 class="cart-item-name">
+                      <a href="/course/<%= item.course.href %>"><%= item.course.name %></a>
+                    </h4>
                     <div class="cart-item-teacher">
-                      <img src="<%= item.teacher.avatar ? '/img/avatar/' + item.teacher.avatar : '/img/default-avatar.png' %>" alt="<%= item.teacher.name %>">
-                      <span><%= item.teacher.name %></span>
+                      <img src="<%= item.teacher?.avatar ? '/img/avatar/' + item.teacher.avatar : '/img/defualtPic.png' %>" alt="">
+                      <span><%= item.teacher?.name || 'مدرس' %></span>
                     </div>
-                    
-                    <% if (item.course.category) { %>
-                      <span class="badge bg-light text-dark">
-                        <i class="fa fa-folder"></i> <%= item.course.category %>
-                      </span>
-                    <% } %>
+                  </div>
+                  <div class="cart-item-footer">
+                    <div class="cart-item-price">
+                      <%= item.priceAtTime?.toLocaleString() %> <small>تومان</small>
+                    </div>
+                    <button class="btn-remove remove-from-cart" data-course-id="<%= item.course._id %>">
+                      <i class="fa fa-trash"></i> حذف
+                    </button>
                   </div>
                 </div>
-
-                <!-- قیمت و دکمه حذف -->
-                <div class="cart-item-price-section">
-                  <div class="cart-item-price">
-                    <%= item.priceAtTime.toLocaleString() %> <small>تومان</small>
-                  </div>
-                  
-                  <button class="remove-btn remove-from-cart" 
-                          data-course-id="<%= item.course._id %>">
-                    <i class="fa fa-trash"></i> حذف
-                  </button>
-                </div>
-
               </div>
             <% }); %>
           </div>
 
-          <!-- خلاصه سفارش -->
+          <!-- سایدبار -->
           <div class="cart-sidebar">
-            <div class="cart-summary">
+            <div class="summary-card">
               <h3><i class="fa fa-receipt"></i> خلاصه سفارش</h3>
               
               <div class="summary-row">
-                <span>تعداد دوره‌ها:</span>
+                <span><i class="fa fa-book"></i> تعداد دوره‌ها</span>
                 <span><%= cart.items.length %> دوره</span>
               </div>
               
               <div class="summary-row">
-                <span>مجموع ساعات:</span>
+                <span><i class="fa fa-clock-o"></i> مدت تقریبی</span>
                 <span><%= cart.items.length * 12 %> ساعت</span>
               </div>
               
               <div class="summary-total">
-                <span>مبلغ قابل پرداخت:</span>
+                <span>مبلغ قابل پرداخت</span>
                 <span class="total-price"><%= totalPrice.toLocaleString() %> تومان</span>
               </div>
               
-              <button class="checkout-btn" onclick="goToPayment()">
+              <button class="btn-checkout" onclick="goToPayment()">
                 <i class="fa fa-credit-card"></i> پرداخت و ثبت نام
               </button>
               
-              <a href="/course" class="continue-shopping">
+              <a href="/course" class="btn-continue">
                 <i class="fa fa-arrow-right"></i> ادامه خرید
               </a>
             </div>
@@ -432,7 +487,7 @@
 
   <!-- فوتر -->
   <div class="footer section-padding">
-    <!-- کد فوتر رو اینجا بذار -->
+    <!-- فوتر -->
   </div>
 
   <!-- اسکریپت‌ها -->
@@ -449,138 +504,67 @@
         
         const result = await Swal.fire({
           title: "حذف از سبد خرید",
-          text: "آیا مطمئن هستید می‌خواهید این دوره را از سبد خرید حذف کنید؟",
+          text: "آیا مطمئن هستید؟",
           icon: "warning",
           showCancelButton: true,
           confirmButtonText: "بله، حذف کن",
           cancelButtonText: "انصراف",
-          confirmButtonColor: "#d33",
-          cancelButtonColor: "#3085d6",
+          confirmButtonColor: "#dc3545",
+          cancelButtonColor: "#6c757d",
           reverseButtons: true
         });
 
-        if (result.isConfirmed) {
-          try {
-            Swal.fire({
-              title: "در حال حذف...",
-              allowOutsideClick: false,
-              didOpen: () => Swal.showLoading()
-            });
+        if (!result.isConfirmed) return;
 
-            const response = await fetch('/cart/remove', {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ courseId: courseId })
-            });
+        Swal.fire({ title: "در حال حذف...", allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            const data = await response.json();
+        try {
+          const response = await fetch('/cart/remove', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ courseId })
+          });
+          const data = await response.json();
 
-            if (data.success) {
-              // حذف آیتم از DOM
-              const cartItem = document.getElementById(`cart-item-${courseId}`);
-              if (cartItem) {
-                cartItem.style.animation = 'fadeOut 0.3s ease';
-                setTimeout(() => cartItem.remove(), 300);
-              }
-
-              Swal.fire({
-                icon: 'success',
-                title: 'حذف شد!',
-                text: 'دوره با موفقیت از سبد خرید حذف شد',
-                timer: 2000,
-                showConfirmButton: false
-              });
-
-              // رفرش صفحه بعد از 2 ثانیه برای آپدیت قیمت
-              setTimeout(() => location.reload(), 2000);
-
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'خطا',
-                text: data.error || 'مشکلی پیش آمده'
-              });
-            }
-          } catch (error) {
-            Swal.fire({
-              icon: 'error',
-              title: 'خطا',
-              text: 'خطا در ارتباط با سرور'
-            });
+          if (data.success) {
+            document.getElementById(`cart-item-${courseId}`)?.remove();
+            Swal.fire({ icon: 'success', title: 'حذف شد!', timer: 1500, showConfirmButton: false });
+            setTimeout(() => location.reload(), 1500);
+          } else {
+            Swal.fire({ icon: 'error', title: 'خطا', text: data.error });
           }
+        } catch (error) {
+          Swal.fire({ icon: 'error', title: 'خطا', text: 'خطا در ارتباط با سرور' });
         }
       });
     });
 
     // ============= پرداخت =============
     async function goToPayment() {
-  
-  // نمایش لودینگ
-  Swal.fire({
-    title: 'در حال اتصال به درگاه پرداخت...',
-    html: 'لطفاً کمی صبر کنید',
-    allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
+      Swal.fire({ title: 'در حال اتصال به درگاه...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+      try {
+        const response = await fetch('/checkout/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+
+        if (data.success && data.data?.paymentUrl) {
+          Swal.fire({
+            icon: 'success',
+            title: 'اتصال برقرار شد',
+            text: 'در حال انتقال به درگاه...',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => { window.location.href = data.data.paymentUrl; });
+        } else {
+          Swal.fire({ icon: 'error', title: 'خطا', text: data.error || 'مشکلی پیش آمد' });
+        }
+      } catch (error) {
+        Swal.fire({ icon: 'error', title: 'خطا', text: 'خطا در ارتباط با سرور' });
+      }
     }
-  });
-
-  try {
-    const response = await fetch('/checkout/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        // اگه validator چیزی نیاز داره اینجا بفرست
-        // مثلاً آدرس یا شماره تماس
-      })
-    });
-
-    const data = await response.json();
-    console.log('Checkout response:', data);
-
-    if (data.success && data.data.paymentUrl) {
-      // بستن لودینگ
-      Swal.close();
-      
-      // نمایش پیام و هدایت به درگاه
-      Swal.fire({
-        icon: 'success',
-        title: 'اتصال برقرار شد',
-        text: 'در حال انتقال به درگاه پرداخت...',
-        timer: 2000,
-        showConfirmButton: false,
-        timerProgressBar: true
-      }).then(() => {
-        // هدایت به صفحه پرداخت زرین‌پال
-        window.location.href = data.data.paymentUrl;
-      });
-
-    } else {
-      // خطا از سرور
-      Swal.fire({
-        icon: 'error',
-        title: 'خطا',
-        text: data.error || data.message || 'مشکلی در ایجاد پرداخت پیش آمد',
-        confirmButtonText: 'باشه',
-        confirmButtonColor: '#667eea'
-      });
-    }
-
-  } catch (error) {
-    console.error('Payment error:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'خطای ارتباط',
-      text: 'خطا در ارتباط با سرور. لطفاً دوباره تلاش کنید',
-      confirmButtonText: 'باشه',
-      confirmButtonColor: '#667eea'
-    });
-  }
-}
   </script>
 
 </body>

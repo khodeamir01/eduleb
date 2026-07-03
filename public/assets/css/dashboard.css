@@ -424,6 +424,343 @@ body {
   max-width: 300px;
 }
 
+/* دکمه‌های کوچک */
+.btn-sm {
+  padding: 4px 10px !important;
+  font-size: 11px !important;
+}
+
+/* select کوچک */
+.form-select-sm {
+  padding: 4px 8px;
+  font-size: 11px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+/* جدول */
+.table {
+  margin: 0;
+}
+
+.table th {
+  background: #f8f9fa;
+  border-top: none;
+  font-size: 12px;
+  color: #888;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.table td {
+  vertical-align: middle;
+  font-size: 13px;
+}
+
+.table-hover tbody tr:hover {
+  background: #f8f9ff;
+}
+
+/* ========== هدر ========== */
+.page-header {
+  background: white;
+  padding: 16px 25px;
+  border-radius: 16px;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-left h2 {
+  font-size: 20px;
+  font-family: "IranSans-Bold";
+  color: #333;
+  margin: 0;
+}
+
+.header-left h2 i {
+  color: #667eea;
+  margin-left: 8px;
+}
+
+.mobile-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #333;
+  cursor: pointer;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Breadcrumb */
+.breadcrumb-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #888;
+}
+
+.breadcrumb-nav a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.breadcrumb-nav a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-nav .current {
+  color: #333;
+  font-family: "IranSans-Bold";
+}
+
+/* تاریخ */
+.header-date {
+  font-size: 12px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+/* منوی کاربر در هدر */
+.header-user-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.header-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #667eea;
+}
+
+.header-user-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  min-width: 180px;
+  padding: 8px 0;
+  z-index: 1000;
+}
+
+.header-user-menu:hover .header-user-dropdown {
+  display: block;
+}
+
+.header-user-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  color: #333;
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.header-user-dropdown a:hover {
+  background: #f8f9fa;
+  color: #667eea;
+}
+
+.header-user-dropdown a i {
+  width: 18px;
+  text-align: center;
+  color: #888;
+}
+
+/* ========== سایدبار اضافات ========== */
+.sidebar-section-title {
+  padding: 15px 20px 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.4);
+  font-family: "IranSans-Bold";
+}
+
+.logout-link {
+  color: #ff6b6b !important;
+}
+
+.logout-link:hover {
+  background: rgba(255,107,107,0.1) !important;
+  border-right-color: #ff6b6b !important;
+}
+
+/* ========== ریسپانسیو ========== */
+@media (max-width: 768px) {
+  .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  
+  .header-right {
+      width: 100%;
+      justify-content: space-between;
+  }
+  
+  .mobile-toggle {
+      display: block;
+  }
+  
+  .breadcrumb-nav {
+      display: none;
+  }
+  
+  .sidebar {
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+  }
+  
+  .sidebar.open {
+      transform: translateX(0);
+  }
+  
+  .main-content {
+      margin-right: 0 !important;
+  }
+}
+
+
+/* ========== سلکت تغییر نقش ========== */
+.role-select {
+  padding: 6px 30px 6px 12px;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  font-size: 12px;
+  font-family: "IranSans-Regular";
+  cursor: pointer;
+  background: white;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: left 8px center;
+  background-size: 16px;
+}
+
+.role-select:hover {
+  border-color: #667eea;
+}
+
+.role-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+}
+
+/* گزینه‌های هر نقش */
+.role-option-user { color: #1565c0; }
+.role-option-teacher { color: #2e7d32; }
+.role-option-author { color: #f57f17; }
+.role-option-admin { color: #c62828; }
+
+/* ========== وضعیت بن ========== */
+.status-badge {
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: "IranSans-Bold";
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.status-active {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.status-banned {
+  background: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  animation: pulseBan 2s infinite;
+}
+
+@keyframes pulseBan {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ========== دکمه‌های عملیات ========== */
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.btn-icon-info {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+.btn-icon-info:hover {
+  background: #1976d2;
+  color: white;
+}
+
+.btn-icon-ban {
+  background: #ffebee;
+  color: #c62828;
+}
+.btn-icon-ban:hover {
+  background: #c62828;
+  color: white;
+}
+
+.btn-icon-unban {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.btn-icon-unban:hover {
+  background: #2e7d32;
+  color: white;
+}
+
 /* ========== ریسپانسیو ========== */
 @media (max-width: 768px) {
   .sidebar {

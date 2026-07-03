@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const banSchema = new mongoose.Schema({
-    phone: {
+    email: {
         type: String,
         required: true
     }

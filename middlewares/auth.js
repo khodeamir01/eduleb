@@ -6,6 +6,7 @@ const redis = require("./../redis");
 const auth = async (req, res, next) => {
     const { accessToken, refreshToken } = req.cookies;
 
+    // اگر اکسس توکن وجود دارد
     if (accessToken) {
         try {
             const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET_KEY);
@@ -16,32 +17,33 @@ const auth = async (req, res, next) => {
         }
     }
 
+    // اگر رفرش توکن وجود دارد
     if (refreshToken) {
         try {
             const decodedRefresh = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET_KEY);
             
-            // چک کردن در Redis
             const storedHash = await redis.get(`refreshToken:${decodedRefresh.id}`);
             
             if (!storedHash) {
-                return res.status(401).render("login.ejs", { messages: { error: "نشست شما منقضی شده است" } });
+                req.user = null;
+                return next();
             }
 
             const isMatch = await bcrypt.compare(refreshToken, storedHash);
 
             if (isMatch) {
-                // پیدا کردن کاربر
                 const user = await User.findById(decodedRefresh.id).select("-password");
-                if (!user) return res.status(401).render("login.ejs", { messages: { error: "کاربر یافت نشد" } });
+                if (!user) {
+                    req.user = null;
+                    return next();
+                }
 
-                // تولید اکسس توکن جدید
                 const newAccessToken = jwt.sign(
                     { id: user._id, role: user.role }, 
                     process.env.ACCESS_TOKEN_SECRET_KEY, 
                     { expiresIn: "15m" }
                 );
                 
-                // ست کردن کوکی جدید
                 res.cookie("accessToken", newAccessToken, { 
                     httpOnly: true, 
                     secure: process.env.NODE_ENV === "production",
@@ -53,11 +55,14 @@ const auth = async (req, res, next) => {
             }
         } catch (err) {
             console.error("Refresh Token Error:", err);
-            // رفرش توکن هم نامعتبر است
+            req.user = null;
+            return next();
         }
     }
 
-    return res.status(401).render("login.ejs", { messages: { error: "لطفا ابتدا وارد شوید" } });
+    // کاربر مهمان (بدون توکن) - به جای خطا، اجازه دسترسی بده
+    req.user = null;
+    next();
 };
 
 module.exports = auth;

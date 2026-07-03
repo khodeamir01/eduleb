@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body data-spy="scroll" data-offset="80">
+    
     <div class="preloaders"><span class="loader"></span></div>
     <div id="navigation" class="navbar-light bg-faded site-navigation">
       <div class="container-fluid">
@@ -115,23 +116,44 @@
         </div>
       </div>
     </div>
-    <section class="section-top">
-      <div class="container">
-        <div class="col-lg-10 offset-lg-1 text-center">
-          <div
-            class="section-top-title wow fadeInRight"
-            data-wow-duration="1s"
-            data-wow-delay="0.3s"
-            data-wow-offset="0"
-          >
-            <h1>جزئیات دوره</h1>
-            <ul>
-              <li><a href="/">صفحه اصلی</a></li>
-            </ul>
-          </div>
-        </div>
+    <header class="content-hero">
+      <!-- ذرات شناور -->
+      <div class="particles">
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
+          <div class="particle"></div>
       </div>
-    </section>
+      
+      <div class="hero-content">
+          <span class="hero-badge">
+              <i class="fa fa-folder"></i> <%= course.categoryID?.title || 'دوره' %>
+          </span>
+          <h1 class="hero-title"><%= course.name %></h1>
+          <div class="hero-meta">
+              <span>
+                  <img src="<%= course.creator?.avatar ? '/img/avatar/' + course.creator.avatar : '/img/defualtPic.png' %>" 
+                       class="hero-avatar" alt="">
+                  <strong><%= course.creator?.name %></strong>
+              </span>
+              <span>
+                  <i class="fa fa-calendar"></i> 
+                  <%= new Date(course.updatedAt).toLocaleDateString('fa-IR') %>
+              </span>
+              <span>
+                  <i class="fa fa-users"></i> ۱۰۰۰ دانشجو
+              </span>
+              <span>
+                  <i class="fa fa-trophy"></i> گواهینامه دارد
+              </span>
+          </div>
+      </div>
+  </header>
+  
 
     <% if (course) { %>
 
@@ -338,7 +360,47 @@
                       <h6 class="review-title">
                         نظرات (<%= comments.length %>)
                       </h6>
-                      <ul class="review-contents">
+                      <% if (!user) { %>
+                      <div style="position: relative; margin: 25px 0; padding: 30px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; text-align: center; overflow: hidden;">
+                        <!-- پس‌زمینه دکوراتیو -->
+                        <div style="position: absolute; top: -50px; right: -50px; width: 100px; height: 100px; background: linear-gradient(135deg, rgba(108,92,231,0.1), rgba(253,121,168,0.1)); border-radius: 50%;"></div>
+                        <div style="position: absolute; bottom: -30px; left: -30px; width: 80px; height: 80px; background: linear-gradient(135deg, rgba(253,121,168,0.08), rgba(108,92,231,0.08)); border-radius: 50%;"></div>
+                        
+                        <div style="position: relative; z-index: 1;">
+                          <div style="display: inline-block; background: linear-gradient(135deg, #6c5ce7, #fd79a8); padding: 15px 20px 15px 25px; border-radius: 50px; margin-bottom: 15px;">
+                            <span style="color: white; font-size: 18px; font-weight: 600;">
+                              <i class="fa fa-commenting" style="margin-left: 10px;"></i>
+                              نظر شما مهم است!
+                            </span>
+                          </div>
+                          
+                          <p style="font-size: 15px; color: #2d3436; margin: 10px 0 20px;">
+                            برای ثبت نظر و امتیازدهی به این دوره، لطفاً وارد شوید
+                          </p>
+                          
+                          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                            <a href="/auth/login" style="background: #6c5ce7; color: white; padding: 10px 30px; border-radius: 50px; text-decoration: none; font-weight: 500; font-size: 14px; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;"
+                               onmouseover="this.style.background='#5f3dc4'; this.style.transform='scale(1.05)'"
+                               onmouseout="this.style.background='#6c5ce7'; this.style.transform='scale(1)'">
+                              <i class="fa fa-arrow-right"></i>
+                              ورود
+                            </a>
+                            <a href="/auth/register" style="background: white; color: #6c5ce7; padding: 10px 30px; border-radius: 50px; text-decoration: none; font-weight: 500; font-size: 14px; border: 2px solid #6c5ce7; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 8px;"
+                               onmouseover="this.style.background='#6c5ce7'; this.style.color='white'"
+                               onmouseout="this.style.background='white'; this.style.color='#6c5ce7'">
+                              <i class="fa fa-user-plus"></i>
+                              ثبت نام
+                            </a>
+                          </div>
+                          
+                          <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 15px; font-size: 12px; color: #b2bec3;">
+                            <span><i class="fa fa-star" style="color: #fdcb6e;"></i> امتیازدهی</span>
+                            <span><i class="fa fa-comment" style="color: #6c5ce7;"></i> نظر دادن</span>
+                            
+                          </div>
+                        </div>
+                      </div>  
+                      <% } %>                  <ul class="review-contents">
                         <% if (comments.length > 0) { %> <%
                         comments.forEach(comment => { %>
                         <li
@@ -432,12 +494,16 @@
                             </div>
 
                             <!-- دکمه نمایش فرم reply -->
+                            <% if (typeof user !== 'undefined' && user) { %>
+
                             <button
                               class="show-reply-form"
                               data-comment-id="<%= comment._id %>"
                             >
                               پاسخ به این نظر
                             </button>
+                            <% } %>
+
 
                             <!-- دکمه حذف -->
                        <% if (user && (user._id.toString() === comment.user._id.toString() || (user.roles && user.roles.includes('ADMIN')))) { %>
@@ -530,6 +596,8 @@
                     </div>
 
                     <!-- فرم ارسال نظر -->
+                    <% if (typeof user !== 'undefined' && user) { %>
+
                     <div class="review-form mt-5">
                       <h6 class="review-title">
                         نظر خود درباره این دوره را بنویسید
@@ -585,6 +653,8 @@
                         </div>
                       </form>
                     </div>
+                    <% } %>
+
                   </div>
                 </div>
               </div>

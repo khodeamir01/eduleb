@@ -67,14 +67,51 @@
             </nav>
           </div>
     
-          <%if (user) { %>
-            <p>خوش آمدید <%= user.name %></p>
-            <% } else { %>
-            <div class="col-20 d-none d-xl-block text-end align-self-center">
-              <a href="/auth/login" class="header-btn">ورود</a
-              ><a href="/auth/register" class="btn_one">ثبت نام</a>
-            </div>
-            <% } %>
+<!-- منوی کاربر در هدر -->
+<div class="col-20 d-none d-xl-block text-end align-self-center">
+  <% if (user) { %>
+      <div class="user-dropdown">
+          <button class="user-dropdown-btn" onclick="toggleUserMenu()">
+              <img src="<%= user.avatar ? '/img/avatar/' + user.avatar : '/img/defualtPic.png' %>" 
+                   alt="<%= user.name %>" class="user-avatar-small">
+              <span><%= user.name %></span>
+              <i class="fa fa-angle-down"></i>
+          </button>
+          <div class="user-dropdown-menu" id="userMenu">
+              <div class="dropdown-header">
+                  <strong><%= user.name %></strong>
+                  <small><%= user.email %></small>
+              </div>
+              
+              <% 
+                  let dashboardLink = '/dashboard/user';
+                  if (user.roles.includes('ADMIN')) dashboardLink = '/dashboard/admin';
+                  else if (user.roles.includes('AUTHOR')) dashboardLink = '/dashboard/author';
+                  else if (user.roles.includes('TEACHER')) dashboardLink = '/dashboard/teacher';
+              %>
+              
+              <a href="<%= dashboardLink %>"><i class="fa fa-tachometer"></i> پنل کاربری</a>
+              <a href="/cart"><i class="fa fa-shopping-cart"></i> سبد خرید</a>
+              
+              <% if (user.roles.includes('ADMIN')) { %>
+                  <a href="/dashboard/admin/users"><i class="fa fa-users"></i> مدیریت کاربران</a>
+              <% } %>
+              
+              <% if (user.roles.includes('AUTHOR')) { %>
+                  <a href="/articles/create"><i class="fa fa-pencil"></i> مقاله جدید</a>
+              <% } %>
+              
+              <div class="dropdown-divider"></div>
+              <a href="#" class="logout-link" style="color: #ff6b6b;">
+                  <i class="fa fa-sign-out"></i> خروج
+              </a>
+          </div>
+      </div>
+  <% } else { %>
+      <a href="/auth/login" class="header-btn">ورود</a>
+      <a href="/auth/register" class="btn_one">ثبت نام</a>
+  <% } %>
+</div>
     
           <!-- منوی موبایل -->
           <ul class="mobile_menu">
@@ -105,6 +142,19 @@
               </ul>
             </li>
             <li><a href="/contact">مخاطب</a></li>
+            <!-- اضافه کردن به منوی موبایل -->
+<li>
+  <% if (typeof user !== 'undefined' && user) { %>
+    <a href="#"><i class="ti-user"></i> <%= user.name %></a>
+    <ul class="sub-menu">
+      <li><a href="/profile">پروفایل</a></li>
+      <li><a href="/my-courses">دوره‌های من</a></li>
+      <li><a href="/auth/logout">خروج</a></li>
+    </ul>
+  <% } else { %>
+    <a href="/auth/login">ورود / ثبت نام</a>
+  <% } %>
+</li>
           </ul>
           
         </div>
@@ -217,59 +267,61 @@
             </div>
         </div>
 
-        <!-- بخش لیست دوره‌ها -->
-        <div class="row">
-            <% if (locals.courses && courses.length > 0) { %>
+<!-- بخش لیست دوره‌ها -->
+<div class="row">
+  <% if (locals.courses && courses.length > 0) { %>
 
-                <% courses.forEach(function(course) { %>
-                    <div class="col-lg-4 col-sm-6 col-xs-12">
-                        <div class="single_course">
-                            <div class="single_c_img">
-                                <!-- نمایش تصویر کاور -->
-                                <img src="<%= course.cover ? 'img/cover/' + course.cover : 'img/course/1.png' %>" class="img-fluid" alt="<%= course.name %>">
-                                <!-- نمایش دسته‌بندی (با استفاده از populate) -->
-                                <span>
-                                    <% if (course.categoryID) { %>
-                                      <a href="/categories/<%= course.categoryID.href %>">
-                                        <%= course.categoryID.title %>
-                                      </a>
-                                    <% } else { %>
-                                      بدون دسته
-                                    <% } %>
-                                  </span>
-                            </div>
+      <% courses.forEach(function(course) { %>
+          <div class="col-lg-4 col-sm-6 col-xs-12">
+              <div class="single_course">
+                  <div class="single_c_img">
+                      <!-- تصویر کاور با نسبت ثابت -->
+                      <div class="course-cover-wrapper">
+                          <img src="/img/cover/<%= course.cover || '1.png' %>" 
+                               class="course-cover-img" 
+                               alt="<%= course.name %>"
+                               loading="lazy"
+                               onerror="this.src='/img/course/1.png'">
+                      </div>
+                      <!-- دسته‌بندی -->
+                      <span>
+                          <% if (course.categoryID) { %>
+                              <a href="/categories/<%= course.categoryID.href %>">
+                                  <%= course.categoryID.title %>
+                              </a>
+                          <% } else { %>
+                              بدون دسته
+                          <% } %>
+                      </span>
+                  </div>
 
-                            <!-- ستاره‌ها (می‌توانی از rating دیتابیس استفاده کنی یا ثابت بگذاری) -->
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
 
-                            <h4><a href="/course/<%= course.href %>"><%= course.name %></a></h4>
+                  <h4><a href="/course/<%= course.href %>"><%= course.name %></a></h4>
 
-                            <!-- تعداد دوره و زمان (اگر در دیتابیس داری جایگزین کن، در غیر این صورت متن ثابت) -->
-                            <p><span class="ti-book"></span><%= course.lessonsCount || '12' %> جلسه</p>
-                            <p><span class="ti-alarm-clock"></span><%= course.duration || '2 ساعت و 32 دقیقه' %></p>
+                  <p><span class="ti-book"></span><%= course.lessonsCount || '12' %> جلسه</p>
+                  <p><span class="ti-alarm-clock"></span><%= course.duration || '2 ساعت و 32 دقیقه' %></p>
 
-                            <!-- نمایش قیمت -->
-                            <div class="price">
-                                <% if (course.price === 0) { %>
-                                    هزینه دوره - رایگان
-                                <% } else { %>
-                                    هزینه دوره - <%= course.price.toLocaleString() %> تومان
-                                <% } %>
-                            </div>
-                        </div>
-                    </div>
-                <% }); %>
-            <% } else { %>
-                <!-- اگر دوره‌ای وجود نداشت -->
-                <div class="col-12 text-center">
-                    <p>در حال حاضر دوره‌ای برای نمایش وجود ندارد.</p>
-                </div>
-            <% } %>
-        </div>
+                  <div class="price">
+                      <% if (course.price === 0) { %>
+                          هزینه دوره - رایگان
+                      <% } else { %>
+                          هزینه دوره - <%= course.price.toLocaleString() %> تومان
+                      <% } %>
+                  </div>
+              </div>
+          </div>
+      <% }); %>
+  <% } else { %>
+      <div class="col-12 text-center">
+          <p>در حال حاضر دوره‌ای برای نمایش وجود ندارد.</p>
+      </div>
+  <% } %>
+</div>
     </div>
 </section>
 <div class="partner-logo section-padding"><div class="container"><div class="row part_bg">
@@ -428,24 +480,36 @@
 <p>ما یک رویکرد کاملاً جدید برای اساسی ترین پارادایم های یادگیری ارائه می دهیم. از میان طیف گسترده ای از گزینه های یادگیری انتخاب کنید و مهارت های جدیدی به دست آورید! مدرسه ما معلوم است</p>
 </div>
 <div class="row">
-<div class="col-lg-4 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="single_blog">
-<img src="/img/blog/1.jpg" class="img-fluid" alt="image"><div class="content_box">
-<span>10 مه 2024 |<a href="blog.html">تحصیلات</a></span><h2><a href="blog.html">نقاشی و مجسمه سازی حرفه ای موبایل</a></h2>
-<a class="btn_one" href="blog.html">ادامه مطلب<i class="ti-arrow-top-left"></i></a>
-</div>
-</div></div>
-<div class="col-lg-4 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0"><div class="single_blog">
-<img src="/img/blog/2.jpg" class="img-fluid" alt="image"><div class="content_box">
-<span>16 مه 2024 |<a href="blog.html">تحصیلات</a></span><h2><a href="blog.html">قالب گیری سرامیک حرفه ای برای مبتدیان</a></h2>
-<a class="btn_one" href="blog.html">ادامه مطلب<i class="ti-arrow-top-left"></i></a>
-</div>
-</div></div>
-<div class="col-lg-4 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0"><div class="single_blog">
-<img src="/img/blog/3.jpg" class="img-fluid" alt="image"><div class="content_box">
-<span>18 مه 2024 |<a href="blog.html">برنامه نویسی</a></span><h2><a href="blog.html">آموزش درباره ایجاد رهبران برای فردا است</a></h2>
-<a class="btn_one" href="blog.html">ادامه مطلب<i class="ti-arrow-top-left"></i></a>
-</div>
-</div></div>
+  <% if (articles && articles.length > 0) { %>
+      <% articles.forEach(function(article) { %>
+          <div class="col-lg-4 col-sm-4 col-xs-12 wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.1s" data-wow-offset="0">
+              <div class="single_blog">
+                  <img src="/img/blog<%= article.cover || '/img/blog/1.jpg' %>" class="img-fluid" alt="<%= article.title %>">
+                  <div class="content_box">
+                      <span>
+                          <%= new Date(article.createdAt).toLocaleDateString('fa-IR', { day: 'numeric', month: 'long', year: 'numeric' }) %> |
+                          <a href="/articles?category=<%= article.category %>">
+                              <%= article.tags || 'مقالات' %>
+                          </a>
+                      </span>
+                      <h2>
+                          <a href="/articles/<%= article.slug %>"><%= article.title %></a>
+                      </h2>
+                      <p style="color: #666; font-size: 14px; margin: 10px 0;">
+                          <%= article.description?.substring(0, 80) %>...
+                      </p>
+                      <a class="btn_one" href="/articles/<%= article.slug %>">
+                          ادامه مطلب <i class="ti-arrow-top-left"></i>
+                      </a>
+                  </div>
+              </div>
+          </div>
+      <% }); %>
+  <% } else { %>
+      <div class="col-12 text-center">
+          <p>هنوز مقاله‌ای منتشر نشده است.</p>
+      </div>
+  <% } %>
 </div>
 </div></section><div class="footer section-padding"><div class="container"><div class="row">
 <div class="col-lg-3 col-sm-6 col-xs-12"><div class="single_footer">
@@ -498,6 +562,61 @@
 </div></div>
 </div></div></div>
 <div class="foot_copy"><div class="footer_copyright"><p>© 2026. All Rights Reserved, Development by AmirSalar Khormaie.</p></div></div>
-<script src="/js/jquery-1.12.4.min.js"></script><script src="/bootstrap/js/bootstrap.min.js"></script><script src="/js/modernizr-2.8.3.min.js"></script><script src="/js/jquery-simple-mobilemenu.js"></script><script src="/owlcarousel/js/owl.carousel.min.js"></script><script src="/js/jquery.magnific-popup.min.js"></script><script src="/js/jquery.inview.min.js"></script><script src="/js/scrolltopcontrol.js"></script><script src="/js/wow.min.js"></script><script src="/js/scripts.js"></script>
+<script src="/js/jquery-1.12.4.min.js"></script><script src="/bootstrap/js/bootstrap.min.js"></script><script src="/js/modernizr-2.8.3.min.js"></script><script src="/js/jquery-simple-mobilemenu.js"></script><script src="/owlcarousel/js/owl.carousel.min.js"></script><script src="/js/jquery.magnific-popup.min.js"></script><script src="/js/jquery.inview.min.js"></script><script src="/js/scrolltopcontrol.js"></script><script src="/js/wow.min.js"></script><script src="/js/scripts.js"></script> <script>// ========== منوی کاربر ==========
+  function toggleUserMenu() {
+      document.getElementById('userMenu').classList.toggle('show');
+  }
+  
+  // بستن منو با کلیک بیرون
+  document.addEventListener('click', function(e) {
+      const menu = document.getElementById('userMenu');
+      const btn = e.target.closest('.user-dropdown-btn');
+      
+      if (!btn && menu && menu.classList.contains('show')) {
+          menu.classList.remove('show');
+      }
+  });
+      document.querySelector('.logout-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        Swal.fire({
+            title: 'خروج از حساب',
+            text: 'آیا مطمئن هستید می‌خواهید از حساب خود خارج شوید؟',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'بله، خارج می‌شوم',
+            cancelButtonText: 'انصراف',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // اول نشون بده در حال خروجه
+                Swal.fire({
+                    title: 'در حال خروج...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+                
+                // بعد fetch به logout
+                fetch('/auth/logout')
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'با موفقیت خارج شدید! 👋',
+                            text: 'در حال انتقال به صفحه اصلی...',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '/';
+                        });
+                    })
+                    .catch(() => {
+                        window.location.href = '/';
+                    });
+            }
+        });
+    });
+    </script>
 </body>
 </html>

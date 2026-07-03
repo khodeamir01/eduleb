@@ -1,21 +1,18 @@
-
-module.exports = (role) => {
-    return async (req, res, next) => {
-        try {
-            if (!req.user.roles.includes(role)) {
-                return res.render("index", {
-                    messages: {
-                     error: " شما دسترسی لازم برای استفاده از این آدرس را ندارید",
-                      redirect: "/",
-                     }
-                   });
-            }
-
-            next()
-
-  
-        } catch (error) {
-            next(error)
+module.exports = (...roles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            return res.redirect('/auth/login');
         }
-    }
-}
+
+        const hasAccess = roles.some(role => req.user.roles.includes(role));
+
+        if (!hasAccess) {
+            return res.status(403).json({ 
+                success: false, 
+                error: "شما دسترسی لازم را ندارید" 
+            });
+        }
+
+        next();
+    };
+};
