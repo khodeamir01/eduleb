@@ -1,0 +1,63 @@
+<div class="page-header">
+    <div class="header-left">
+        <button class="mobile-toggle" onclick="toggleSidebar()">
+            <i class="fa fa-bars"></i>
+        </button>
+        <h2>
+            <% if (activePage === 'dashboard') { %>
+                <i class="fa fa-tachometer"></i> پیشخوان
+            <% } else if (activePage === 'users') { %>
+                <i class="fa fa-users"></i> مدیریت کاربران
+            <% } else if (activePage === 'banned') { %>
+                <i class="fa fa-ban"></i> کاربران بن شده
+            <% } else if (activePage === 'courses') { %>
+                <i class="fa fa-book"></i> دوره‌های من
+            <% } else if (activePage === 'comments') { %>
+                <i class="fa fa-comments"></i> کامنت‌های من
+            <% } else { %>
+                <i class="fa fa-dashboard"></i> داشبورد
+            <% } %>
+        </h2>
+    </div>
+    
+    <div class="header-right">
+        <!-- breadcrumb -->
+        <nav class="breadcrumb-nav">
+            <a href="/">خانه</a>
+            <span>/</span>
+            <a href="/dashboard">داشبورد</a>
+            <% if (activePage !== 'dashboard') { %>
+                <span>/</span>
+                <span class="current">
+                    <% if (activePage === 'users') { %>مدیریت کاربران
+                    <% } else if (activePage === 'banned') { %>بن شده‌ها
+                    <% } else if (activePage === 'courses') { %>دوره‌های من
+                    <% } else if (activePage === 'comments') { %>کامنت‌های من
+                    <% } %>
+                </span>
+            <% } %>
+        </nav>
+        
+        <!-- تاریخ -->
+        <span class="header-date">
+            <i class="fa fa-calendar"></i>
+            <%= new Date().toLocaleDateString('fa-IR', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            }) %>
+        </span>
+        
+        <!-- منوی کاربر -->
+        <div class="header-user-menu">
+            <img src="<%= user.avatar ? '/img/avatar/' + user.avatar : '/img/defualtPic.png' %>" 
+                 alt="<%= user.name %>" class="header-user-avatar">
+            <div class="header-user-dropdown">
+                <a href="/dashboard/profile"><i class="fa fa-user"></i> پروفایل</a>
+                <a href="/cart"><i class="fa fa-shopping-cart"></i> سبد خرید</a>
+                <a href="/auth/logout"><i class="fa fa-sign-out"></i> خروج</a>
+            </div>
+        </div>
+    </div>
+</div>

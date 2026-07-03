@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ایجاد مقاله جدید</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <script src="/js/sweetAlert2.js"></script>
+    <style>
+      * {
+        font-family: "IranSans-Regular", sans-serif;
+      }
+
+      .create-article-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px 15px;
+        font-family: "IranSans-Regular", sans-serif;
+      }
+
+      .form-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        font-family: "IranSans-Regular", sans-serif;
+      }
+
+      .form-card h2 {
+        margin-bottom: 30px;
+        color: #1a1a2e;
+        font-family: "IranSans-Bold", sans-serif;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-card h2 i {
+        color: #667eea;
+        font-size: 28px;
+      }
+
+      .form-group {
+        margin-bottom: 25px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 14px;
+        font-family: "IranSans-Bold", sans-serif;
+        color: #444;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .form-group label i {
+        color: #667eea;
+        width: 18px;
+        text-align: center;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e8e8e8;
+        border-radius: 12px;
+        font-family: "IranSans-Regular", sans-serif;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: #fafafa;
+      }
+
+      .form-control:hover {
+        border-color: #d0d0d0;
+        background: #fff;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.08);
+      }
+
+      select.form-control {
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: left 12px center;
+        background-size: 18px;
+        padding-left: 40px;
+      }
+
+      textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+        line-height: 2;
+      }
+
+      .editor-toolbar {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 10px;
+      }
+
+      .editor-toolbar button {
+        padding: 6px 14px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: "IranSans-Bold", sans-serif;
+        transition: all 0.2s ease;
+        color: #555;
+      }
+
+      .editor-toolbar button:hover {
+        background: #667eea;
+        color: white;
+        border-color: #667eea;
+        transform: translateY(-1px);
+      }
+
+      .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 12px;
+        font-family: "IranSans-Bold", sans-serif;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-draft {
+        background: #f0f0f0;
+        color: #666;
+        border: 2px solid #e0e0e0;
+        padding: 14px 35px;
+        border-radius: 12px;
+        font-family: "IranSans-Bold", sans-serif;
+        font-size: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-draft:hover {
+        background: #e8e8e8;
+        transform: translateY(-2px);
+      }
+
+      .char-count {
+        font-size: 12px;
+        color: #aaa;
+        text-align: left;
+        margin-top: 6px;
+        font-family: "IranSans-Regular", sans-serif;
+      }
+
+      .char-count span {
+        font-family: "IranSans-Bold", sans-serif;
+        color: #667eea;
+      }
+
+      .tags-preview {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .tag-badge {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        color: #1565c0;
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-family: "IranSans-Regular", sans-serif;
+      }
+
+      /* استایل file input */
+      input[type="file"].form-control {
+        padding: 10px;
+      }
+
+      input[type="file"].form-control::file-selector-button {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-family: "IranSans-Regular", sans-serif;
+        cursor: pointer;
+        margin-left: 10px;
+      }
+
+      /* Placeholder */
+      ::placeholder {
+        color: #bbb;
+        font-family: "IranSans-Regular", sans-serif;
+        font-size: 13px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .form-card {
+          padding: 20px;
+        }
+
+        .btn-submit,
+        .btn-draft {
+          width: 100%;
+          margin: 5px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-layout">
+      <%- include('../dashboard/partials/_sidebar') %>
+
+      <main class="main-content">
+        <div class="create-article-container">
+          <div class="form-card">
+            <h2><i class="fa fa-pencil-square"></i> ایجاد مقاله جدید</h2>
+
+            <form id="articleForm">
+              <!-- عنوان -->
+              <div class="form-group">
+                <label><i class="fa fa-header"></i> عنوان مقاله</label>
+                <input
+                  type="text"
+                  name="title"
+                  class="form-control"
+                  placeholder="عنوان جذاب برای مقاله..."
+                  required
+                />
+              </div>
+
+              <!-- توضیحات -->
+              <div class="form-group">
+                <label><i class="fa fa-info-circle"></i> توضیحات کوتاه</label>
+                <textarea
+                  name="description"
+                  class="form-control"
+                  placeholder="خلاصه مقاله در یک یا دو خط..."
+                  maxlength="300"
+                  rows="3"
+                  required
+                ></textarea>
+                <div class="char-count">
+                  <span id="descCount">0</span> / ۳۰۰ کاراکتر
+                </div>
+              </div>
+
+              <!-- اسلاگ دستی -->
+              <div class="form-group">
+                <label><i class="fa fa-link"></i> اسلاگ (آدرس مقاله)</label>
+                <input
+                  type="text"
+                  name="slug"
+                  class="form-control"
+                  placeholder="my-article-slug"
+                  dir="ltr"
+                  style="font-family: monospace"
+                  required
+                />
+                <small
+                  style="
+                    color: #888;
+                    font-size: 11px;
+                    margin-top: 5px;
+                    display: block;
+                  "
+                >
+                  <i class="fa fa-info-circle"></i> اسلاگ خود را بنویسید 
+                </small>
+              </div>
+
+              <!-- تگ‌ها -->
+              <div class="form-group">
+                <label><i class="fa fa-tags"></i> برچسب‌ها</label>
+                <input
+                  name="tags"
+                  type="text"
+                  id="tagsInput"
+                  class="form-control"
+                  placeholder="javascript, react, nodejs (با کاما جدا کنید)"
+                />
+                <div class="tags-preview" id="tagsPreview"></div>
+              </div>
+
+              <!-- کاور -->
+              <div class="form-group">
+                <label><i class="fa fa-image"></i> تصویر کاور</label>
+                <input
+                  type="file"
+                  name="cover"
+                  class="form-control"
+                  accept="image/*"
+                />
+              </div>
+
+              <!-- محتوا -->
+              <div class="form-group">
+                <label><i class="fa fa-file-text"></i> محتوای مقاله</label>
+
+                <div class="editor-toolbar">
+                  <button type="button" onclick="insertTag('h2')">
+                    <strong>H2</strong>
+                  </button>
+                  <button type="button" onclick="insertTag('h3')">
+                    <strong>H3</strong>
+                  </button>
+                  <button type="button" onclick="insertTag('p')">
+                    <strong>P</strong>
+                  </button>
+                  <button type="button" onclick="insertTag('strong')">
+                    <strong>B</strong>
+                  </button>
+                  <button type="button" onclick="insertTag('a')">
+                    <i class="fa fa-link"></i> لینک
+                  </button>
+                  <button type="button" onclick="insertTag('code')">
+                    <i class="fa fa-code"></i> کد
+                  </button>
+                  <button type="button" onclick="insertTag('pre')">
+                    <i class="fa fa-file-code-o"></i> بلوک کد
+                  </button>
+                  <button type="button" onclick="insertTag('blockquote')">
+                    <i class="fa fa-quote-right"></i> نقل قول
+                  </button>
+                </div>
+
+                <textarea
+                  name="content"
+                  id="contentEditor"
+                  class="form-control"
+                  placeholder="محتوای مقاله خود را اینجا بنویسید..."
+                  rows="15"
+                  required
+                ></textarea>
+              </div>
+
+              <!-- دکمه‌ها -->
+              <div style="display: flex; gap: 12px; margin-top: 35px">
+                <button
+                  type="button"
+                  class="btn-submit"
+                  onclick="submitArticle('published')"
+                >
+                  <i class="fa fa-send"></i> انتشار مقاله
+                </button>
+                <button
+                  type="button"
+                  class="btn-draft"
+                  onclick="submitArticle('draft')"
+                >
+                  <i class="fa fa-save"></i> ذخیره پیش‌نویس
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+<script>async function submitArticle(status) {
+  const form = document.getElementById("articleForm");
+  const formData = new FormData(form);
+  formData.append("status", status);
+
+
+  Swal.fire({
+      title: "در حال ذخیره...",
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+  });
+
+  try {
+      const res = await fetch("/articles", {
+          method: "POST",
+          body: formData,
+      });
+      const data = await res.json();
+
+      if (data.success) {
+          Swal.fire({
+              icon: "success",
+              title: status === "published" ? "منتشر شد! 🎉" : "ذخیره شد! 📝",
+              text: data.message,
+              confirmButtonText: "مشاهده مقاله",
+              showCancelButton: true,
+              cancelButtonText: "بازگشت به پنل",
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  window.location.href = `/articles/${data.article.slug}`;
+              } else {
+                  window.location.href = "/dashboard/author";
+              }
+          });
+      } else {
+          Swal.fire({ icon: "error", title: "خطا", text: data.error });
+      }
+  } catch (err) {
+      Swal.fire({
+          icon: "error",
+          title: "خطا",
+          text: "خطا در ارتباط با سرور",
+      });
+  }
+}</script>
+  </body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ویرایش مقاله - <%= article.title %></title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script src="/js/sweetAlert2.js"></script>
+    <style>
+        .edit-container { max-width: 900px; margin: 0 auto; padding: 30px 15px; }
+        .form-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+        .form-card h2 { margin-bottom: 30px; color: #1a1a2e; font-size: 24px; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; margin-bottom: 10px; font-size: 14px; font-weight: bold; color: #444; }
+        .form-control { width: 100%; padding: 12px 16px; border: 2px solid #e8e8e8; border-radius: 12px; font-size: 14px; transition: all 0.3s; background: #fafafa; }
+        .form-control:focus { outline: none; border-color: #525fe1; background: #fff; box-shadow: 0 0 0 4px rgba(82,95,225,0.08); }
+        textarea.form-control { min-height: 200px; resize: vertical; line-height: 2; }
+        .btn-save { background: linear-gradient(135deg, #525fe1, #f26b65); color: white; border: none; padding: 14px 35px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .btn-draft { background: #f0f0f0; color: #666; border: 2px solid #e0e0e0; padding: 14px 35px; border-radius: 12px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .btn-back { color: #888; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-back:hover { color: #525fe1; }
+    </style>
+</head>
+<body>
+<div class="dashboard-layout">
+    
+    <%- include('../partials/_sidebar') %>
+
+    <main class="main-content">
+        <div class="edit-container">
+            
+            <div style="margin-bottom: 20px;">
+                <a href="/dashboard/author" class="btn-back">
+                    <i class="fa fa-arrow-right"></i> بازگشت به پنل
+                </a>
+            </div>
+
+            <div class="form-card">
+                <h2><i class="fa fa-edit"></i> ویرایش مقاله</h2>
+                
+                <form id="editForm">
+                    <input type="hidden" name="id" value="<%= article._id %>">
+                    
+                    <div class="form-group">
+                        <label>عنوان</label>
+                        <input type="text" name="title" class="form-control" value="<%= article.title %>" >
+                    </div>
+                    
+                    
+                    <div class="form-group">
+                        <label>توضیحات کوتاه</label>
+                        <textarea name="description" class="form-control" maxlength="300" rows="3" ><%= article.description %></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>برچسب‌ها (با کاما جدا کنید)</label>
+                        <input type="text" name="tags" class="form-control" value="<%= article.tags?.join(', ') || '' %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>کاور جدید (اختیاری)</label>
+                        <input type="file" name="cover" class="form-control" accept="image/*">
+                        <% if (article.cover) { %>
+                            <img src="/img/blog<%= article.cover %>" style="width: 150px; margin-top: 10px; border-radius: 8px;">
+                        <% } %>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>محتوا</label>
+                        <textarea name="content" class="form-control" rows="15" ><%= article.content %></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; margin-top: 30px;">
+                        <button type="button" class="btn-save" onclick="updateArticle('published')">
+                            <i class="fa fa-check"></i> انتشار
+                        </button>
+                        <button type="button" class="btn-draft" onclick="updateArticle('draft')">
+                            <i class="fa fa-save"></i> ذخیره پیش‌نویس
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+    </main>
+</div>
+
+<script>
+const articleId = '<%= article._id %>';
+
+// آپدیت مقاله
+async function updateArticle(status) {
+    const form = document.getElementById('editForm');
+    const formData = new FormData(form);
+    formData.append('status', status);
+
+    Swal.fire({ title: 'در حال ذخیره...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+    try {
+        const res = await fetch(`/articles/${articleId}`, {
+            method: 'PUT',
+            body: formData
+        });
+        const data = await res.json();
+
+        Swal.fire({
+            icon: data.success ? 'success' : 'error',
+            title: data.success ? (status === 'published' ? 'منتشر شد! 🎉' : 'ذخیره شد! 📝') : 'خطا',
+            text: data.message || data.error
+        }).then(() => {
+            if (data.success) location.reload();
+        });
+    } catch (err) {
+        Swal.fire({ icon: 'error', title: 'خطا', text: 'خطا در ارتباط با سرور' });
+    }
+}
+</script>
+
+</body>
+</html>

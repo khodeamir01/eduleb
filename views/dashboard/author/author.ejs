@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل نویسنده - <%= user.name %></title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script src="/js/sweetAlert2.js"></script>
+</head>
+<body>
+<div class="dashboard-layout">
+    
+    <%- include('../partials/_sidebar') %>
+
+    <main class="main-content">
+        
+        <div class="page-header">
+            <h2><i class="fa fa-pencil"></i> پنل نویسنده</h2>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <span class="date"><%= new Date().toLocaleDateString('fa-IR') %></span>
+                <a href="/articles/create" class="btn-dashboard btn-primary-dash">
+                    <i class="fa fa-plus"></i> مقاله جدید
+                </a>
+            </div>
+        </div>
+
+        <!-- آمار -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-icon"><i class="fa fa-file-text"></i></div>
+                <div class="stat-number"><%= myArticles.length %></div>
+                <div class="stat-label">کل مقالات</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fa fa-check-circle"></i></div>
+                <div class="stat-number"><%= myArticles.filter(a => a.status === 'published').length %></div>
+                <div class="stat-label">منتشر شده</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fa fa-edit"></i></div>
+                <div class="stat-number"><%= myArticles.filter(a => a.status === 'draft').length %></div>
+                <div class="stat-label">پیش‌نویس</div>
+            </div>
+            <div class="stat-card teal">
+                <div class="stat-icon"><i class="fa fa-eye"></i></div>
+                <div class="stat-number"><%= myArticles.reduce((sum, a) => sum + (a.views || 0), 0) %></div>
+                <div class="stat-label">بازدید کل</div>
+            </div>
+        </div>
+
+        <!-- لیست مقالات -->
+        <div class="content-card">
+            <h5 class="card-title"><i class="fa fa-list"></i> مقالات من</h5>
+            
+            <% if (myArticles.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>عنوان</th>
+                                <th>وضعیت</th>
+                                <th>بازدید</th>
+                                <th>تاریخ</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% myArticles.forEach((article, index) => { %>
+                                <tr>
+                                    <td><%= index + 1 %></td>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <img src="/img/blog/<%= article.cover || '/img/blog/default.jpg' %>" 
+                                                 style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                                            <div>
+                                                <strong> <%= article.title %></strong>
+                                                <br>
+                                                <small style="color: #888;">/<%= article.slug %></small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <% if (article.status === 'published') { %>
+                                            <span class="badge badge-success">منتشر شده</span>
+                                        <% } else { %>
+                                            <span class="badge badge-warning">پیش‌نویس</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <i class="fa fa-eye" style="color: #ccc;"></i> <%= article.views || 0 %>
+                                    </td>
+                                    <td>
+                                        <small style="color: #888;">
+                                            <%= new Date(article.createdAt).toLocaleDateString('fa-IR') %>
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <% if (article.status === 'published') { %>
+                                                <a href="/articles/<%= article.slug %>" 
+                                                   class="btn-icon btn-icon-info" target="_blank" title="مشاهده">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                            <% } %>
+                                            <a href="/articles/edit/<%= article._id %>" 
+                                                class="btn-icon btn-icon-info" title="ویرایش">
+                                                 <i class="fa fa-edit"></i>
+                                             </a>
+                                            <button onclick="deleteArticle('<%= article._id %>')" 
+                                                    class="btn-icon btn-icon-ban" title="حذف">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="empty-state">
+                    <i class="fa fa-file-text-o"></i>
+                    <p>هنوز مقاله‌ای ننوشته‌اید</p>
+                    <a href="/articles/create" class="btn-dashboard btn-primary-dash mt-3">
+                        <i class="fa fa-plus"></i> نوشتن اولین مقاله
+                    </a>
+                </div>
+            <% } %>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    async function deleteArticle(id) {
+    const result = await Swal.fire({
+        title: 'حذف مقاله',
+        text: 'آیا مطمئن هستید؟ این عملیات قابل بازگشت نیست',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، حذف کن',
+        cancelButtonText: 'انصراف',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true
+    });
+
+    if (!result.isConfirmed) return;
+
+    Swal.fire({
+        title: 'در حال حذف...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    try {
+        const res = await fetch(`/articles/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'حذف شد!',
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false
+            }).then(() => location.reload());
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'خطا',
+                text: data.error
+            });
+        }
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'خطا',
+            text: 'خطا در ارتباط با سرور'
+        });
+    }
+}
+</script>
+
+</body>
+</html>

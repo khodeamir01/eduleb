@@ -1,0 +1,167 @@
+<aside class="sidebar">
+    <!-- هدر سایدبار -->
+    <div class="sidebar-header">
+        <img src="<%= user.avatar ? '/img/avatar/' + user.avatar : '/img/defualtPic.png' %>" 
+             alt="<%= user.name %>" class="sidebar-avatar">
+        <h5 class="sidebar-name"><%= user.name %></h5>
+        <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 3px 0;">@<%= user.username %></p>
+        <div class="sidebar-roles">
+            <% user.roles.forEach(role => { %>
+                <span class="sidebar-role-badge <%= role.toLowerCase() %>"><%= role %></span>
+            <% }); %>
+        </div>
+    </div>
+    
+    <!-- منوی سایدبار -->
+    <ul class="sidebar-menu">
+        
+        <% if (user.roles.includes("ADMIN")) { %>
+            <!-- منوی ادمین -->
+            <li class="sidebar-section-title">پنل مدیریت</li>
+            
+            <li>
+                <a href="/dashboard/admin" class="<%= activePage === 'dashboard' ? 'active' : '' %>">
+                    <i class="fa fa-tachometer"></i> پیشخوان
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/admin/users" class="<%= activePage === 'users' ? 'active' : '' %>">
+                    <i class="fa fa-users"></i> مدیریت کاربران
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/admin/banned" class="<%= activePage === 'banned' ? 'active' : '' %>">
+                    <i class="fa fa-ban"></i> کاربران بن شده
+                </a>
+            </li>
+            
+            <li class="sidebar-section-title">دسترسی سریع</li>
+            <li>
+                <a href="/course/create">
+                    <i class="fa fa-plus-circle"></i> ایجاد دوره
+                </a>
+            </li>
+            <li>
+                <a href="/course">
+                    <i class="fa fa-list"></i> همه دوره‌ها
+                </a>
+            </li>
+            
+        <% } else if (user.roles.includes("TEACHER")) { %>
+            <!-- منوی مدرس -->
+            <li>
+                <a href="/dashboard/teacher" class="<%= activePage === 'dashboard' ? 'active' : '' %>">
+                    <i class="fa fa-tachometer"></i> پیشخوان
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/teacher/sessions">
+                    <i class="fa fa-video-camera"></i> جلسات من
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/teacher/comments">
+                    <i class="fa fa-comments"></i> کامنت‌های دوره‌ها
+                </a>
+            </li>
+            
+        <% } else if (user.roles.includes("AUTHOR")) { %>
+            <!-- منوی نویسنده -->
+
+            <li>
+                <a href="/dashboard/author">
+                    <i class="fa fa-file-text"></i> مقالات من
+                </a>
+            </li>
+            <li>
+                <a href="/articles/create">
+                    <i class="fa fa-plus-circle"></i> مقاله جدید
+                </a>
+            </li>
+            
+        <% } else { %>
+            <!-- منوی کاربر عادی -->
+            <li>
+                <a href="/dashboard/user" class="<%= activePage === 'dashboard' ? 'active' : '' %>">
+                    <i class="fa fa-tachometer"></i> پیشخوان
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/user/courses" class="<%= activePage === 'courses' ? 'active' : '' %>">
+                    <i class="fa fa-book"></i> دوره‌های من
+                </a>
+            </li>
+            <li>
+                <a href="/dashboard/user/comments" class="<%= activePage === 'comments' ? 'active' : '' %>">
+                    <i class="fa fa-comments"></i> کامنت‌های من
+                </a>
+            </li>
+            <li>
+                <a href="/cart">
+                    <i class="fa fa-shopping-cart"></i> سبد خرید
+                </a>
+            </li>
+        <% } %>
+        
+        <!-- منوی مشترک -->
+        <li class="sidebar-section-title">حساب کاربری</li>
+        <li>
+            <a href="/dashboard/profile">
+                <i class="fa fa-user-circle"></i> ویرایش پروفایل
+            </a>
+        </li>
+        <li>
+            <a href="/">
+                <i class="fa fa-globe"></i> بازگشت به سایت
+            </a>
+        </li>
+        <li>
+            <a href="#" class="logout-link">
+                <i class="fa fa-sign-out"></i> خروج از حساب
+            </a>
+        </li>
+    </ul>
+</aside>
+<script>
+    document.querySelector('.logout-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        Swal.fire({
+            title: 'خروج از حساب',
+            text: 'آیا مطمئن هستید می‌خواهید از حساب خود خارج شوید؟',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'بله، خارج می‌شوم',
+            cancelButtonText: 'انصراف',
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // اول نشون بده در حال خروجه
+                Swal.fire({
+                    title: 'در حال خروج...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+                
+                // بعد fetch به logout
+                fetch('/auth/logout')
+                    .then(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'با موفقیت خارج شدید! 👋',
+                            text: 'در حال انتقال به صفحه اصلی...',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = '/';
+                        });
+                    })
+                    .catch(() => {
+                        window.location.href = '/';
+                    });
+            }
+        });
+    });
+    </script>

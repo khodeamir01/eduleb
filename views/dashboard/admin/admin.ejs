@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل ادمین - <%= user.name %></title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <script src="/js/sweetAlert2.js"></script>
+</head>
+<body>
+<div class="dashboard-layout">
+    
+    <%- include('partials/_sidebar') %>
+
+    <main class="main-content">
+        
+        <div class="page-header">
+            <h2><i class="fa fa-dashboard"></i> پیشخوان ادمین</h2>
+            <span class="date"><%= new Date().toLocaleDateString('fa-IR') %></span>
+        </div>
+
+        <!-- آمار کلی -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="stat-icon"><i class="fa fa-users"></i></div>
+                <div class="stat-number"><%= totalUsers %></div>
+                <div class="stat-label">کل کاربران</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fa fa-book"></i></div>
+                <div class="stat-number"><%= totalCourses %></div>
+                <div class="stat-label">دوره‌ها</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fa fa-comments"></i></div>
+                <div class="stat-number"><%= totalComments %></div>
+                <div class="stat-label">کامنت‌ها</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-icon"><i class="fa fa-shopping-cart"></i></div>
+                <div class="stat-number"><%= totalOrders %></div>
+                <div class="stat-label">سفارشات</div>
+            </div>
+            <div class="stat-card purple">
+                <div class="stat-icon"><i class="fa fa-video-camera"></i></div>
+                <div class="stat-number"><%= totalSessions %></div>
+                <div class="stat-label">جلسات</div>
+            </div>
+            <div class="stat-card teal">
+                <div class="stat-icon"><i class="fa fa-file-text"></i></div>
+                <div class="stat-number"></div>
+                <div class="stat-label">مقالات</div>
+            </div>
+        </div>
+
+<!-- لیست کاربران -->
+<div class="content-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h5 class="card-title" style="margin: 0; padding: 0; border: none;">
+            <i class="fa fa-users"></i> مدیریت کاربران (<%= allUsers.length %>)
+        </h5>
+        <a href="/dashboard/admin/users" class="btn-dashboard btn-outline-dash">
+            مشاهده همه <i class="fa fa-arrow-left"></i>
+        </a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>کاربر</th>
+                    <th>ایمیل</th>
+                    <th>نقش کاربری</th>
+                    <th>وضعیت</th>
+                    <th>تاریخ ثبت نام</th>
+                    <th>عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% allUsers.forEach((u, index) => { %>
+                    <tr>
+                        <!-- شماره -->
+                        <td><%= index + 1 %></td>
+                        
+                        <!-- کاربر -->
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="<%= u.avatar ? '/img/avatar/' + u.avatar : '/img/defualtPic.png' %>" 
+                                     style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;">
+                                <div>
+                                    <strong style="font-size: 14px;"><%= u.name %></strong>
+                                    <br>
+                                    <small style="color: #888; font-size: 11px;">@<%= u.username %></small>
+                                </div>
+                            </div>
+                        </td>
+                        
+                        <!-- ایمیل -->
+                        <td>
+                            <span style="font-size: 13px;"><%= u.email || '---' %></span>
+                        </td>
+                        
+                        <!-- نقش فعلی -->
+
+                        
+                        <!-- سلکت تغییر نقش -->
+                        <td>
+                            <select onchange="changeRole('<%= u._id %>', this.value)" 
+                                    class="role-select"  style="min-width: 160px; padding: 8px 35px 8px 12px; font-size: 13px;">
+                                <option value="USER" <%= u.roles.includes('USER') ? 'selected' : '' %>>
+                                    👤 USER
+                                </option>
+                                <option value="TEACHER" <%= u.roles.includes('TEACHER') ? 'selected' : '' %>>
+                                    🎓 TEACHER
+                                </option>
+                                <option value="AUTHOR" <%= u.roles.includes('AUTHOR') ? 'selected' : '' %>>
+                                    ✍️ AUTHOR
+                                </option>
+                                <option value="ADMIN" <%= u.roles.includes('ADMIN') ? 'selected' : '' %>>
+                                    👨‍💻 ADMIN
+                                </option>
+                            </select>
+                        </td>
+                        
+                        <!-- وضعیت بن -->
+                        <td>
+                            <% if (u.isBanned) { %>
+                                <span class="status-badge status-banned">
+                                    <i class="fa fa-ban"></i> مسدود شده
+                                </span>
+                            <% } else { %>
+                                <span class="status-badge status-active">
+                                    <i class="fa fa-check-circle"></i> فعال
+                                </span>
+                            <% } %>
+                        </td>
+                        
+                        <!-- تاریخ -->
+                        <td>
+                            <span style="font-size: 12px; color: #888;">
+                                <%= new Date(u.createdAt).toLocaleDateString('fa-IR') %>
+                            </span>
+                        </td>
+                        
+                        <!-- عملیات -->
+                        <td>
+                            <div class="action-buttons">
+                                <!-- دکمه جزئیات -->
+                                <a href="/dashboard/admin/users/<%= u._id %>" 
+                                   class="btn-icon btn-icon-info" 
+                                   title="جزئیات کاربر">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                
+                                <!-- دکمه بن/آنبن -->
+                                <% if (u.isBanned) { %>
+                                    <button onclick="unbanUser('<%= u._id %>')" 
+                                            class="btn-icon btn-icon-unban" 
+                                            title="رفع مسدودیت">
+                                        <i class="fa fa-unlock"></i>
+                                    </button>
+                                <% } else { %>
+                                    <button onclick="banUser('<%= u._id %>')" 
+                                            class="btn-icon btn-icon-ban" 
+                                            title="مسدود کردن">
+                                        <i class="fa fa-ban"></i>
+                                    </button>
+                                <% } %>
+                            </div>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    </main>
+</div>
+
+<script>
+// ========== تغییر نقش ==========
+async function changeRole(userId, role) {
+    if (!role) return;
+    
+    const roleEmoji = {
+        'USER': '👤',
+        'TEACHER': '🎓',
+        'AUTHOR': '✍️',
+        'ADMIN': '👨‍💻'
+    };
+    
+    const { isConfirmed } = await Swal.fire({
+        title: 'تغییر نقش کاربر',
+        html: `
+            <div style="padding: 10px;">
+                <p style="margin-bottom: 15px;">آیا از تغییر نقش اطمینان دارید؟</p>
+                <div style="
+                    background: #f8f9fa;
+                    padding: 15px;
+                    border-radius: 10px;
+                    font-size: 16px;
+                ">
+                    نقش جدید: <strong style="color: #667eea;">${roleEmoji[role]} ${role}</strong>
+                </div>
+            </div>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'بله، تغییر بده',
+        cancelButtonText: 'انصراف',
+        confirmButtonColor: '#667eea',
+        cancelButtonColor: '#6c757d'
+    });
+
+    if (!isConfirmed) return location.reload();
+
+    Swal.fire({
+        title: 'در حال اعمال تغییرات...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    const res = await fetch('/dashboard/admin/change-role', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, role })
+    });
+    const data = await res.json();
+    
+    Swal.fire({
+        icon: data.success ? 'success' : 'error',
+        title: data.success ? 'انجام شد! 🎉' : 'خطا',
+        text: data.message || data.error,
+        timer: 2000,
+        showConfirmButton: false
+    }).then(() => location.reload());
+}
+
+// ========== بن کردن ==========
+async function banUser(userId) {
+    const { isConfirmed } = await Swal.fire({
+        title: '🚫 مسدود کردن کاربر',
+        html: `
+            <div style="padding: 10px;">
+                <p style="margin-bottom: 15px;">این کاربر دیگر نمی‌تواند وارد حساب خود شود</p>
+                <div style="
+                    background: #ffebee;
+                    padding: 12px;
+                    border-radius: 8px;
+                    color: #c62828;
+                    font-size: 13px;
+                ">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    این عملیات قابل بازگشت است
+                </div>
+            </div>
+        `,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'بله، مسدود کن',
+        cancelButtonText: 'انصراف',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d'
+    });
+
+    if (!isConfirmed) return;
+
+    Swal.fire({
+        title: 'در حال مسدود کردن...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    const res = await fetch('/dashboard/admin/ban', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+    });
+    const data = await res.json();
+    
+    Swal.fire({
+        icon: data.success ? 'success' : 'error',
+        title: data.success ? 'مسدود شد! 🚫' : 'خطا',
+        text: data.message || data.error
+    }).then(() => location.reload());
+}
+
+// ========== آنبن کردن ==========
+async function unbanUser(userId) {
+    const { isConfirmed } = await Swal.fire({
+        title: '🔓 رفع مسدودیت',
+        html: `
+            <div style="padding: 10px;">
+                <p style="margin-bottom: 15px;">کاربر دوباره می‌تواند وارد حساب خود شود</p>
+                <div style="
+                    background: #e8f5e9;
+                    padding: 12px;
+                    border-radius: 8px;
+                    color: #2e7d32;
+                    font-size: 13px;
+                ">
+                    <i class="fa fa-check-circle"></i>
+                    دسترسی کاربر بازیابی می‌شود
+                </div>
+            </div>
+        `,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'بله، آزاد کن',
+        cancelButtonText: 'انصراف',
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d'
+    });
+
+    if (!isConfirmed) return;
+
+    Swal.fire({
+        title: 'در حال رفع مسدودیت...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+    });
+
+    const res = await fetch('/dashboard/admin/unban', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId })
+    });
+    const data = await res.json();
+    
+    Swal.fire({
+        icon: data.success ? 'success' : 'error',
+        title: data.success ? 'آزاد شد! 🔓' : 'خطا',
+        text: data.message || data.error
+    }).then(() => location.reload());
+}
+</script>
+
+</body>
+</html>

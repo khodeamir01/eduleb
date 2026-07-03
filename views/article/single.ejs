@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= article.title %></title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/fonts/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inria+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <script src="/js/sweetAlert2.js"></script>
+    
+    <!-- Prism.js برای رنگ‌آمیزی کد -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd6;
+            --bg: #f8f9fb;
+            --text: #2d3436;
+            --text-light: #636e72;
+            --border: #e9ecef;
+            --code-bg: #1e1e2e;
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "IranSans-Regular", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+        }
+
+        /* ========== هدر مقاله ========== */
+        .article-hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 80px 20px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102,126,234,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-category {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .hero-title {
+            font-size: 42px;
+            font-family: "IranSans-Bold", sans-serif;
+            line-height: 1.4;
+            margin-bottom: 25px;
+        }
+
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-meta img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        /* ========== محتوای اصلی ========== */
+        .article-wrapper {
+            max-width: 850px;
+            margin: -40px auto 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        /* توضیحات */
+        .article-description {
+            background: linear-gradient(135deg, #f8f9ff, #eef0ff);
+            padding: 25px;
+            border-radius: 12px;
+            border-right: 4px solid var(--primary);
+            font-size: 17px;
+            color: var(--text-light);
+            line-height: 2.2;
+            margin-bottom: 40px;
+            font-family: "IranSans-Regular", sans-serif;
+        }
+
+        /* محتوای مقاله */
+        .article-body {
+            font-size: 16px;
+            color: var(--text);
+            line-height: 2.3;
+        }
+
+        .article-body h2 {
+            font-size: 28px;
+            font-family: "IranSans-Bold", sans-serif;
+            color: #1a1a2e;
+            margin: 45px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+        }
+
+        .article-body h3 {
+            font-size: 22px;
+            font-family: "IranSans-Bold", sans-serif;
+            color: #333;
+            margin: 35px 0 15px;
+        }
+
+        .article-body p {
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        /* ========== کدها ========== */
+        .article-body pre {
+            background: var(--code-bg) !important;
+            border-radius: 14px !important;
+            padding: 25px !important;
+            margin: 25px 0 !important;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .article-body pre::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff5f56;
+            box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27ca40;
+        }
+
+        .article-body pre code {
+            font-family: 'Fira Code', 'Consolas', monospace !important;
+            font-size: 14px !important;
+            line-height: 1.8 !important;
+            color: #e0e0e0 !important;
+            background: transparent !important;
+            padding: 0 !important;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .article-body code {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .article-body pre code {
+            background: transparent !important;
+            color: #e0e0e0 !important;
+            padding: 0 !important;
+        }
+
+        /* نقل قول */
+        .article-body blockquote {
+            background: linear-gradient(135deg, #f8f9ff, #eef0ff);
+            border-right: 5px solid var(--primary);
+            padding: 25px 30px;
+            margin: 30px 0;
+            border-radius: 14px;
+            font-size: 16px;
+            color: #555;
+            font-style: italic;
+            position: relative;
+        }
+
+        .article-body blockquote::before {
+            content: '"';
+            font-size: 60px;
+            color: var(--primary);
+            opacity: 0.3;
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            font-family: serif;
+        }
+
+        /* لینک */
+        .article-body a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .article-body a:hover {
+            border-bottom-color: var(--primary);
+        }
+
+        /* لیست */
+        .article-body ul, .article-body ol {
+            margin: 20px 0;
+            padding-right: 25px;
+        }
+
+        .article-body li {
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        /* تصویر داخل مقاله */
+        .article-body img {
+            max-width: 100%;
+            border-radius: 14px;
+            margin: 25px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        /* ========== فوتر مقاله ========== */
+        .article-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border);
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #e8eaff, #dde1ff);
+            color: #4a5ac5;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-family: "IranSans-Regular", sans-serif;
+            transition: all 0.3s;
+        }
+
+        .tag:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ========== نظرات ========== */
+        .comments-section {
+            margin-top: 50px;
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .comments-title {
+            font-size: 22px;
+            font-family: "IranSans-Bold", sans-serif;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comments-title i {
+            color: var(--primary);
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            background: #fafbfc;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .comment-item:hover {
+            background: #f0f2ff;
+        }
+
+        .comment-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e0e0e0;
+        }
+
+        .comment-body {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-family: "IranSans-Bold", sans-serif;
+            font-size: 15px;
+            color: #333;
+        }
+
+        .comment-date {
+            font-size: 12px;
+            color: #aaa;
+            margin-right: 10px;
+        }
+
+        .comment-text {
+            color: #555;
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .comment-form {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e8e8e8;
+            border-radius: 14px;
+            font-family: "IranSans-Regular", sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #fafafa;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.08);
+        }
+
+        .comment-submit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-family: "IranSans-Bold", sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .comment-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102,126,234,0.3);
+        }
+
+        .no-comments {
+            text-align: center;
+            color: #bbb;
+            padding: 30px;
+        }
+
+        .no-comments i {
+            font-size: 40px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 28px;
+            }
+            
+            .article-card {
+                padding: 25px 20px;
+            }
+            
+            .article-body {
+                font-size: 15px;
+            }
+            
+            .article-body h2 {
+                font-size: 22px;
+            }
+            
+            .article-body pre {
+                padding: 15px !important;
+            }
+            
+            .article-body pre code {
+                font-size: 12px !important;
+            }
+            
+            .comment-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- هدر مقاله -->
+<header class="article-hero">
+    <div class="hero-content">
+        <span class="hero-category">
+            <i class="fa fa-folder"></i> <%= article.category?.title || 'مقالات' %>
+        </span>
+        
+        <h1 class="hero-title"><%= article.title %></h1>
+        
+        <div class="hero-meta">
+            <span>
+                <img src="<%= article.author?.avatar ? '/img/avatar/' + article.author.avatar : '/img/defualtPic.png' %>" 
+                     alt="<%= article.author?.name %>">
+                <strong><%= article.author?.name %></strong>
+            </span>
+            <span><i class="fa fa-calendar"></i> <%= new Date(article.createdAt).toLocaleDateString('fa-IR') %></span>
+            <span><i class="fa fa-eye"></i> <%= article.views %> بازدید</span>
+            <span><i class="fa fa-clock-o"></i> <%= Math.ceil(article.content.length / 1000) %> دقیقه مطالعه</span>
+        </div>
+    </div>
+</header>
+
+<!-- محتوای مقاله -->
+<div class="article-wrapper">
+    <article class="article-card">
+        
+        <!-- توضیحات -->
+        <div class="article-description">
+            <%= article.description %>
+        </div>
+        
+        <!-- محتوای اصلی -->
+        <div class="article-body">
+            <%- article.content %>
+        </div>
+        
+        <!-- تگ‌ها -->
+        <% if (article.tags && article.tags.length > 0) { %>
+            <div class="article-footer">
+                <div class="article-tags">
+                    <% article.tags.forEach(tag => { %>
+                        <span class="tag">#<%= tag %></span>
+                    <% }); %>
+                </div>
+            </div>
+        <% } %>
+        
+    </article>
+    
+    <!-- بخش نظرات -->
+    <div class="comments-section">
+        <h3 class="comments-title">
+            <i class="fa fa-comments"></i> نظرات 
+            <span style="font-size: 16px; color: #888;">(<%= article.comments?.length || 0 %>)</span>
+        </h3>
+        
+        <% if (article.comments && article.comments.length > 0) { %>
+            <% article.comments.forEach(comment => { %>
+                <div class="comment-item">
+                    <img src="<%= comment.user?.avatar ? '/img/avatar/' + comment.user.avatar : '/img/defualtPic.png' %>" 
+                         alt="" class="comment-avatar">
+                    <div class="comment-body">
+                        <span class="comment-author"><%= comment.user?.name || 'ناشناس' %></span>
+                        <span class="comment-date"><%= new Date(comment.createdAt).toLocaleDateString('fa-IR') %></span>
+                        <p class="comment-text"><%= comment.content %></p>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="no-comments">
+                <i class="fa fa-comment-o"></i>
+                <p>هنوز نظری ثبت نشده. اولین نفر باشید!</p>
+            </div>
+        <% } %>
+        
+        <% if (user) { %>
+            <form class="comment-form" onsubmit="submitComment(event, '<%= article._id %>')">
+                <input type="text" id="commentInput" class="comment-input" 
+                       placeholder="نظر خود را بنویسید...">
+                <button type="submit" class="comment-submit">
+                    <i class="fa fa-send"></i> ارسال نظر
+                </button>
+            </form>
+        <% } else { %>
+            <p style="text-align: center; color: #888; margin-top: 20px;">
+                <a href="/auth/login" style="color: var(--primary);">وارد شوید</a> تا بتوانید نظر ثبت کنید
+            </p>
+        <% } %>
+    </div>
+</div>
+
+<script>
+// ========== ثبت نظر ==========
+async function submitComment(e, articleId) {
+    e.preventDefault();
+    
+    const input = document.getElementById('commentInput');
+    const content = input.value.trim();
+    
+    if (!content) {
+        Swal.fire({ icon: 'warning', title: 'متن نظر خالی است', text: 'لطفاً نظر خود را بنویسید' });
+        return;
+    }
+    
+    const res = await fetch(`/articles/${articleId}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+        location.reload();
+    } else {
+        Swal.fire({ icon: 'error', title: 'خطا', text: data.error });
+    }
+}
+
+// ========== رنگ‌آمیزی کدها با Prism ==========
+document.addEventListener('DOMContentLoaded', () => {
+    Prism.highlightAll();
+});
+</script>
+
+</body>
+</html>
