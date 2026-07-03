@@ -90,7 +90,7 @@ exports.login = async (req, res, next) => {
   if (!user) {
     return res.render("login", {
       messages: {
-        error: "ایمیل یا رمز عبور اشتباه است"
+        error: "کاربری یافت نشد"
       }
     });
   }
@@ -101,7 +101,7 @@ exports.login = async (req, res, next) => {
   if (!isMatch) {
     return res.render("login", {
       messages: {
-        error: "ایمیل یا رمز عبور اشتباه است"
+        error: " رمز عبور اشتباه است"
       }
     });
   }
@@ -238,5 +238,7 @@ exports.myCourses = async (req, res) => {
 exports.logOut = async (req, res) => {
   const redisKey = `refreshToken:${req.user.id}`;
   await redis.del(redisKey);
-  return res.render("logout.ejs",{ message: "User Logged Out Successfully" });
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+  return res.redirect("/")
 };

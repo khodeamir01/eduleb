@@ -13,6 +13,8 @@ const dashboardRouter = require("./routes/dashboard.js")
 const commentsRouter = require("./routes/comment.js")
 const cartRouter = require("./routes/cart.js")
 const checkoutRouter = require("./routes/checkout.js")
+const checkBan = require("./middlewares/checkBan.js");
+const articlesRouter = require("./routes/article.js");
 const passport = require("passport");
 const { Strategy: JwtStrategy } = require("passport-jwt");
 
@@ -51,6 +53,7 @@ app.use(setHeaders);
 
 //* Routers
 
+app.use(checkBan); // قبل از همه روت‌ها
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
 app.use("/course", courseRouter)
@@ -60,6 +63,7 @@ app.use("/dashboard", dashboardRouter);
 app.use("/comments", commentsRouter);
 app.use("/cart", cartRouter);
 app.use("/checkout", checkoutRouter);
+app.use("/articles", articlesRouter);
 app.get("/captcha", captchaController.get);
 
 

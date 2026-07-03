@@ -2,11 +2,9 @@ const Category = require('./../models/Category')
 const Course = require('./../models/Course')
 exports.findAllCategories = async (req, res, next) => {
 try {
-    // پیدا کردن تمام دسته‌بندی‌ها از دیتابیس
     const categories = await Category.find({})
 
-    // رندر کردن صفحه همراه با لیست دسته‌بندی‌ها
-    res.render("createcourse", {
+    return res.render("createcourse", {
       categories: categories, // لیست دسته‌بندی‌ها به فرانت فرستاده می‌شود
       messages: {}
     });

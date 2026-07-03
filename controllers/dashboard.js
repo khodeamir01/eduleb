@@ -3,7 +3,8 @@ const Comment = require("../models/Comment");
 const User = require("../models/User");
 const Session = require("../models/Session");
 const Course = require("../models/Course");
-// const Article = require("../models/Article");
+const Ban = require("../models/Ban");
+const Article = require("../models/Article");
 
 // ========== پنل خودکار (تشخیص نقش) ==========
 exports.panel = async (req, res) => {
@@ -18,23 +19,180 @@ exports.panel = async (req, res) => {
 
 // ========== ADMIN ==========
 exports.adminPanel = async (req, res) => {
-    const data = {
+    const [
+        totalUsers, totalCourses, totalComments, 
+        totalOrders, totalSessions,
+        // totalArticles,
+        allUsers, bans
+    ] = await Promise.all([
+        User.countDocuments(),
+        Course.countDocuments(),
+        Comment.countDocuments(),
+        Order.countDocuments(),
+        Session.countDocuments(),
+        // Article.countDocuments(),
+        User.find({}).select("-password").sort({ createdAt: -1 }).lean(),
+        Ban.find({}).lean()
+    ]);
+
+       // ========== اضافه کردن isBanned به هر کاربر ==========
+       const bannedEmails = new Set(
+        bans.map(b => b.email?.toLowerCase().trim()).filter(Boolean)
+    );
+
+    // اینجا isBanned رو اضافه کن
+    allUsers.forEach(u => {
+        const userEmail = (u.email || '').toLowerCase().trim();
+        u.isBanned = userEmail !== '' && bannedEmails.has(userEmail);
+    });
+    return res.render("dashboard/admin/admin.ejs", {
         user: req.user,
-        totalUsers: await User.countDocuments(),
-        totalCourses: await Course.countDocuments(),
-        totalComments: await Comment.countDocuments(),
-        totalOrders: await Order.countDocuments(),
-        totalSessions: await Session.countDocuments(),
-        // totalArticles: await Article.countDocuments(),
-        recentOrders: await Order.find()
-            .populate("user", "name email")
-            .populate("items.course", "name")
-            .sort({ createdAt: -1 })
-            .limit(10)
-            .lean()
-    };
-    
-  return res.render("Admin/dashboard", data);
+        activePage: "dashboard",
+        totalUsers,
+        totalCourses,
+        totalComments,
+        totalOrders,
+        totalSessions,
+        // totalArticles,
+        allUsers
+        
+    });
+};
+
+// تغییر نقش کاربر
+exports.adminChangeRole = async (req, res) => {
+    try {
+        const { userId, role } = req.body;
+        
+        // اعتبارسنجی
+        const validRoles = ["USER", "TEACHER", "AUTHOR", "ADMIN"];
+        if (!validRoles.includes(role)) {
+            return res.json({ 
+                success: false, 
+                error: "نقش نامعتبر است" 
+            });
+        }
+
+        if (!userId) {
+            return res.json({ 
+                success: false, 
+                error: "آیدی کاربر الزامی است" 
+            });
+        }
+
+        // پیدا کردن کاربر
+        const targetUser = await User.findById(userId);
+        
+        if (!targetUser) {
+            return res.json({ 
+                success: false, 
+                error: "کاربر مورد نظر یافت نشد" 
+            });
+        }
+
+        // ادمین نمی‌تونه نقش خودش رو عوض کنه (اختیاری - برای امنیت)
+        if (userId === req.user._id.toString()) {
+            return res.json({ 
+                success: false, 
+                error: "نمی‌توانید نقش خود را تغییر دهید" 
+            });
+        }
+
+        // آپدیت نقش کاربر
+        await User.findByIdAndUpdate(userId, { 
+            roles: [role]  // آرایه roles رو با نقش جدید جایگزین کن
+        });
+
+        console.log(`User ${targetUser.name} role changed to ${role} by admin ${req.user.name}`);
+
+        return res.json({ 
+            success: true, 
+            message: `نقش کاربر ${targetUser.name} با موفقیت به ${role} تغییر کرد`,
+            data: {
+                userId: userId,
+                newRole: role
+            }
+        });
+
+    } catch (error) {
+        console.error("Change role error:", error);
+        return res.json({ 
+            success: false, 
+            error: "خطا در تغییر نقش کاربر" 
+        });
+    }
+};
+
+// بن کردن کاربر
+exports.adminBanUser = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        const targetUser = await User.findById(userId);
+        console.log("targetUser", targetUser);
+        if (!targetUser) {
+            return res.json({ success: false, error: "کاربر یافت نشد" });
+        }
+
+        // ادمین نمی‌تونه خودش رو بن کنه
+        if (userId === req.user._id.toString()) {
+            return res.json({ success: false, error: "نمی‌توانید خود را بن کنید" });
+        }
+
+        // چک کردن تکراری نبودن
+        const existingBan = await Ban.findOne({ email: targetUser.email });
+        console.log("existingBan", existingBan);
+
+        if (existingBan) {
+            return res.json({ success: false, error: "این کاربر قبلاً بن شده است" });
+        }
+
+        // ثبت در مدل Ban
+        await Ban.create({ 
+            email: targetUser.email 
+        });
+
+        console.log(`User ${targetUser.name} (${targetUser.email}) banned by admin ${req.user.name}`);
+
+        return res.json({ 
+            success: true, 
+            message: `کاربر ${targetUser.name} با موفقیت بن شد` 
+        });
+
+    } catch (error) {
+        console.error("Ban error:", error);
+        return res.json({ success: false, error: "خطا در بن کردن کاربر" });
+    }
+};
+
+// آنبن کردن کاربر
+exports.adminUnbanUser = async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        const targetUser = await User.findById(userId);
+        if (!targetUser) {
+            return res.json({ success: false, error: "کاربر یافت نشد" });
+        }
+
+        // حذف از مدل Ban
+        const result = await Ban.deleteOne({ email: targetUser.email });
+
+        if (result.deletedCount === 0) {
+            return res.json({ success: false, error: "این کاربر بن نشده بود" });
+        }
+
+        console.log(`User ${targetUser.name} (${targetUser.email}) unbanned by admin ${req.user.name}`);
+
+        return res.json({ 
+            success: true, 
+            message: `کاربر ${targetUser.name} با موفقیت آنبن شد` 
+        });
+
+    } catch (error) {
+        console.error("Unban error:", error);
+        return res.json({ success: false, error: "خطا در آنبن کردن کاربر" });
+    }
 };
 
 // ========== TEACHER ==========
@@ -58,14 +216,14 @@ exports.teacherPanel = async (req, res) => {
     res.render("dashboard/teacher", { user, mySessions, courseComments });
 };
 
-// ========== AUTHOR ==========
-// exports.authorPanel = async (req, res) => {
-//     const myArticles = await Article.find({ author: req.user._id })
-//         .sort({ createdAt: -1 })
-//         .lean();
+exports.authorPanel = async (req, res) => {
+    const myArticles = await Article.find({ author: req.user._id })
+        .sort({ createdAt: -1 })
+        .lean();
 
-//     res.render("dashboard/author", { user: req.user, myArticles });
-// };
+   return res.render("dashboard/author/author.ejs", { user: req.user, myArticles });
+};
+
 
 // ========== USER ==========
 exports.userPanel = async (req, res) => {

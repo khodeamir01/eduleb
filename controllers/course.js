@@ -83,7 +83,7 @@ exports.getAllCourses = async (req, res, next) => {
 
 exports.showCreateCoursePanel = async (req, res, next) => {
   const categories = await Category.find({}); console.log(categories);
-  return res.render("Admin/createCourse.ejs", {categories})
+  return res.render("dashboard/admin/createCourse.ejs", {categories})
 
 }
 exports.create = async (req, res) => {
