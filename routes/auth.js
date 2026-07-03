@@ -19,7 +19,7 @@ router.route("/me").get(auth, Controller.dashboard)
 router.get('/me/edit', auth, Controller.showUpdateProfile);
 router.post('/me/update', auth, upload.single('avatar'), Controller.updateProfile);
 router.get('/me/my-courses', auth, Controller.myCourses);
-router.route("/logout").post(auth, Controller.logOut);
+router.route("/logout").get(auth, Controller.logOut);
 router.route("/google").get(passport.authenticate("google", {scope: ["profile", "email"]}));
 router.route("/google/callback").get(passport.authenticate("google", {session: false}), Controller.login);
 module.exports = router
